@@ -39,6 +39,7 @@
 				break;
 
 			default:
+				// No form context given
 				echo "No data given in POST request.";
 				break;
 		}
