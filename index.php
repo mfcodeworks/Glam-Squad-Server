@@ -1,53 +1,74 @@
 <?php
 	header('Access-Control-Allow-Origin: *');
-	require_once "inc/database-interface.php";
+	require_once "inc/class-client.php";
 
-	if( isset($_POST) && $_POST != "" ) {
+	$form = $_POST['form'];
 
-		switch($_POST['form-context']) {
+	switch($form["formContext"]) {
 
-			case "client-registration":
-				// TODO: Handle client registration
-				break;
+		case "client-registration":
+			// Handle client registration
+			$user = new NRClient();
 
-			case "artist-registration":
-				// TODO: Handle artist registration
-				break;
+			$data = $user->registerUser($form["username"], $form["email"], $form["password"]);
 
-			case "fcm-registration":
-				// TODO: Handle new FCM registration
-				break;
+			echo json_encode($data);
+			break;
 
-			case "artist-portfolio-addition":
-				// TODO: Handle artist portfolio addition
-				break;
-			
-			case "new-card":
-				// TODO: Handle new payment type entry
-				break;
+		case "client-login":
+			// Handle client authentication
+			$user = new NRClient();
 
-			case "event-form":
-				// TODO: Handle event form
-				break;
+			$data = $user->authenticateUser($form["username"], $form["password"]);
 
-			case "artist-location":
-				// TODO: Handle new artist location
-				break;
+			echo json_encode($data);
+			break;
 
-			case "artist-apply-job":
-				// TODO: Handle artist applying for job
-				break;
+		case "client-session-check":
+			// Validate client session
+			$user = new NRClient();
 
-			default:
-				// No form context given
-				echo "No data given in POST request.";
-				break;
-		}
+			$data = $user->validateSession($form["userId"], $form["usernameHash"]);
+
+			echo json_encode($data);
+			break;
+
+		case "artist-registration":
+			// TODO: Handle artist registration
+			break;
+
+		case "artist-login":
+			// TODO: Handle artist authentication
+			break;
+
+		case "fcm-registration":
+			// TODO: Handle new FCM registration
+			break;
+
+		case "artist-portfolio-addition":
+			// TODO: Handle artist portfolio addition
+			break;
+		
+		case "new-card":
+			// TODO: Handle new payment type entry
+			break;
+
+		case "event-form":
+			// TODO: Handle event form
+			break;
+
+		case "artist-location":
+			// TODO: Handle new artist location
+			break;
+
+		case "artist-apply-job":
+			// TODO: Handle artist applying for job
+			break;
+
+		default:
+			// No form context given
+			echo "No data given in POST request.";
+			echo json_encode($_POST);
+			break;
 	}
-	else {
-		echo "No data given in POST request.";
-	}
-
-	echo json_encode($_POST);
-	echo json_encode($_FILES);
 ?>
