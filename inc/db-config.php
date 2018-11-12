@@ -2,8 +2,8 @@
 /**
  * Define MySQL constants
  */
-define("DB_SERVER", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "");
+define("DB_SERVER", "nrglamsquad.czcoidkwv3pf.us-east-2.rds.amazonaws.com");
+define("DB_USER", "nrglamsquad");
+define("DB_PASS", "school12");
 define("DB_NAME", "nrglamsquad");
 ?>
