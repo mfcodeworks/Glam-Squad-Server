@@ -1,8 +1,19 @@
 <?php
 	header('Access-Control-Allow-Origin: *');
+	header('Access-Control-Allow-Headers: *');
 	require_once "inc/class-client.php";
 
-	$form = $_POST['form'];
+	define("API_SECRET", '\3"dCwhe/B?g-KLT<h%:Wfz)3CY}^}~*');
+
+	if(isset($_SERVER["HTTP_NR_HASH"])) {
+		$form = $_POST;
+		
+		$hash = hash_hmac('sha512', json_encode($form), API_SECRET);
+
+		if($hash != $_SERVER["HTTP_NR_HASH"]) {
+			$form = null;
+		}
+	}
 
 	switch($form["formContext"]) {
 
@@ -67,8 +78,7 @@
 
 		default:
 			// No form context given
-			echo "No data given in POST request.";
-			echo json_encode($_POST);
+			echo json_encode("No data given in POST request.");
 			break;
 	}
 ?>
