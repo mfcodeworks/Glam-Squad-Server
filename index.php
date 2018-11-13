@@ -4,12 +4,13 @@
 
 	require_once "inc/class-client.php";
 	require_once "inc/class-fcm.php";
+	require_once "inc/class-event.php";
 
 	define("API_SECRET", '\3"dCwhe/B?g-KLT<h%:Wfz)3CY}^}~*');
 
 	if(isset($_SERVER["HTTP_NR_HASH"])) {
 		$form = $_POST;
-		
+
 		$hash = hash_hmac('sha512', json_encode($form), API_SECRET);
 
 		if($hash != $_SERVER["HTTP_NR_HASH"]) {
@@ -75,13 +76,14 @@
 		case "artist-portfolio-addition":
 			// TODO: Handle artist portfolio addition
 			break;
-		
+
 		case "new-card":
 			// TODO: Handle new payment type entry
 			break;
 
 		case "event-form":
 			// TODO: Handle event form
+			echo json_encode($form);
 			break;
 
 		case "artist-location":
