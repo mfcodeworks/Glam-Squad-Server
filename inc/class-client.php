@@ -3,7 +3,7 @@
  * Class: NRClient
  * Author: MF Softworks <mf@nygmarosebeauty.com>
  * Date Created: 09/11/2018
- * Date Edited: 09/11/2018
+ * Date Edited: 12/11/2018
  * Description:
  * User class to handle client authentication and registration
  */

@@ -1,7 +1,9 @@
 <?php
 	header('Access-Control-Allow-Origin: *');
 	header('Access-Control-Allow-Headers: *');
+
 	require_once "inc/class-client.php";
+	require_once "inc/class-fcm.php";
 
 	define("API_SECRET", '\3"dCwhe/B?g-KLT<h%:Wfz)3CY}^}~*');
 
@@ -54,8 +56,22 @@
 
 		case "fcm-registration":
 			// TODO: Handle new FCM registration
+			$fcm = new NRFCM();
+
+			$data = $fcm->registerFcmId($form["id"], $form["userId"]);
+
+			echo json_encode($data);
 			break;
 
+		case "fcm-client-id-fetch":
+			// Get client FCM ID's
+			$fcm = new NRFCM();
+
+			$data = $fcm->getFcmId($form["type"], $form["options"]);
+
+			echo json_encode($data);
+			break;
+			
 		case "artist-portfolio-addition":
 			// TODO: Handle artist portfolio addition
 			break;
