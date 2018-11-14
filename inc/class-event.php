@@ -26,7 +26,7 @@ class NREvent {
     public function save($args) {
         // Get arguments
         extract($args);
-        $datetime = new DateTime();
+        $datetime = date("Y-m-d H:i:s",strtotime($datetime));
 
         // Build sql
         $sql = "
@@ -48,6 +48,11 @@ class NREvent {
             $cardId
         );
         ";
+
+        return [
+            $sql,
+            runSQLQuery($sql)
+        ];
     }
 }
 

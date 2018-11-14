@@ -26,6 +26,9 @@
 		// If invalid HMAC, nullify form
 		if($hash != $_SERVER["HTTP_NR_HASH"])  $form = null;
 	}
+	else {
+		die();
+	}
 
 	// Handle form by context
 	switch($form["formContext"]) {
