@@ -1,23 +1,33 @@
 <?php
+	// Allow all origin and headers
 	header('Access-Control-Allow-Origin: *');
 	header('Access-Control-Allow-Headers: *');
 
+	// Require classes
 	require_once "inc/class-client.php";
 	require_once "inc/class-fcm.php";
 	require_once "inc/class-event.php";
 
+	// API HMAC shared secret
 	define("API_SECRET", '\3"dCwhe/B?g-KLT<h%:Wfz)3CY}^}~*');
 
+	// If request has HMAC header
 	if(isset($_SERVER["HTTP_NR_HASH"])) {
+		// Save form
 		$form = $_POST;
 
-		$hash = hash_hmac('sha512', json_encode($form), API_SECRET);
+		// Remove base64 blobs
+		if(isset($_POST["photos"]))  unset($_POST["photos"]);
 
-		if($hash != $_SERVER["HTTP_NR_HASH"]) {
-			$form = null;
-		}
+		// Verify HMAC
+		$hash = hash_hmac('sha512', json_encode($_POST), API_SECRET);
+		header("NR-Hash: $hash");
+
+		// If invalid HMAC, nullify form
+		if($hash != $_SERVER["HTTP_NR_HASH"])  $form = null;
 	}
 
+	// Handle form by context
 	switch($form["formContext"]) {
 
 		case "client-registration":
