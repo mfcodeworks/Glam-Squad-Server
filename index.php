@@ -20,7 +20,7 @@
 		if(isset($_POST["photos"]))  unset($_POST["photos"]);
 
 		// Verify HMAC
-		$hash = hash_hmac('sha512', json_encode($_POST), API_SECRET);
+		$hash = hash_hmac('sha512', json_encode($_POST, JSON_NUMERIC_CHECK), API_SECRET);
 		header("NR-Hash: $hash");
 
 		// If invalid HMAC, nullify form
@@ -93,7 +93,11 @@
 
 		case "event-form":
 			// TODO: Handle event form
-			echo json_encode($form);
+			$event = new NREvent();
+
+			$data = $event->save($form);
+
+			echo json_encode($data);
 			break;
 
 		case "artist-location":

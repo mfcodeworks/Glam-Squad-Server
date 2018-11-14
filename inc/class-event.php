@@ -23,7 +23,7 @@ class NREvent {
     public $references = [];
     public $artists = [];
 
-    public function saveJob($args) {
+    public function save($args) {
         // Get arguments
         extract($args);
         $datetime = new DateTime();
@@ -35,17 +35,17 @@ class NREvent {
             event_datetime, 
             event_package_id, 
             event_note, 
-            event_clients, 
-            client_id, 
+            event_clients,
+            client_id,
             client_card_id)
         VALUES(
             \"$address\",
             \"$datetime\",
-            $packageId,
+            $package,
             \"$note\",
-            $clientNo,
-            $clientId,
-            $clientCardId
+            $clients,
+            $userId,
+            $cardId
         );
         ";
     }
