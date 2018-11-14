@@ -30,6 +30,7 @@ class NRFCM {
     public function getFcmId($type, $options = []) {
         // Switch request type
         switch($type) {
+            case "client":
             default:
                 // Build SQL
                 $sql = "
