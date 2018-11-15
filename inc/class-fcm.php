@@ -17,7 +17,7 @@ class NRFCM {
     // properties
     private $fcmId;
 
-    public function registerFcmId($fcmId, $userId) {
+    public function registerClientFcmId($fcmId, $userId) {
         // Build SQL
         $sql = "
         INSERT INTO nr_client_fcm_tokens(fcm_token, client_id)

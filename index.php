@@ -7,6 +7,7 @@
 	require_once "inc/class-client.php";
 	require_once "inc/class-fcm.php";
 	require_once "inc/class-event.php";
+	require_once "inc/class-package.php";
 
 	// API HMAC shared secret
 	define("API_SECRET", '\3"dCwhe/B?g-KLT<h%:Wfz)3CY}^}~*');
@@ -70,11 +71,11 @@
 			// TODO: Handle artist authentication
 			break;
 
-		case "fcm-registration":
+		case "fcm-client-registration":
 			// TODO: Handle new FCM registration
 			$fcm = new NRFCM();
 
-			$data = $fcm->registerFcmId($form["id"], $form["userId"]);
+			$data = $fcm->registerClientFcmId($form["id"], $form["userId"]);
 
 			echo json_encode($data);
 			break;
@@ -111,6 +112,30 @@
 
 		case "artist-apply-job":
 			// TODO: Handle artist applying for job
+			break;
+
+		case "admin-fetch-packages":
+			$packages = new NRPackage();
+
+			$data = $packages->get();
+
+			echo json_encode($data);
+			break;
+
+		case "admin-save-package":
+			$package = new NRPackage();
+
+			$data = $package->save($form);
+
+			echo json_encode($data);
+			break;
+
+		case "admin-delete-package":
+			$package = new NRPackage();
+
+			$data = $package->delete($form["id"]);
+
+			echo json_encode($data);
 			break;
 
 		default:
