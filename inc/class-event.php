@@ -32,16 +32,6 @@ class NREvent {
         // Format datetime
         $datetime = date("Y-m-d H:i:s",strtotime($datetime));
 
-        // Save images
-        foreach($photos as $photo) {
-            try {
-                $this->saveImageBlob($photo);
-            }
-            catch(Exception $e) {
-                return($e);
-            }
-        }
-
         // Build sql
         $sql = "
         INSERT INTO nr_jobs(
@@ -63,7 +53,39 @@ class NREvent {
         );
         ";
 
-        return runSQLQuery($sql);
+        $res = runSQLQuery($sql);
+
+        $eventId = $res['id'];
+
+        // Save images
+        foreach($photos as $photo) {
+            try {
+                $filepath = $this->saveImageBlob($photo);
+                $this->saveImageReference($filepath, $eventId);
+            }
+            catch(Exception $e) {
+                $res['error'] .= "\n".$e;
+            }
+        }
+
+        return $res;
+    }
+
+    private function saveImageReference($filepath, $eventId) {
+        // Build SQL
+        $sql = "
+        INSERT INTO nr_job_references(event_reference_photo, event_id)
+        VALUES(\"$filepath\", $event_id);
+        ";
+
+        $res = runSQLQuery($sql);
+
+        if($res['response'] == true) {
+            return true;
+        }
+        else {
+            throw new Exception($res['error']);
+        }
     }
 
     private function saveImageBlob($blob) {
@@ -74,21 +96,20 @@ class NREvent {
         $type = explode("/",explode(";",$blob)[0])[1];
 
         // Validate file type
-        if(!in_array($type, ['jpg', 'jpeg', 'png', 'gif'])) {
+        if(!in_array($type, ['jpg', 'jpeg', 'png', 'gif']))
             throw new Exception("Invalid image type: $type. Not an image.");
-        }
 
         // Get data and decode
         $data = base64_decode(explode(",",explode(";",$blob)[1])[1]);
 
         // Create random filename
-        $filename = $this->randomString();
+        $filepath = MEDIA_PATH . $this->randomString() . "." . $type;
 
         // Put file contents
-        if(file_put_contents(MEDIA_PATH.$filename.".".$type, $data) !== false) {
-            return true;
-        }
-        return false;
+        if(file_put_contents($filepath, $data) !== false)
+            return $filepath;
+
+        throw new Exception("Couldn't save blob to file: $filepath.");
     }
 
     private function randomString($length = 64) {

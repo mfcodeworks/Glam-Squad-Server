@@ -20,6 +20,8 @@
 
                 $data['error'] = null;
 
+                $data['id'] = $db->insert_id;
+
                 return $data;
 
             case "false":
@@ -50,6 +52,11 @@
     // Open database connection
     function connectToDB() {
         // Connect to DB
-        return new mysqli(DB_SERVER,DB_USER,DB_PASS,DB_NAME);
+        return new mysqli(
+            DB_SERVER,
+            DB_USER,
+            DB_PASS,
+            DB_NAME
+        );
     }
 ?>
