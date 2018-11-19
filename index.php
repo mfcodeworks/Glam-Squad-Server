@@ -40,7 +40,7 @@
 			// Handle client registration
 			$user = new NRClient();
 
-			$data = $user->registerUser($form["username"], $form["email"], $form["password"]);
+			$data = $user->register($form["username"], $form["email"], $form["password"]);
 
 			echo json_encode($data);
 			break;
@@ -49,7 +49,25 @@
 			// Handle client authentication
 			$user = new NRClient();
 
-			$data = $user->authenticateUser($form["username"], $form["password"]);
+			$data = $user->authenticate($form["username"], $form["password"]);
+
+			echo json_encode($data);
+			break;
+
+		case "client-info-get":
+			// Get client info
+			$user = new NRClient();
+
+			$data = $user->get($form);
+
+			echo json_encode($data);
+			break;
+
+		case "client-info-update":
+			// Update client info
+			$user = new NRClient();
+
+			$data = $user->update($form);
 
 			echo json_encode($data);
 			break;

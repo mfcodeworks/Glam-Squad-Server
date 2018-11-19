@@ -21,7 +21,7 @@ class NRClient {
 
     }
 
-    public function registerUser($username, $email, $password) {
+    public function register($username, $email, $password) {
         // Hash password
         $password = $this->hashInput($password);
 
@@ -35,7 +35,54 @@ class NRClient {
         return runSQLQuery($sql);
     }
 
-    public function authenticateUser($username, $password) {
+    public function get($args) {
+        // Get args
+        extract($args);
+
+        // Build SQL
+        $sql = 
+        "SELECT * 
+        FROM nr_clients
+        WHERE id = $userId;";
+
+        $response = runSQLQuery($sql);
+
+        unset($response["data"][0]["password"]);
+
+        return $response;
+    }
+
+    public function update($args) {
+        extract($args);
+
+        switch(trim($password)) {
+            case "":
+                $sql = 
+                "UPDATE nr_clients
+                SET username = \"$username\", email = \"$email\"
+                WHERE id = $userId;";
+
+                $response = runSQLQuery($sql);
+                break;
+
+            default:
+                // Hash password
+                $password = $this->hashInput($password);
+
+                $sql = 
+                "UPDATE nr_clients
+                SET username = \"$username\", email = \"$email\", password = \"$password\"
+                WHERE id = $userId;";
+
+                $response = runSQLQuery($sql);
+                break;
+        }
+
+        $response["usernameHash"] = $this->hashInput($username);
+        return $response;
+    }
+
+    public function authenticate($username, $password) {
         // Get user ID & Password hash
         $sql = 
         "SELECT id,password
