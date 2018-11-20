@@ -25,11 +25,13 @@ class NREvent {
     public $artists = [];
 
     public function save($args) {
+        error_log(print_r($args["photos"], true));
+
         // Get arguments
         extract($args);
 
         // Format datetime
-        $datetime = date("Y-m-d H:i:s",strtotime($datetime));
+        $datetime = date("Y-m-d H:i:s", strtotime($datetime));
 
         // Build sql
         $sql = "
@@ -56,23 +58,42 @@ class NREvent {
 
         $eventId = $res['id'];
 
+        $filepathArray = [];
+
         // Save images
-        foreach($photos as $photo) {
-            try {
-                $filepath = $this->saveImageBlob($photo);
-                $this->saveImageReference($filepath, $eventId);
+        if (isset($photos)) {
+            foreach ($photos as $photo) {
+                try {
+                    $filepath = $this->saveImageBlob($photo);
+                    $filepathArray[] = $filepath;
+                    $this->saveImageReference($filepath, $eventId);
+                }
+                catch(Exception $e) {
+                    $res['error'] .= "\n".$e;
+                }
             }
-            catch(Exception $e) {
-                $res['error'] .= "\n".$e;
-            }
+        }
+
+        if (count($filepathArray) > 0) {
+            // Begin image optimization
+            $ch = curl_init("https://glam-squad-db.nygmarosebeauty.com/smush.php");
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $filepathArray);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 1); 
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch,  CURLOPT_RETURNTRANSFER, false);
+            curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+            curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 10); 
+            curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+            curl_exec($ch);
+            curl_close($ch);
         }
 
         return $res;
     }
 
     private function saveImageReference($filepath, $eventId) {
-        new NRResmushIt($filepath);
-
         // Build SQL
         $sql = "
         INSERT INTO nr_job_references(
