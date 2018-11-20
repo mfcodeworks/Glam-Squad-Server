@@ -136,3 +136,28 @@ CREATE TABLE IF NOT EXISTS nr_artist_payments(
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id),
     FOREIGN KEY (artist_stripe_account_token) REFERENCES nr_artists(stripe_account_token)
 );
+
+# TEST DATA 
+INSERT INTO nr_payment_cards(
+    card_type,
+    card_last_digits,
+    card_token,
+    client_id
+)
+VALUES(
+    \"visa\",
+    0444,
+    \"tok_visa\",
+    1
+);
+
+INSERT INTO nr_packages(
+    package_name,
+    package_description,
+    package_price
+)
+VALUES(
+    "Package A",
+    "Package A includes xyz",
+    320.00
+);

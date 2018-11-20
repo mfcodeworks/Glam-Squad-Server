@@ -36,18 +36,18 @@ class NREvent {
         $sql = "
         INSERT INTO nr_jobs(
             event_address, 
-            event_datetime, 
-            event_package_id, 
-            event_note, 
+            event_datetime,
+            event_package_id,
+            event_note,
             event_clients,
             client_id,
             client_card_id)
         VALUES(
             \"$address\",
             \"$datetime\",
-            $package,
+            1,
             \"$note\",
-            $clients,
+            1,
             $userId,
             $cardId
         );
@@ -74,14 +74,20 @@ class NREvent {
     private function saveImageReference($filepath, $eventId) {
         // Build SQL
         $sql = "
-        INSERT INTO nr_job_references(event_reference_photo, event_id)
-        VALUES(\"$filepath\", $event_id);
+        INSERT INTO nr_job_references(
+            event_reference_photo,
+            event_id
+        )
+        VALUES(
+            \"$filepath\",
+            $eventId
+        );
         ";
 
         $res = runSQLQuery($sql);
 
         if($res['response'] == true) {
-            return true;
+            return;
         }
         else {
             throw new Exception($res['error']);
@@ -89,7 +95,7 @@ class NREvent {
     }
 
     private function saveImageBlob($blob) {
-        // Skip empty blob
+        // Skip empty blobs
         if($blob == "") return;
 
         // Get type from image/png or image/jpeg
@@ -106,7 +112,7 @@ class NREvent {
         $filepath = MEDIA_PATH . $this->randomString() . "." . $type;
 
         // Put file contents
-        if(file_put_contents($filepath, $data) !== false)
+        if(file_put_contents($filepath, $data) != false)
             return $filepath;
 
         throw new Exception("Couldn't save blob to file: $filepath.");
