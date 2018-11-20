@@ -18,11 +18,11 @@
 		$form = $_POST;
 
 		// Remove base64 blobs
-		if(isset($_POST["photos"]))  
-			unset($_POST["photos"]);
+		//if(isset($_POST["photos"]))  
+		//	unset($_POST["photos"]);
 
 		// Verify HMAC
-		$hash = hash_hmac('sha512', json_encode($_POST, JSON_NUMERIC_CHECK), API_SECRET);
+		$hash = hash_hmac('sha512', json_encode($_POST, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), API_SECRET);
 		header("NR-Hash: $hash");
 
 		// If invalid HMAC, nullify form
