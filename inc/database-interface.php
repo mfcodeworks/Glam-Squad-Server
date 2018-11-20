@@ -1,6 +1,4 @@
 <?php
-    require_once "db-config.php";
-    
     // Run SQL query
     function runSQLQuery($sql) {
 

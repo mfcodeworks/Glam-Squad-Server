@@ -4,13 +4,11 @@
 	header('Access-Control-Allow-Headers: *');
 
 	// Require classes
+	require_once "inc/config.php";
 	require_once "inc/class-client.php";
 	require_once "inc/class-fcm.php";
 	require_once "inc/class-event.php";
 	require_once "inc/class-package.php";
-
-	// API HMAC shared secret
-	define("API_SECRET", '1GSqDjCYAXeBLuLLVBx3bXlpC5NKUPqC');
 
 	// If request has HMAC header
 	if(isset($_SERVER["HTTP_NR_HASH"])) {

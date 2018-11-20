@@ -9,8 +9,7 @@
  */
 
 require_once "database-interface.php";
-
-define("MEDIA_PATH", "/srv/nr-glam-squad/media/");
+require_once "class-resmushit.php";
 
 class NREvent {
     // properties
@@ -72,6 +71,8 @@ class NREvent {
     }
 
     private function saveImageReference($filepath, $eventId) {
+        new NRResmushIt($filepath);
+
         // Build SQL
         $sql = "
         INSERT INTO nr_job_references(
@@ -118,7 +119,7 @@ class NREvent {
         throw new Exception("Couldn't save blob to file: $filepath.");
     }
 
-    private function randomString($length = 64) {
+    private function randomString($length = 32) {
         // Create random string with current date salt for uniqueness
         return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;
     }
