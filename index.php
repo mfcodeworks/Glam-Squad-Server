@@ -10,19 +10,15 @@
 	require_once "inc/class-package.php";
 
 	// API HMAC shared secret
-	define("API_SECRET", '\3"dCwhe/B?g-KLT<h%:Wfz)3CY}^}~*');
+	define("API_SECRET", '1GSqDjCYAXeBLuLLVBx3bXlpC5NKUPqC');
 
 	// If request has HMAC header
 	if(isset($_SERVER["HTTP_NR_HASH"])) {
 		// Save form
-		$form = $_POST;
-
-		// Remove base64 blobs
-		//if(isset($_POST["photos"]))  
-		//	unset($_POST["photos"]);
+		$form = json_decode(file_get_contents('php://input'), true);
 
 		// Verify HMAC
-		$hash = hash_hmac('sha512', json_encode($_POST, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), API_SECRET);
+		$hash = hash_hmac('sha512', file_get_contents('php://input'), API_SECRET);
 		header("NR-Hash: $hash");
 
 		// If invalid HMAC, nullify form
