@@ -9,11 +9,13 @@
 CREATE SCHEMA IF NOT EXISTS nrglamsquad;
 USE nrglamsquad;
 
+# Glam Squad Job Roles (MUA, Hair Stylist, Manicurist...)
 CREATE TABLE IF NOT EXISTS nr_job_roles(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     role_name VARCHAR(255) NOT NULL UNIQUE
 );
 
+# Glam Squad Packages (Package A; One MUA One Stylist; 320.00...)
 CREATE TABLE IF NOT EXISTS nr_packages(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     package_name VARCHAR(255) NOT NULL UNIQUE,
@@ -21,6 +23,7 @@ CREATE TABLE IF NOT EXISTS nr_packages(
     package_price DECIMAL(13,4) NOT NULL
 );
 
+# Glam Squad Package Roles (1 (Package A); 1 (MUA); 1 (required))
 CREATE TABLE IF NOT EXISTS nr_package_roles(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     package_id BIGINT NOT NULL,
@@ -30,6 +33,7 @@ CREATE TABLE IF NOT EXISTS nr_package_roles(
     FOREIGN KEY (role_id) REFERENCES nr_job_roles(id) ON DELETE CASCADE
 );
 
+# Glam Squad Client Accounts
 CREATE TABLE IF NOT EXISTS  nr_clients(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
@@ -38,6 +42,7 @@ CREATE TABLE IF NOT EXISTS  nr_clients(
     password VARCHAR(255) NOT NULL
 );
 
+# Glam Squad Artist Accounts
 CREATE TABLE IF NOT EXISTS nr_artists(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
@@ -45,9 +50,12 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     stripe_account_token VARCHAR(255) UNIQUE,
-    bio TEXT
+    bio TEXT,
+    role_id BIGINT,
+    FOREIGN KEY (role_id) REFERENCES nr_job_roles(id) ON DELETE CASCADE
 );
 
+# Artist Portfolio References ('/srv/media/file.png' (photo); 1 (Artist))
 CREATE TABLE IF NOT EXISTS nr_artist_portfolios(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     photo TEXT NOT NULL,
@@ -55,14 +63,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_portfolios(
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS nr_artist_roles(
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    artist_role BIGINT NOT NULL,
-    artist_id BIGINT NOT NULL,
-    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE,
-    FOREIGN KEY (artist_role) REFERENCES nr_job_roles(id) ON DELETE CASCADE
-);
-
+# Client FCM Tokens
 CREATE TABLE IF NOT EXISTS nr_client_fcm_tokens(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fcm_token VARCHAR(255) NOT NULL UNIQUE,
@@ -70,6 +71,7 @@ CREATE TABLE IF NOT EXISTS nr_client_fcm_tokens(
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
 );
 
+# Artist FCM Tokens
 CREATE TABLE IF NOT EXISTS nr_artist_fcm_tokens(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fcm_token VARCHAR(255) NOT NULL UNIQUE,
@@ -77,6 +79,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_fcm_tokens(
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
+# Client payment cards (Visa; 0444; tok_12345; 1 (Client))
 CREATE TABLE IF NOT EXISTS nr_payment_cards(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     card_type VARCHAR(255) NOT NULL,
@@ -86,20 +89,28 @@ CREATE TABLE IF NOT EXISTS nr_payment_cards(
     FOREIGN KEY (client_id) REFERENCES nr_clients(id)
 );
 
+# Glam Squad Event (123 fake st; 22112018T09:11 (22/11/2018, 9:11); Event note for artists to read; 1 (Client); 1 (Client Card))
 CREATE TABLE IF NOT EXISTS nr_jobs(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_address TEXT NOT NULL,
     event_datetime DATETIME NOT NULL,
-    event_package_id BIGINT NOT NULL,
     event_note TEXT,
-    event_clients SMALLINT NOT NULL,
     client_id BIGINT NOT NULL,
     client_card_id BIGINT NOT NULL,
-    FOREIGN KEY (event_package_id) REFERENCES nr_packages(id),
     FOREIGN KEY (client_id) REFERENCES nr_clients(id),
     FOREIGN KEY (client_card_id) REFERENCES nr_payment_cards(id)
 );
 
+# Glam Squad Event Packages (1 (package A); 1 (Event))
+CREATE TABLE IF NOT EXISTS nr_job_packages(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    event_package_id BIGINT NOT NULL,
+    event_id BIGINT NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
+    FOREIGN KEY (event_package_id) REFERENCES nr_packages(id) ON DELETE CASCADE
+);
+
+# Glam Squad Event References ('/srv/media/file.png'; 1 (Event))
 CREATE TABLE IF NOT EXISTS nr_job_references(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_reference_photo TEXT NOT NULL,
@@ -107,6 +118,7 @@ CREATE TABLE IF NOT EXISTS nr_job_references(
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
 );
 
+# Glam Squad Artist Jobs (1 (Event); 1 (Artist))
 CREATE TABLE IF NOT EXISTS nr_artist_jobs(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
@@ -115,6 +127,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_jobs(
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id)
 );
 
+# Glam Squad Event Receipt for Client (160.00; 1 (Event); 1 (Client); 1 (Card))
 CREATE TABLE IF NOT EXISTS nr_client_receipts(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     client_payment_amount DECIMAL(13,4) NOT NULL,
@@ -126,6 +139,7 @@ CREATE TABLE IF NOT EXISTS nr_client_receipts(
     FOREIGN KEY (client_card_id) REFERENCES nr_payment_cards(id)
 );
 
+# Glam Squad Artist Payments for Events (80.00; 1 (Event); 1 (Artist); 1234 (Stripe Token))
 CREATE TABLE IF NOT EXISTS nr_artist_payments(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     artist_payment_amount DECIMAL(13,4) NOT NULL,
@@ -145,9 +159,9 @@ INSERT INTO nr_payment_cards(
     client_id
 )
 VALUES(
-    \"visa\",
+    "visa",
     0444,
-    \"tok_visa\",
+    "tok_visa",
     1
 );
 
