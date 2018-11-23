@@ -38,17 +38,13 @@ class NREvent {
         INSERT INTO nr_jobs(
             event_address, 
             event_datetime,
-            event_package_id,
             event_note,
-            event_clients,
             client_id,
             client_card_id)
         VALUES(
             \"$address\",
             \"$datetime\",
-            1,
             \"$note\",
-            1,
             $userId,
             $cardId
         );
@@ -57,6 +53,15 @@ class NREvent {
         $res = runSQLQuery($sql);
 
         $eventId = $res['id'];
+
+        foreach($packages as $package) {
+            try { 
+                $this->savePackageReference($package, $eventId);
+            }
+            catch(Exception $e) {
+                $res['error'] .= "\n".$e;
+            }
+        }
 
         $filepathArray = [];
 
@@ -81,7 +86,7 @@ class NREvent {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $filepathArray);
             curl_setopt($ch, CURLOPT_TIMEOUT, 1); 
             curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch,  CURLOPT_RETURNTRANSFER, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
             curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
             curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 10); 
@@ -91,6 +96,28 @@ class NREvent {
         }
 
         return $res;
+    }
+
+    private function savePackageReference($package, $event) {
+        // Build SQL
+        $sql = "
+        INSERT INTO nr_job_packages(
+            event_package_id,
+            event_id
+        )
+        VALUES(
+            $package,
+            $event
+        );";
+
+        $res = runSQLQuery($sql);
+
+        if($res['response'] == true) {
+            return;
+        }
+        else {
+            throw new Exception($res['error']);
+        }
     }
 
     private function saveImageReference($filepath, $eventId) {
