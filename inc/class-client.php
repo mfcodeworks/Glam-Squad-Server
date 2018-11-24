@@ -151,6 +151,48 @@ class NRClient {
         return false;
     }
 
+    public function savePaymentInfo($args) {
+        extract($args);
+
+        $sql = 
+        "UPDATE nr_clients
+        WHERE id = $userID
+        SET stripe_customer_id = \"$stripeId\";
+        ";
+
+        runSQLQuery($sql);
+
+        $sql = 
+        "INSERT INTO nr_payment_cards(
+            card_type,
+            card_last_digits,
+            card_token,
+            client_id
+        )
+        VALUES(
+            \"$type\",
+            $lastFour,
+            \"$token\",
+            $userID
+        );";
+
+        $res = runSQLQuery($sql);
+
+        return $res;
+    }
+
+    public function deleteCard($args) {
+        extract($args);
+
+        $sql = 
+        "DELETE FROM nr_payment_cards
+        WHERE client_id = userID
+        AND card_token LIKE \"$cardID\";
+        ";
+
+        return runSQLQuery($sql);
+    }
+
     private function hashInput($password) {
         // Hash password with Argon2 (PHP7.2+)
         return password_hash($password, PASSWORD_ARGON2I, ["memory_cost" => 2048, "time_cost" => 4, "threads" => 2]);
