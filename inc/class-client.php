@@ -85,7 +85,7 @@ class NRClient {
     public function authenticate($username, $password) {
         // Get user ID & Password hash
         $sql = 
-        "SELECT id,password
+        "SELECT *
             FROM nr_clients
             WHERE username = \"$username\";
         ";
