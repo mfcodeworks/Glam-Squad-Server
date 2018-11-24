@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS  nr_clients(
     username VARCHAR(255) NOT NULL UNIQUE,
     profile_photo TEXT,
     email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    stripe_customer_id VARCHAR(255)
 );
 
 # Glam Squad Artist Accounts
@@ -149,20 +150,6 @@ CREATE TABLE IF NOT EXISTS nr_artist_payments(
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id),
     FOREIGN KEY (artist_stripe_account_token) REFERENCES nr_artists(stripe_account_token)
-);
-
-# TEST DATA 
-INSERT INTO nr_payment_cards(
-    card_type,
-    card_last_digits,
-    card_token,
-    client_id
-)
-VALUES(
-    "visa",
-    0444,
-    "tok_visa",
-    1
 );
 
 INSERT INTO nr_packages(
