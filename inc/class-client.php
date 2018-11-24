@@ -77,8 +77,16 @@ class NRClient {
                 $response = runSQLQuery($sql);
                 break;
         }
+        if($response["response"] == true) {
+            $sql = 
+            "SELECT * FROM nr_clients
+            WHERE id = $userId;";
 
-        $response["usernameHash"] = $this->hashInput($username);
+            $response = runSQLQuery($sql);
+
+            unset($response["data"][0]["password"]);
+            $response["data"][0]["usernameHash"] = $this->hashInput($username);
+        }
         return $response;
     }
 
