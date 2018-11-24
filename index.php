@@ -105,12 +105,8 @@
 			// TODO: Handle artist portfolio addition
 			break;
 
-		case "save-client-payment-info":
-			$client = new NRClient();
-
-			$data = $client->savePaymentInfo($form);
-
-			echo json_encode($data);
+		case "new-card":
+			// TODO: Handle new payment type entry
 			break;
 
 		case "get-client-cards":
