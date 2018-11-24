@@ -113,6 +113,14 @@
 			echo json_encode($data);
 			break;
 
+		case "get-client-cards":
+			$client = new NRClient();
+
+			$data = $client->cards($form);
+
+			echo json_encode($data);
+			break;
+
 		case "event-form":
 			// TODO: Handle event form
 			$event = new NREvent();

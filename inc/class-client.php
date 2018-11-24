@@ -181,6 +181,17 @@ class NRClient {
         return $res;
     }
 
+    public function cards($args) {
+        extract($args);
+
+        $sql =
+        "SELECT *
+        FROM nr_payment_cards
+        WHERE client_id = $userID";
+
+        return runSQLQuery($sql);
+    }
+
     private function hashInput($password) {
         // Hash password with Argon2 (PHP7.2+)
         return password_hash($password, PASSWORD_ARGON2I, ["memory_cost" => 2048, "time_cost" => 4, "threads" => 2]);
