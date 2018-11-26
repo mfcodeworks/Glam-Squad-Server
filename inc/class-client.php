@@ -154,13 +154,16 @@ class NRClient {
     public function savePaymentInfo($args) {
         extract($args);
 
-        $sql = 
-        "UPDATE nr_clients
-        WHERE id = $userID
-        SET stripe_customer_id = \"$stripeId\";
-        ";
-
-        runSQLQuery($sql);
+        // If client wishes to save card permanently
+        if(isset($stripeId)) {
+            $sql = 
+            "UPDATE nr_clients
+            WHERE id = $userID
+            SET stripe_customer_id = \"$stripeId\";
+            ";
+    
+            runSQLQuery($sql);
+        }
 
         $sql = 
         "INSERT INTO nr_payment_cards(

@@ -33,6 +33,20 @@ class NREvent {
         // Format datetime
         $datetime = date("Y-m-d H:i:s", strtotime($datetime));
 
+        $sql = 
+        "SELECT *
+            FROM nr_payment_cards
+            WHERE card_token LIKE \"$card\"
+            AND client_id = $userId;
+            ";
+
+        $cardId = runSQLQuery($sql)["data"][0]["id"];
+
+        if(!$cardId) {
+            $res["error"] .= "\nInvalid card token.";
+            return $res;
+        }
+
         // Build sql
         $sql = "
         INSERT INTO nr_jobs(
