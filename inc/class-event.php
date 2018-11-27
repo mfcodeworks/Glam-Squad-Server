@@ -185,6 +185,73 @@ class NREvent {
         // Create random string with current date salt for uniqueness
         return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;
     }
+
+    public function get($args) {
+        extract($args);
+
+        if(isset($userId)) {
+            $sql =
+            "SELECT * FROM nr_jobs
+            WHERE client_id = $userId";
+        }
+        if(isset($jobId)) {
+            $sql =
+            "SELECT * FROM nr_jobs
+            WHERE id = $jobId";
+        }
+
+        return runSQLQuery($res);
+    }
+
+    public function update($args) {
+        extract($args);
+
+        if(isset($address)) {
+            $sql =
+            "UPDATE nr_jobs
+            SET address = \"$address\"
+            WHERE id = $jobId;";
+    
+            $res = runSQLQuery($sql);
+            if($res["response"] !== true) {
+                return $res;
+            }
+        }
+        if(isset($datetime)) {
+            $sql =
+            "UPDATE nr_jobs
+            SET datetime = \"$datetime\"
+            WHERE id = $jobId;";
+    
+            $res = runSQLQuery($sql);
+            if($res["response"] !== true) {
+                return $res;
+            }
+        }
+        if(isset($cardId)) {
+            $sql =
+            "UPDATE nr_jobs
+            SET client_card_id = $cardId
+            WHERE id = $jobId;";
+    
+            $res = runSQLQuery($sql);
+            if($res["response"] !== true) {
+                return $res;
+            }
+        }
+        return $res;
+    }
+
+    public function delete($args) {
+        extract($args);
+
+        $sql = 
+        "DELETE from nr_jobs
+        WHERE id = $jobId
+        AND client_id = $userId;";
+
+        return runSQLQuery($res);
+    }
 }
 
 ?>

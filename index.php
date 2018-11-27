@@ -84,7 +84,7 @@
 			break;
 
 		case "fcm-client-registration":
-			// TODO: Handle new FCM registration
+			// Handle new FCM registration
 			$fcm = new NRFCM();
 
 			$data = $fcm->registerClientFcmId($form["id"], $form["userId"]);
@@ -122,10 +122,38 @@
 		break;
 
 		case "event-form":
-			// TODO: Handle event form
+			// Handle event form
 			$event = new NREvent();
 
 			$data = $event->save($form);
+
+			echo json_encode($data);
+			break;
+
+		case "event-update":
+			// Handle event update
+			$event = new NREvent();
+
+			$data = $event->update($form);
+
+			echo json_encode($data);
+			break;
+
+		case "event-delete":
+			// Handle event delete
+			$event = new NREvent();
+
+			$data = $event->delete($form);
+
+			echo json_encode($data);
+			break;
+			break;
+
+		case "event-get":
+			// Handle event fetching
+			$event = new NREvent();
+
+			$data = $event->get($form);
 
 			echo json_encode($data);
 			break;
