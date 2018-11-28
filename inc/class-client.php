@@ -158,11 +158,12 @@ class NRClient {
         if(isset($stripeId)) {
             $sql = 
             "UPDATE nr_clients
-            WHERE id = $userID
-            SET stripe_customer_id = \"$stripeId\";
+            SET stripe_customer_id = \"$stripeId\"
+            WHERE id = $userID;
             ";
     
-            runSQLQuery($sql);
+            $res = runSQLQuery($sql);
+            if($res["response"] != true) return $res;
         }
 
         $sql = 
