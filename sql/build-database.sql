@@ -161,5 +161,38 @@ INSERT INTO nr_packages(
 VALUES(
     "Package A",
     "Package A includes xyz",
+    160.00
+);
+
+INSERT INTO nr_packages(
+    package_name,
+    package_description,
+    package_price
+)
+VALUES(
+    "Package B",
+    "Package B includes xyz",
     320.00
+);
+
+INSERT INTO nr_packages(
+    package_name,
+    package_description,
+    package_price
+)
+VALUES(
+    "Package C",
+    "Package C includes xyz",
+    90.00
+);
+
+INSERT INTO nr_packages(
+    package_name,
+    package_description,
+    package_price
+)
+VALUES(
+    "Package D",
+    "Package D includes xyz",
+    460.00
 );
