@@ -53,12 +53,14 @@ class NREvent {
             event_address, 
             event_datetime,
             event_note,
+            event_price,
             client_id,
             client_card_id)
         VALUES(
             \"$address\",
             \"$datetime\",
             \"$note\",
+            $price,
             $userId,
             $cardId
         );
@@ -189,18 +191,29 @@ class NREvent {
     public function get($args) {
         extract($args);
 
+        // Get event
         if(isset($userId)) {
             $sql =
-            "SELECT * FROM nr_jobs
-            WHERE client_id = $userId";
+            "SELECT j.id, event_address, event_datetime, event_note, client_id, client_card_id, GROUP_CONCAT(event_package_id) as packages
+            FROM nr_jobs as j, nr_job_packages as p 
+            WHERE j.client_id = $userId
+            AND p.event_id = j.id 
+            GROUP BY j.id;";
         }
         if(isset($jobId)) {
             $sql =
-            "SELECT * FROM nr_jobs
-            WHERE id = $jobId";
+            "SELECT j.id, event_address, event_datetime, event_note, client_id, client_card_id, GROUP_CONCAT(event_package_id) as packages
+            FROM nr_jobs as j, nr_job_packages as p 
+            WHERE j.id = $jobId
+            AND p.event_id = j.id 
+            GROUP BY j.id;";
         }
 
-        return runSQLQuery($res);
+        $events = runSQLQuery($res);
+
+        for($i = 0; $i < count($events); $i++) {
+            $events["data"][$i]["packages"] = explode(",", $events["data"][$i]["packages"]);
+        }
     }
 
     public function update($args) {

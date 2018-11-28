@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS nr_jobs(
     event_address TEXT NOT NULL,
     event_datetime DATETIME NOT NULL,
     event_note TEXT,
+    event_price DECIMAL(13,4) NOT NULL,
     client_id BIGINT NOT NULL,
     client_card_id BIGINT NOT NULL,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id),
