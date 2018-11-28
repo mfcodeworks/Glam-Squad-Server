@@ -1,9 +1,18 @@
 <?php
     // Run SQL query
     function runSQLQuery($sql) {
-
         // Open DB
         $db = connectToDB();
+
+        if( $db->connect_errno ) {
+            $data['response'] = false;
+
+            $data['error_code'] = $db->connect_errno;
+
+            $data['error'] = $db->connect_error;
+
+            return $data;
+        }
 
         // Run & return query
         $response = $db->query($sql);
@@ -24,6 +33,8 @@
 
             case "false":
                 $data['response'] = false;
+
+                $data['error_code'] = $db->errno;
 
                 $data['error'] = $db->error;
 

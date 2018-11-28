@@ -194,26 +194,38 @@ class NREvent {
         // Get event
         if(isset($userId)) {
             $sql =
-            "SELECT j.id, event_address, event_datetime, event_note, client_id, client_card_id, GROUP_CONCAT(event_package_id) as packages
-            FROM nr_jobs as j, nr_job_packages as p 
+            "SELECT j.id, j.event_address as address, j.event_datetime as datetime, j.event_note as note, j.event_price as price, j.client_id as userId, j.client_card_id as cardId, GROUP_CONCAT(p.event_package_id) as packages             
+            FROM nr_jobs as j 
+            INNER JOIN nr_job_packages as p ON p.event_id = j.id 
             WHERE j.client_id = $userId
-            AND p.event_id = j.id 
             GROUP BY j.id;";
         }
         if(isset($jobId)) {
             $sql =
-            "SELECT j.id, event_address, event_datetime, event_note, client_id, client_card_id, GROUP_CONCAT(event_package_id) as packages
-            FROM nr_jobs as j, nr_job_packages as p 
+            "SELECT j.id, j.event_address as address, j.event_datetime as datetime, j.event_note as note, j.event_price as price, j.client_id as userId, j.client_card_id as cardId, GROUP_CONCAT(p.event_package_id) as packages             
+            FROM nr_jobs as j 
+            INNER JOIN nr_job_packages as p ON p.event_id = j.id 
             WHERE j.id = $jobId
-            AND p.event_id = j.id 
             GROUP BY j.id;";
         }
 
-        $events = runSQLQuery($res);
+        $events = runSQLQuery($sql);
 
-        for($i = 0; $i < count($events); $i++) {
-            $events["data"][$i]["packages"] = explode(",", $events["data"][$i]["packages"]);
+        for($i = 0; $i < count($events["data"]); $i++) {
+            $jobId = $events["data"][$i]["id"];
+
+            $sql = 
+            "SELECT p.id, p.package_name as name, p.package_description as description, p.package_price as price 
+            FROM nr_packages as p 
+            INNER JOIN nr_job_packages as j ON p.id = j.event_package_id 
+            WHERE j.event_id = $jobId;";
+
+            $packages = runSQLQuery($sql);
+
+            $events["data"][$i]["packages"] = $packages["data"];
         }
+
+        return $events;
     }
 
     public function update($args) {
