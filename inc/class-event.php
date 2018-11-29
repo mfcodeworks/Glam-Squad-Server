@@ -198,7 +198,8 @@ class NREvent {
             FROM nr_jobs as j 
             INNER JOIN nr_job_packages as p ON p.event_id = j.id 
             WHERE j.client_id = $userId
-            GROUP BY j.id;";
+            GROUP BY j.id
+            ORDER BY datetime DESC;";
         }
         if(isset($jobId)) {
             $sql =
@@ -206,7 +207,8 @@ class NREvent {
             FROM nr_jobs as j 
             INNER JOIN nr_job_packages as p ON p.event_id = j.id 
             WHERE j.id = $jobId
-            GROUP BY j.id;";
+            GROUP BY j.id
+            ORDER BY datetime DESC;";
         }
 
         $events = runSQLQuery($sql);
@@ -223,6 +225,8 @@ class NREvent {
             $packages = runSQLQuery($sql);
 
             $events["data"][$i]["packages"] = $packages["data"];
+
+            $events["data"][$i]["datetime"] = (new Datetime($events["data"][$i]["datetime"]))->format(Datetime::ATOM);
         }
 
         return $events;
@@ -275,7 +279,7 @@ class NREvent {
         WHERE id = $jobId
         AND client_id = $userId;";
 
-        return runSQLQuery($res);
+        return runSQLQuery($sql);
     }
 }
 
