@@ -65,17 +65,17 @@ CREATE TABLE IF NOT EXISTS nr_artist_portfolios(
 );
 
 # Client FCM Tokens
-CREATE TABLE IF NOT EXISTS nr_client_fcm_tokens(
+CREATE TABLE IF NOT EXISTS nr_client_fcm_topics(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    fcm_token VARCHAR(255) NOT NULL UNIQUE,
+    fcm_topic VARCHAR(255) NOT NULL,
     client_id BIGINT NOT NULL,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
 );
 
 # Artist FCM Tokens
-CREATE TABLE IF NOT EXISTS nr_artist_fcm_tokens(
+CREATE TABLE IF NOT EXISTS nr_artist_fcm_topic(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    fcm_token VARCHAR(255) NOT NULL UNIQUE,
+    fcm_topic VARCHAR(255) NOT NULL,
     artist_id BIGINT NOT NULL,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );

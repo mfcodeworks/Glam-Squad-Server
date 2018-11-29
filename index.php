@@ -83,20 +83,20 @@
 			// TODO: Handle artist authentication
 			break;
 
-		case "fcm-client-registration":
+		case "fcm-topic-registration":
 			// Handle new FCM registration
 			$fcm = new NRFCM();
 
-			$data = $fcm->registerClientFcmId($form["id"], $form["userId"]);
+			$data = $fcm->registerTopic($form);
 
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
-		case "fcm-client-id-fetch":
+		case "fcm-client-topic-fetch":
 			// Get client FCM ID's
 			$fcm = new NRFCM();
 
-			$data = $fcm->getFcmId($form["type"], $form["options"]);
+			$data = $fcm->getTopics($form);
 
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;

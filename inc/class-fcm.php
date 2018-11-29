@@ -14,28 +14,42 @@ define("fcmKey", "AIzaSyAwxC-XPBcbfQxVzmHzwPNQCWCuM-TiAoc");
 define("fcmEndpoint", "https://fcm.googleapis.com/fcm/send");
 
 class NRFCM {
-    // properties
-    private $fcmId;
 
-    public function registerClientFcmId($fcmId, $userId) {
+    public function registerTopic($args) {
+        extract($args);
+
+        $sql = 
+        "SELECT *
+        FROM nr_client_fcm_topics
+        WHERE topic LIKE \"$topic\"
+        AND client_id = $userId;";
+
+        if(isset(runSQLQuery($sql)["data"][0]["id"])) {
+            $res["response"] = false;
+            $res["error"] = "Topic already exists for user.";
+            return $res;
+        }
+
         // Build SQL
-        $sql = "
-        INSERT INTO nr_client_fcm_tokens(fcm_token, client_id)
-        VALUES(\"$fcmId\", $userId);
+        $sql = 
+        "INSERT INTO nr_client_fcm_topics(fcm_topic, client_id)
+        VALUES(\"$topic\", $userId);
         ";
 
         return runSQLQuery($sql);
     }
 
-    public function getFcmId($type, $options = []) {
+    public function getTopics($args) {
+        extract($args);
+
         // Switch request type
         switch($type) {
             case "client":
-            default:
                 // Build SQL
                 $sql = "
                 SELECT *
-                FROM nr_client_fcm_tokens;
+                FROM nr_client_fcm_topics
+                WHERE client_id = $userId;
                 ";
 
                 return runSQLQuery($sql);
