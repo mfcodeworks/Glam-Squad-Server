@@ -36,7 +36,7 @@
 
 			$data = $user->register($form["username"], $form["email"], $form["password"]);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "client-login":
@@ -45,7 +45,7 @@
 
 			$data = $user->authenticate($form["username"], $form["password"]);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "client-info-get":
@@ -54,7 +54,7 @@
 
 			$data = $user->get($form);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "client-info-update":
@@ -63,7 +63,7 @@
 
 			$data = $user->update($form);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "client-session-check":
@@ -72,7 +72,7 @@
 
 			$data = $user->validateSession($form["userId"], $form["usernameHash"]);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "artist-registration":
@@ -89,7 +89,7 @@
 
 			$data = $fcm->registerClientFcmId($form["id"], $form["userId"]);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "fcm-client-id-fetch":
@@ -98,7 +98,7 @@
 
 			$data = $fcm->getFcmId($form["type"], $form["options"]);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 			
 		case "artist-portfolio-addition":
@@ -110,7 +110,7 @@
 
 			$data = $client->savePaymentInfo($form);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "delete-card":
@@ -118,7 +118,7 @@
 
 		$data = $client->deleteCard($form);
 
-		echo json_encode($data);
+		echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		break;
 
 		case "event-form":
@@ -127,7 +127,7 @@
 
 			$data = $event->save($form);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "event-update":
@@ -136,7 +136,7 @@
 
 			$data = $event->update($form);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "event-delete":
@@ -145,7 +145,7 @@
 
 			$data = $event->delete($form);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 			break;
 
@@ -155,7 +155,7 @@
 
 			$data = $event->get($form);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "artist-location":
@@ -171,7 +171,7 @@
 
 			$data = $packages->get();
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "admin-save-package":
@@ -179,7 +179,7 @@
 
 			$data = $package->save($form);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "admin-delete-package":
@@ -187,7 +187,7 @@
 
 			$data = $package->delete($form["id"]);
 
-			echo json_encode($data);
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		default:
