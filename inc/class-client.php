@@ -47,6 +47,9 @@ class NRClient {
 
         $response = runSQLQuery($sql);
 
+        // Save hashed username for session verification
+        $response["data"][0]["usernameHash"] = $this->hashInput($response["data"][0]["username"]);
+
         unset($response["data"][0]["password"]);
 
         return $response;
