@@ -9,6 +9,8 @@
 	require_once "inc/class-fcm.php";
 	require_once "inc/class-event.php";
 	require_once "inc/class-package.php";
+	require_once "inc/mail.php";
+	require_once "vendor/autoload.php";
 
 	// If request has HMAC header
 	if(isset($_SERVER["HTTP_NR_HASH"])) {

@@ -12,4 +12,10 @@ define("DB_NAME", "nrglamsquad");
 define("MEDIA_PATH", "/srv/nr-glam-squad/media/");
 define("MEDIA_URI", "https://glam-squad-img.nygmarosebeauty.com/");
 define("RESMUSHIT", "http://api.resmush.it/ws.php?img=");
+
+// Mail Constants
+define("SMTP_HOST", "server120.web-hosting.com");
+define("SMTP_USER", "it@nygmarosebeauty.com");
+define("SMTP_PASS", "sch@@l12");
+define("SMTP_PORT", 465);
 ?>
