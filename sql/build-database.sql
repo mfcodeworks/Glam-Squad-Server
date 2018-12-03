@@ -1,8 +1,6 @@
 #
 # NR Glam Squad Database Structure
-# Version 1.1
 # Date Created: 08/11/2018
-# Date Last Edited: 09/11/2018
 # Author: MF Softworks <mf@nygmarosebeauty.com>
 #
 
@@ -40,7 +38,8 @@ CREATE TABLE IF NOT EXISTS  nr_clients(
     profile_photo TEXT,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    stripe_customer_id VARCHAR(255)
+    stripe_customer_id VARCHAR(255) UNIQUE,
+    rating TINYINT
 );
 
 # Glam Squad Artist Accounts
@@ -50,9 +49,12 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     profile_photo TEXT,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    stripe_account_token VARCHAR(255) UNIQUE,
     bio TEXT,
+    rating TINYINT,
+    stripe_account_token VARCHAR(255) UNIQUE,
     role_id BIGINT,
+    probation BIT,
+    locked BIT,
     FOREIGN KEY (role_id) REFERENCES nr_job_roles(id) ON DELETE CASCADE
 );
 
@@ -64,7 +66,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_portfolios(
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
-# Client FCM Tokens
+# Client FCM Topics
 CREATE TABLE IF NOT EXISTS nr_client_fcm_topics(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fcm_topic VARCHAR(255) NOT NULL,
@@ -72,7 +74,7 @@ CREATE TABLE IF NOT EXISTS nr_client_fcm_topics(
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
 );
 
-# Artist FCM Tokens
+# Artist FCM Topics
 CREATE TABLE IF NOT EXISTS nr_artist_fcm_topic(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fcm_topic VARCHAR(255) NOT NULL,

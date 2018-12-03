@@ -6,6 +6,7 @@
 	// Require classes
 	require_once "inc/config.php";
 	require_once "inc/class-client.php";
+	require_once "inc/class-artist.php";
 	require_once "inc/class-fcm.php";
 	require_once "inc/class-event.php";
 	require_once "inc/class-package.php";
@@ -94,23 +95,48 @@
 			break;
 
 		case "artist-registration":
-			// TODO: Handle artist registration
+			// Handle artist registration
+			$user = new NRArtist();
+
+			$data = $user->register($form["username"], $form["email"], $form["password"]);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "artist-login":
-			// TODO: Handle artist authentication
+			// Handle artist authentication
+			$user = new NRArtist();
+
+			$data = $user->authenticate($form["username"], $form["password"]);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "artist-info-get":
-			// TODO: Handle artist info get
+			// Handle artist info get
+			$user = new NRArtist();
+
+			$data = $user->get($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "artist-info-update":
-			// TODO: Handle artist info update
+			// Handle artist info update
+			$user = new NRArtist();
+
+			$data = $user->update($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "artist-session-check":
-			// TODO: Handle artist session check
+			// Handle artist session check
+			$user = new NRArtist();
+
+			$data = $user->validateSession($form["userId"], $form["usernameHash"]);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "artist-location":
@@ -123,6 +149,10 @@
 			
 		case "artist-portfolio-addition":
 			// TODO: Handle artist portfolio addition
+			break;
+
+		case "artist-stripe-id":
+			// TODO: Handle saving artist stripe ID	
 			break;
 
 		case "fcm-topic-registration":
