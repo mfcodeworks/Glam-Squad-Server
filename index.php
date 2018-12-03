@@ -75,12 +75,52 @@
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
+		case "save-client-payment-info":
+			$client = new NRClient();
+
+			$data = $client->savePaymentInfo($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
+		case "delete-card":
+			$client = new NRClient();
+
+			$data = $client->deleteCard($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
 		case "artist-registration":
 			// TODO: Handle artist registration
 			break;
 
 		case "artist-login":
 			// TODO: Handle artist authentication
+			break;
+
+		case "artist-info-get":
+			// TODO: Handle artist info get
+			break;
+
+		case "artist-info-update":
+			// TODO: Handle artist info update
+			break;
+
+		case "artist-session-check":
+			// TODO: Handle artist session check
+			break;
+
+		case "artist-location":
+			// TODO: Handle new artist location
+			break;
+
+		case "artist-apply-job":
+			// TODO: Handle artist applying for job
+			break;
+			
+		case "artist-portfolio-addition":
+			// TODO: Handle artist portfolio addition
 			break;
 
 		case "fcm-topic-registration":
@@ -92,34 +132,14 @@
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
-		case "fcm-client-topic-fetch":
-			// Get client FCM ID's
+		case "fcm-topic-fetch":
+			// Get FCM topics
 			$fcm = new NRFCM();
 
 			$data = $fcm->getTopics($form);
 
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
-			
-		case "artist-portfolio-addition":
-			// TODO: Handle artist portfolio addition
-			break;
-
-		case "save-client-payment-info":
-			$client = new NRClient();
-
-			$data = $client->savePaymentInfo($form);
-
-			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
-			break;
-
-		case "delete-card":
-		$client = new NRClient();
-
-		$data = $client->deleteCard($form);
-
-		echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
-		break;
 
 		case "event-form":
 			// Handle event form
@@ -156,14 +176,6 @@
 			$data = $event->get($form);
 
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
-			break;
-
-		case "artist-location":
-			// TODO: Handle new artist location
-			break;
-
-		case "artist-apply-job":
-			// TODO: Handle artist applying for job
 			break;
 
 		case "admin-fetch-packages":

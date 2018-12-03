@@ -18,25 +18,51 @@ class NRFCM {
     public function registerTopic($args) {
         extract($args);
 
-        $sql = 
-        "SELECT *
-        FROM nr_client_fcm_topics
-        WHERE topic LIKE \"$topic\"
-        AND client_id = $userId;";
-
-        if(isset(runSQLQuery($sql)["data"][0]["id"])) {
-            $res["response"] = false;
-            $res["error"] = "Topic already exists for user.";
-            return $res;
+        switch($type) {
+            case "client":
+                $sql = 
+                "SELECT *
+                FROM nr_client_fcm_topics
+                WHERE topic LIKE \"$topic\"
+                AND client_id = $userId;";
+        
+                if(isset(runSQLQuery($sql)["data"][0]["id"])) {
+                    $res["response"] = false;
+                    $res["error"] = "Topic already exists for user.";
+                    return $res;
+                }
+        
+                // Build SQL
+                $sql = 
+                "INSERT INTO nr_client_fcm_topics(fcm_topic, client_id)
+                VALUES(\"$topic\", $userId);
+                ";
+        
+                return runSQLQuery($sql);
+                break;
+                
+            case "artist":
+                $sql = 
+                "SELECT *
+                FROM nr_artist_fcm_topics
+                WHERE topic LIKE \"$topic\"
+                AND artist_id = $userId;";
+        
+                if(isset(runSQLQuery($sql)["data"][0]["id"])) {
+                    $res["response"] = false;
+                    $res["error"] = "Topic already exists for artist.";
+                    return $res;
+                }
+        
+                // Build SQL
+                $sql = 
+                "INSERT INTO nr_artist_fcm_topics(fcm_topic, artist_id)
+                VALUES(\"$topic\", $userId);
+                ";
+        
+                return runSQLQuery($sql);
+                break;
         }
-
-        // Build SQL
-        $sql = 
-        "INSERT INTO nr_client_fcm_topics(fcm_topic, client_id)
-        VALUES(\"$topic\", $userId);
-        ";
-
-        return runSQLQuery($sql);
     }
 
     public function getTopics($args) {
@@ -50,6 +76,16 @@ class NRFCM {
                 SELECT *
                 FROM nr_client_fcm_topics
                 WHERE client_id = $userId;
+                ";
+
+                return runSQLQuery($sql);
+                break;
+            case "artist":
+                // Build SQL
+                $sql = "
+                SELECT *
+                FROM nr_artist_fcm_topics
+                WHERE artist_id = $userId;
                 ";
 
                 return runSQLQuery($sql);
