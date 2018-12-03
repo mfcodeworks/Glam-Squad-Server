@@ -3,6 +3,10 @@
 	header('Access-Control-Allow-Origin: *');
 	header('Access-Control-Allow-Headers: *');
 
+	// Import classes
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\Exception;
+
 	// Require classes
 	require_once "inc/config.php";
 	require_once "inc/class-client.php";

@@ -6,7 +6,7 @@
  * Description:
  * User class to handle artist authentication and registration
  */
-
+    
 require_once "database-interface.php";
 
 class NRArtist {
@@ -31,14 +31,42 @@ class NRArtist {
         VALUES(\"$username\", \"$email\", \"$password\", 0);
         ";
 
-        $mail = new Mailer();
-        $mail->setFrom("mua@nygmarosebeauty.com", "NygmaRose");
-        $mail->addAddress($email);
-        $mail->isHTML(true);
-        $mail->Subject = "NygmaRose Glam Squad Registration";
-        $mail->Body = "Your registration has been successfully received! The NR Glam Squad team will be in contact soon if your application is approved and schedule an interview.";
-
-        $mail->send();
+        try {
+            $mail = mailer();
+            $mail->setFrom("mua@nygmarosebeauty.com", "NygmaRose");
+            $mail->addAddress($email);
+            $mail->isHTML(true);
+            $mail->Subject = "NygmaRose Glam Squad Registration";
+            $mail->Body = 
+<<<EOD
+    <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial;
+                }
+            </style>
+        </head>
+        <body>
+            <p>
+                Hi $username,
+                <br><br>
+                Your Glam Squad registration has been successfully received! 
+                <br>
+                The NR Glam Squad team will be in contact soon if your application is approved and schedule an interview.
+                <br><br>
+                Best Wishes,
+                <br>
+                NygmaRose
+            </p>
+        </body>
+    </html>
+EOD;
+            $mail->send();
+        }
+        catch(Exception $e) {
+            error_log($e);
+        }
 
         // Return SQL result
         return runSQLQuery($sql);

@@ -17,5 +17,5 @@ define("RESMUSHIT", "http://api.resmush.it/ws.php?img=");
 define("SMTP_HOST", "server120.web-hosting.com");
 define("SMTP_USER", "it@nygmarosebeauty.com");
 define("SMTP_PASS", "sch@@l12");
-define("SMTP_PORT", 465);
+define("SMTP_PORT", 587);
 ?>
