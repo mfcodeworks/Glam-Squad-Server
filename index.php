@@ -3,19 +3,19 @@
 	header('Access-Control-Allow-Origin: *');
 	header('Access-Control-Allow-Headers: *');
 
-	// Import classes
-	use PHPMailer\PHPMailer\PHPMailer;
-	use PHPMailer\PHPMailer\Exception;
+	// Paths
+	define('PROJECT_ROOT', dirname(__FILE__));
+	define('PROJECT_INC', PROJECT_ROOT . '/inc/');
+	define('PROJECT_LIB', PROJECT_ROOT . '/vendor/');
 
 	// Require classes
-	require_once "inc/config.php";
-	require_once "inc/class-client.php";
-	require_once "inc/class-artist.php";
-	require_once "inc/class-fcm.php";
-	require_once "inc/class-event.php";
-	require_once "inc/class-package.php";
-	require_once "inc/mail.php";
-	require_once "vendor/autoload.php";
+	require_once PROJECT_INC . "config.php";
+	require_once PROJECT_INC . "class-client.php";
+	require_once PROJECT_INC . "class-artist.php";
+	require_once PROJECT_INC . "class-fcm.php";
+	require_once PROJECT_INC . "class-event.php";
+	require_once PROJECT_INC . "class-package.php";
+	require_once PROJECT_INC . "mail.php";
 
 	// If request has HMAC header
 	if(isset($_SERVER["HTTP_NR_HASH"])) {

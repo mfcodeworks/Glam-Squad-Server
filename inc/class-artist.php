@@ -32,10 +32,9 @@ class NRArtist {
         ";
 
         try {
-            $mail = mailer();
+            $mail = new Mailer();
             $mail->setFrom("mua@nygmarosebeauty.com", "NygmaRose");
             $mail->addAddress($email);
-            $mail->isHTML(true);
             $mail->Subject = "NygmaRose Glam Squad Registration";
             $mail->Body = 
 <<<EOD
