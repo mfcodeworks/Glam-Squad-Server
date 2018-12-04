@@ -49,10 +49,10 @@ class NRFCM {
         $sql =
         "SELECT artist_id
         FROM nr_artist_locations
-        WHERE location_lat < " . $latMax . "
-        AND location_lat > " . $latMin . "
-        AND location_lng < " . $lngMax . "
-        AND location_lng > " . $lngMin . "
+        WHERE loc_lat < " . $latMax . "
+        AND loc_lat > " . $latMin . "
+        AND loc_lng < " . $lngMax . "
+        AND loc_lng > " . $lngMin . "
         ;";
 
         return runSQLQuery($sql);
