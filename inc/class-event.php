@@ -23,6 +23,10 @@ class NREvent {
     public $clientCardId;
     public $references = [];
     public $artists = [];
+    
+    public function __construct() {
+        
+    }
 
     public function save($args) {
         // Get arguments

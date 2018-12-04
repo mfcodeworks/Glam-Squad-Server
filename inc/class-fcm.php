@@ -11,43 +11,32 @@
 require_once "database-interface.php";
 
 define("fcmKey", "AIzaSyAwxC-XPBcbfQxVzmHzwPNQCWCuM-TiAoc");
+define('fcmSenderId', '427808297057');
 define("fcmEndpoint", "https://fcm.googleapis.com/fcm/send");
+define("fcmGroupEndpoint", "https://fcm.googleapis.com/fcm/notification");
 
 class NRFCM {
+    public function __construct() {
 
-    public function sendEventNotification() {
+    }
+
+    public function sendEventNotification($args) {
         extract($args);
 
-        /**
-         * 
-         *  - Take user LatLng
-         *  - 1 Lattitude = ~111km
-         *  - 45/111 * 1 = 0.405
-         *  - 0.405 Lattitude = 45km
-         *  - LatDist = 0.405
-         *  - LngKM = cos(lat decimal degrees) * 111
-         *  - 45/LngKM = LngDist
-         *  - 
-         *  - SQL 
-         *  - SELECT artistID 
-         *  - FROM locations 
-         *  - WHERE
-         *  - Lat < userLat+LatDist 
-         *  - AND lat > userLat-LatDist 
-         *  - AND Lng < userLng+LngDist 
-         *  - AND lng > userLng-LngDist
-         */
-        $latDist = 0.405;
+        $Dist = 15;
+
+        $latDist = $Dist/111;
+
         $latMax = $lat + $latDist;
         $latMin = $lat - $latDist;
+        $lngKM = cos(deg2rad($lat)) * 111;
+        $lngDist = abs($Dist/$lngKM);
 
-        $lngKM = cos(deg2rad($lng)) * 111;
-        $lngDist = 45/$lngKM;
         $lngMax = $lng + $lngDist;
         $lngMin = $lng - $lngDist;
 
         $sql =
-        "SELECT artist_id
+        "SELECT DISTINCT artist_id
         FROM nr_artist_locations
         WHERE loc_lat < " . $latMax . "
         AND loc_lat > " . $latMin . "
@@ -55,7 +44,91 @@ class NRFCM {
         AND loc_lng > " . $lngMin . "
         ;";
 
-        return runSQLQuery($sql);
+        $artistData = runSQLQuery($sql);
+
+        $artists = $artistData["data"];
+
+        $results = [];
+
+        error_log(print_r($artists,true));
+
+        foreach($artists as $artist) {
+            $artistId = $artist["artist_id"];
+
+            $sql = 
+            "SELECT fcm_token
+            FROM nr_artist_fcm_tokens
+            WHERE artist_id = $artistId;";
+
+            error_log($sql);
+
+            $tokenData = runSQLQuery($sql);
+            foreach($tokenData["data"] as $tokenObj) {
+                $tokens[] = $tokenObj["fcm_token"];
+            }
+
+            error_log(print_r($tokens,true));
+
+            $notificationGroup = [
+                "operation" => "create",
+                "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
+                "registration_ids" => $tokens
+            ];
+
+            $postData = json_encode($notificationGroup);
+            $headers = array(
+                'Content-Type:application/json',
+                'Authorization:key=' . fcmKey,
+                'project_id:' . fcmSenderId
+            );
+
+            error_log($postData);
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, fcmGroupEndpoint);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+            $groupId = curl_exec($ch);
+
+            error_log($groupId);
+
+            $notif = [
+                "to" => $groupId,
+                "priority" => 'high',
+                "data" => [
+                    "title" => "New Event Available",
+                    "message" => "New event at $address",
+                    'content-available'  => '1',
+                    "image" => 'logo'
+                ]
+            ];
+
+            $postNotif = json_encode($notif);
+
+            error_log($postNotif);
+            
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, fcmEndpoint);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
+            $result[] = curl_exec($ch);
+        }
+
+        error_log(json_encode($results));
+        return $result;
+    }
+
+    private function randomString($length = 32) {
+        // Create random string with current date salt for uniqueness
+        return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;
     }
 
     public function registerToken($args) {

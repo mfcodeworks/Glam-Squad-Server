@@ -15,6 +15,10 @@ class NRPackage {
     public $name;
     public $description;
     public $cost;
+    
+    public function __construct() {
+        
+    }
 
     public function get($id = null) {
         // Build SQL
