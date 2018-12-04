@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS nr_client_fcm_topics(
 );
 
 # Artist FCM Topics
-CREATE TABLE IF NOT EXISTS nr_artist_fcm_topic(
+CREATE TABLE IF NOT EXISTS nr_artist_fcm_topics(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fcm_topic VARCHAR(255) NOT NULL,
     artist_id BIGINT NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_fcm_topic(
 );
 
 # Artist FCM Token
-CREATE TABLE IF NOT EXISTS nr_artist_fcm_token(
+CREATE TABLE IF NOT EXISTS nr_artist_fcm_tokens(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fcm_token VARCHAR(255) NOT NULL UNIQUE,
     artist_id BIGINT NOT NULL,
