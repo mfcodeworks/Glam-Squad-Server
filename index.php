@@ -144,10 +144,19 @@
 			break;
 
 		case "artist-location":
-			// TODO: Handle new artist location
+			// Handle new artist location
 			$artist = new NRArtist();
 
 			$data = $artist->saveLocation($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
+		case "artist-location-fetch":
+			// Get artist locations
+			$artist = new NRArtist();
+
+			$data = $artist->getLocations($form);
 
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
