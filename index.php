@@ -161,6 +161,15 @@
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
+		case "artist-location-delete":
+			// Delete artist location
+			$artist = new NRArtist();
+
+			$data = $artist->deleteLocation($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
 		case "artist-apply-job":
 			// TODO: Handle artist applying for job
 			break;

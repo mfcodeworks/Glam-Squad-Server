@@ -232,6 +232,17 @@ EOD;
         return runSQLQuery($sql);
     }
 
+    public function deleteLocation($args) {
+        extract($args);
+
+        $sql =
+        "DELETE FROM nr_artist_locations
+        WHERE artist_id = $userId
+        AND id = $locId;";
+
+        return runSQLQuery($sql);
+    }
+
     private function hashInput($password) {
         // Hash password with Argon2 (PHP7.2+)
         return password_hash($password, PASSWORD_ARGON2I, ["memory_cost" => 2048, "time_cost" => 4, "threads" => 2]);
