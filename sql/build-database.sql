@@ -58,6 +58,16 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     FOREIGN KEY (role_id) REFERENCES nr_job_roles(id) ON DELETE CASCADE
 );
 
+# Artist Locations
+CREATE TABLE IF NOT EXISTS nr_artist_locations(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    loc_name VARCHAR(255) NOT NULL,
+    loc_lat DECIMAL(9,6) NOT NULL,
+    loc_lng DECIMAL(9,6) NOT NULL,
+    artist_id BIGINT NOT NULL,
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
+);
+
 # Artist Portfolio References ('/srv/media/file.png' (photo); 1 (Artist))
 CREATE TABLE IF NOT EXISTS nr_artist_portfolios(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

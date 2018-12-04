@@ -20,7 +20,7 @@ class NRFCM {
 
         $sql = 
         "INSERT INTO nr_artist_fcm_tokens(fcm_token, artist_id)
-        VALUES(\"$fcmToken\", $userId);";
+        VALUES(\"$token\", $userId);";
 
         return runSQLQuery($sql);
     }

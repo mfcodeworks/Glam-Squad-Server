@@ -211,8 +211,14 @@ EOD;
         return $res;
     }
 
-    public function saveLocation() {
-        
+    public function saveLocation($args) {
+        extract($args);
+
+        $sql = 
+        "INSERT INTO nr_artist_locations(loc_name, loc_lat, loc_lng, artist_id)
+        VALUES(\"$name\", $lat, $lng, $userId);";
+
+        return runSQLQuery($sql);
     }
 
     private function hashInput($password) {
