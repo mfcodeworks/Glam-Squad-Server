@@ -82,6 +82,14 @@ CREATE TABLE IF NOT EXISTS nr_artist_fcm_topic(
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
+# Artist FCM Token
+CREATE TABLE IF NOT EXISTS nr_artist_fcm_token(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    fcm_token VARCHAR(255) NOT NULL UNIQUE,
+    artist_id BIGINT NOT NULL,
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
+);
+
 # Client payment cards (Visa; 0444; tok_12345; 1 (Client))
 CREATE TABLE IF NOT EXISTS nr_payment_cards(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

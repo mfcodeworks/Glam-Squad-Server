@@ -15,6 +15,16 @@ define("fcmEndpoint", "https://fcm.googleapis.com/fcm/send");
 
 class NRFCM {
 
+    public function registerToken($args) {
+        extract($args);
+
+        $sql = 
+        "INSERT INTO nr_artist_fcm_token(fcm_token, artist_id)
+        VALUES(\"$fcmToken\", $userId);";
+
+        return runSQLQuery($sql);
+    }
+
     public function registerTopic($args) {
         extract($args);
 

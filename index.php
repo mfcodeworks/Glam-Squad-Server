@@ -159,6 +159,15 @@
 			// TODO: Handle saving artist stripe ID	
 			break;
 
+		case "fcm-token-registration":
+			// Handle FCM Token Saving
+			$fcm = new NRFCM();
+
+			$data = $fcm->registerToken($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
 		case "fcm-topic-registration":
 			// Handle new FCM registration
 			$fcm = new NRFCM();
