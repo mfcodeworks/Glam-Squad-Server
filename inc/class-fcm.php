@@ -15,6 +15,49 @@ define("fcmEndpoint", "https://fcm.googleapis.com/fcm/send");
 
 class NRFCM {
 
+    public function sendEventNotification() {
+        extract($args);
+
+        /**
+         * 
+         *  - Take user LatLng
+         *  - 1 Lattitude = ~111km
+         *  - 45/111 * 1 = 0.405
+         *  - 0.405 Lattitude = 45km
+         *  - LatDist = 0.405
+         *  - LngKM = cos(lat decimal degrees) * 111
+         *  - 45/LngKM = LngDist
+         *  - 
+         *  - SQL 
+         *  - SELECT artistID 
+         *  - FROM locations 
+         *  - WHERE
+         *  - Lat < userLat+LatDist 
+         *  - AND lat > userLat-LatDist 
+         *  - AND Lng < userLng+LngDist 
+         *  - AND lng > userLng-LngDist
+         */
+        $latDist = 0.405;
+        $latMax = $lat + $latDist;
+        $latMin = $lat - $latDist;
+
+        $lngKM = cos(deg2rad($lng)) * 111;
+        $lngDist = 45/$lngKM;
+        $lngMax = $lng + $lngDist;
+        $lngMin = $lng - $lngDist;
+
+        $sql =
+        "SELECT artist_id
+        FROM nr_artist_locations
+        WHERE location_lat < " . $latMax . "
+        AND location_lat > " . $latMin . "
+        AND location_lng < " . $lngMax . "
+        AND location_lng > " . $lngMin . "
+        ;";
+
+        return runSQLQuery($sql);
+    }
+
     public function registerToken($args) {
         extract($args);
 

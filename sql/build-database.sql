@@ -114,6 +114,8 @@ CREATE TABLE IF NOT EXISTS nr_payment_cards(
 CREATE TABLE IF NOT EXISTS nr_jobs(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_address TEXT NOT NULL,
+    event_lat DECIMAL(9,6) NOT NULL,
+    event_lng DECIMAL(9,6) NOT NULL,
     event_datetime DATETIME NOT NULL,
     event_note TEXT,
     event_price DECIMAL(13,4) NOT NULL,

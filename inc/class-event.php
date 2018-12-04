@@ -25,8 +25,6 @@ class NREvent {
     public $artists = [];
 
     public function save($args) {
-        error_log(print_r($args["photos"], true));
-
         // Get arguments
         extract($args);
 
@@ -50,7 +48,9 @@ class NREvent {
         // Build sql
         $sql = "
         INSERT INTO nr_jobs(
-            event_address, 
+            event_address,
+            event_lat,
+            event_lng,
             event_datetime,
             event_note,
             event_price,
@@ -58,6 +58,8 @@ class NREvent {
             client_card_id)
         VALUES(
             \"$address\",
+            $lat,
+            $lng,
             \"$datetime\",
             \"$note\",
             $price,
@@ -110,6 +112,9 @@ class NREvent {
             curl_exec($ch);
             curl_close($ch);
         }
+
+        $fcm = new NRFCM();
+        $res["notifications"] = $fcm->sendEventNotification($args);
 
         return $res;
     }
