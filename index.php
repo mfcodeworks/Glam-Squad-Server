@@ -15,6 +15,7 @@
 	require_once PROJECT_INC . "class-fcm.php";
 	require_once PROJECT_INC . "class-event.php";
 	require_once PROJECT_INC . "class-package.php";
+	require_once PROJECT_INC . "class-degree-distance-finder.php";
 	require_once PROJECT_INC . "mail.php";
 
 	// If request has HMAC header

@@ -22,33 +22,33 @@ class NRFCM {
 
     public function sendEventNotification($args) {
         extract($args);
+        
+        // Set degree distance finder object with a range of 30km
+        $distance = new DegreeDistanceFinder(30);
+        $distance->lat = $lat;
+        $distance->lng = $lng;
 
-        $Dist = 15;
-
-        $latDist = $Dist/111;
-
-        $latMax = $lat + $latDist;
-        $latMin = $lat - $latDist;
-        $lngKM = cos(deg2rad($lat)) * 111;
-        $lngDist = abs($Dist/$lngKM);
-
-        $lngMax = $lng + $lngDist;
-        $lngMin = $lng - $lngDist;
+        $latRange = $distance->latRange();
+        $lngRange = $distance->lngRange();
 
         $sql =
         "SELECT DISTINCT artist_id
         FROM nr_artist_locations
-        WHERE loc_lat < " . $latMax . "
-        AND loc_lat > " . $latMin . "
-        AND loc_lng < " . $lngMax . "
-        AND loc_lng > " . $lngMin . "
+        WHERE loc_lat < {$latRange['max']}
+        AND loc_lat > {$latRange['min']}
+        AND loc_lng < {$lngRange['max']}
+        AND loc_lng > {$lngRange['min']}
         ;";
 
-        $artistData = runSQLQuery($sql);
+        $res = runSQLQuery($sql);
 
-        $artists = $artistData["data"];
+        $res["sql"] = $sql;
+        $res["ranges"] = [
+            "lat" => $latRange,
+            "lng" => $lngRange
+        ];
 
-        $results = [];
+        $artists = $res["data"];
 
         error_log(print_r($artists,true));
 
@@ -119,11 +119,11 @@ class NRFCM {
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
-            $result[] = curl_exec($ch);
+            $res["notification_responses"][] = curl_exec($ch);
         }
 
-        error_log(json_encode($results));
-        return $result;
+        error_log(json_encode($res["notification_responses"]));
+        return $res;
     }
 
     private function randomString($length = 32) {
