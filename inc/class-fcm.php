@@ -20,7 +20,7 @@ class NRFCM {
 
     }
 
-    public function sendEventNotification($args) {
+    public function sendEventNotification($args, $role = null) {
         extract($args);
         
         // Set degree distance finder object with a range of 30km
@@ -28,9 +28,11 @@ class NRFCM {
         $distance->lat = $lat;
         $distance->lng = $lng;
 
+        // Get lat/lng range
         $latRange = $distance->latRange();
         $lngRange = $distance->lngRange();
 
+        // Get artists within location area
         $sql =
         "SELECT DISTINCT artist_id
         FROM nr_artist_locations
@@ -42,77 +44,159 @@ class NRFCM {
 
         $res = runSQLQuery($sql);
 
+        // If artists are found
         if(isset($res["data"])) {
-
+            // Save artists to a variable
             $artists = $res["data"];
     
+            // Loop through artists
             foreach($artists as $artist) {
+                // Save id
                 $id = $artist["artist_id"];
-    
-                $sql = 
-                "SELECT fcm_token
-                FROM nr_artist_fcm_tokens
-                WHERE artist_id = $id;";
-    
-                $tokenData = runSQLQuery($sql);
 
-                foreach($tokenData["data"] as $tokenObj) {
-                    $tokens[] = $tokenObj["fcm_token"];
+                // If a specific role is needed, check for only that role
+                if(isset($role)) {
+                    $sql = 
+                    "SELECT role_id 
+                    FROM nr_artists
+                    WHERE id = $id;";
+
+                    $obj = runSQLQuery($sql);
+
+                    if($role == $obj["data"][0]["role_id"]) {
+                        $sql = 
+                        "SELECT fcm_token
+                        FROM nr_artist_fcm_tokens
+                        WHERE artist_id = $id;";
+            
+                        $tokenData = runSQLQuery($sql);
+
+                        foreach($tokenData["data"] as $tokenObj) {
+                            $tokens[] = $tokenObj["fcm_token"];
+                        }
+
+                        $headers = array(
+                            'Content-Type:application/json',
+                            'Authorization:key=' . fcmKey,
+                            'project_id:' . fcmSenderId
+                        );
+            
+                        $notificationGroup = [
+                            "operation" => "create",
+                            "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
+                            "registration_ids" => $tokens
+                        ];
+            
+                        $postData = json_encode($notificationGroup);
+            
+                        error_log($postData);
+            
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, fcmGroupEndpoint);
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+                        $groupId = json_decode(curl_exec($ch), true)["notification_key"];
+            
+                        error_log($groupId);
+                        $formattedDatetime = 
+            
+                        $notif = [
+                            "to" => $groupId,
+                            "priority" => 'high',
+                            "data" => [
+                                "title" => "New Event Available",
+                                "message" => "New event at $address",
+                                'content-available'  => '1',
+                                "image" => 'logo'
+                            ]
+                        ];
+            
+                        $postNotif = json_encode($notif);
+            
+                        error_log($postNotif);
+                        
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, fcmEndpoint);
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
+                        $res["fcm_responses"][] = curl_exec($ch);
+                    }
                 }
-
-                $headers = array(
-                    'Content-Type:application/json',
-                    'Authorization:key=' . fcmKey,
-                    'project_id:' . fcmSenderId
-                );
+                // Alert all TODO: Always check for correct role
+                else {
+                    $sql = 
+                    "SELECT fcm_token
+                    FROM nr_artist_fcm_tokens
+                    WHERE artist_id = $id;";
+        
+                    $tokenData = runSQLQuery($sql);
     
-                $notificationGroup = [
-                    "operation" => "create",
-                    "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
-                    "registration_ids" => $tokens
-                ];
+                    foreach($tokenData["data"] as $tokenObj) {
+                        $tokens[] = $tokenObj["fcm_token"];
+                    }
     
-                $postData = json_encode($notificationGroup);
-    
-                error_log($postData);
-    
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, fcmGroupEndpoint);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-                $groupId = json_decode(curl_exec($ch), true)["notification_key"];
-    
-                error_log($groupId);
-                $formattedDatetime = 
-    
-                $notif = [
-                    "to" => $groupId,
-                    "priority" => 'high',
-                    "data" => [
-                        "title" => "New Event Available",
-                        "message" => "New event at $address",
-                        'content-available'  => '1',
-                        "image" => 'logo'
-                    ]
-                ];
-    
-                $postNotif = json_encode($notif);
-    
-                error_log($postNotif);
-                
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, fcmEndpoint);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
-                $res["fcm_responses"][] = curl_exec($ch);
+                    $headers = array(
+                        'Content-Type:application/json',
+                        'Authorization:key=' . fcmKey,
+                        'project_id:' . fcmSenderId
+                    );
+        
+                    $notificationGroup = [
+                        "operation" => "create",
+                        "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
+                        "registration_ids" => $tokens
+                    ];
+        
+                    $postData = json_encode($notificationGroup);
+        
+                    error_log($postData);
+        
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, fcmGroupEndpoint);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+                    $groupId = json_decode(curl_exec($ch), true)["notification_key"];
+        
+                    error_log($groupId);
+                    $formattedDatetime = 
+        
+                    $notif = [
+                        "to" => $groupId,
+                        "priority" => 'high',
+                        "data" => [
+                            "title" => "New Event Available",
+                            "message" => "New event at $address",
+                            'content-available'  => '1',
+                            "image" => 'logo'
+                        ]
+                    ];
+        
+                    $postNotif = json_encode($notif);
+        
+                    error_log($postNotif);
+                    
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, fcmEndpoint);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
+                    $res["fcm_responses"][] = curl_exec($ch);
+                }
             }
     
             error_log(json_encode($res["fcm_responses"]));

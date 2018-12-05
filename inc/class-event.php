@@ -252,6 +252,86 @@ class NREvent {
         return $events;
     }
 
+    public function getNew() {
+        /**
+         * Select future events:
+         * SELECT j.id as event_id
+         * FROM nr_jobs as j
+         * WHERE j.event_datetime >= CURDATE()
+         * 
+         * Select future events and their packages:
+         * SELECT j.id as event_id, GROUP_CONCAT(jp.event_package_id) as event_packages
+         * FROM nr_jobs as j 
+         * INNER JOIN nr_job_packages as jp ON j.id = jp.event_id 
+         * WHERE j.event_datetime >= CURDATE() 
+         * GROUP BY j.id;
+         */
+
+        // Get events and packages that are in the future
+        $sql = 
+        "SELECT j.id as event_id, GROUP_CONCAT(jp.event_package_id) as event_packages
+        FROM nr_jobs as j 
+        INNER JOIN nr_job_packages as jp ON j.id = jp.event_id 
+        WHERE j.event_datetime >= CURDATE() 
+        GROUP BY j.id;
+        ;";
+
+        $data = runSQLQuery($sql);
+
+        // Save events to a variable
+        $events = $data["data"];
+        
+        // Loop through every event
+        for($i = 0; $i < count($events); $i++) {
+            // Make packages into array
+            $events[$i]["event_packages"] = explode(",", $events[$i]["event_packages"]);
+
+            // Save single event
+            $event = $events[$i];
+
+            // Loop through event packages
+            foreach($event["event_packages"] as $package) {
+                // Get the package requirements
+                $sql = 
+                "SELECT role_id as role, role_amount_required as required
+                FROM nr_package_roles
+                WHERE package_id = $package;";
+
+                $obj = runSQLQuery($sql);
+
+                $requirement = $obj["data"][0];
+
+                // Count the artists in this role assigned to event
+                $sql =
+                "SELECT COUNT(a.role_id) as fulfilled
+                FROM nr_artists as a
+                INNER JOIN nr_artist_jobs as ja ON ja.artist_id = a.id
+                INNER JOIN nr_jobs as j ON j.id = ja.event_id
+                WHERE a.role_id = {$requirement['role_id']}
+                AND ja.event_id = {$event['id']};
+                ";
+
+                $obj = runSQLQuery($sql);
+
+                $fulfilled = $obj["data"][0];
+
+                // If the artists are less than what's required, add a requirement for this role
+                if($fulfilled["fulfilled"] < $requirement["required"]) {
+                    // TODO: Handle role requirement
+                    $event["requirement"][] = $requirement["role"];
+                }
+            }
+
+            if(isset($event["requirement"])) {
+                $events[$i] = $event;
+            }
+            else {
+                unset($events[$i]);
+            }
+        }
+        return $events;
+    }
+
     public function update($args) {
         extract($args);
 
