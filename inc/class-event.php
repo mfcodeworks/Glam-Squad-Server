@@ -120,6 +120,17 @@ class NREvent {
         $fcm = new NRFCM();
         $res["notifications"] = $fcm->sendEventNotification($args);
 
+        if($res["notifications"]["error"] == "Unfortunately at the moment there's no artists available within your area.") {
+            $this->delete(
+                [
+                    "jobId" => $res["id"],
+                    "userId" => $userId
+                ]
+            );            
+            
+            $res = $res["notifications"];
+        }
+
         return $res;
     }
 

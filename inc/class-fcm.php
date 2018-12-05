@@ -42,87 +42,86 @@ class NRFCM {
 
         $res = runSQLQuery($sql);
 
-        $res["sql"] = $sql;
-        $res["ranges"] = [
-            "lat" => $latRange,
-            "lng" => $lngRange
-        ];
+        if(isset($res["data"])) {
 
-        $artists = $res["data"];
+            $artists = $res["data"];
+    
+            foreach($artists as $artist) {
+                $id = $artist["artist_id"];
+    
+                $sql = 
+                "SELECT fcm_token
+                FROM nr_artist_fcm_tokens
+                WHERE artist_id = $id;";
+    
+                $tokenData = runSQLQuery($sql);
 
-        error_log(print_r($artists,true));
+                foreach($tokenData["data"] as $tokenObj) {
+                    $tokens[] = $tokenObj["fcm_token"];
+                }
 
-        foreach($artists as $artist) {
-            $artistId = $artist["artist_id"];
-
-            $sql = 
-            "SELECT fcm_token
-            FROM nr_artist_fcm_tokens
-            WHERE artist_id = $artistId;";
-
-            error_log($sql);
-
-            $tokenData = runSQLQuery($sql);
-            foreach($tokenData["data"] as $tokenObj) {
-                $tokens[] = $tokenObj["fcm_token"];
+                $headers = array(
+                    'Content-Type:application/json',
+                    'Authorization:key=' . fcmKey,
+                    'project_id:' . fcmSenderId
+                );
+    
+                $notificationGroup = [
+                    "operation" => "create",
+                    "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
+                    "registration_ids" => $tokens
+                ];
+    
+                $postData = json_encode($notificationGroup);
+    
+                error_log($postData);
+    
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, fcmGroupEndpoint);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+                $groupId = json_decode(curl_exec($ch), true)["notification_key"];
+    
+                error_log($groupId);
+                $formattedDatetime = 
+    
+                $notif = [
+                    "to" => $groupId,
+                    "priority" => 'high',
+                    "data" => [
+                        "title" => "New Event Available",
+                        "message" => "New event at $address",
+                        'content-available'  => '1',
+                        "image" => 'logo'
+                    ]
+                ];
+    
+                $postNotif = json_encode($notif);
+    
+                error_log($postNotif);
+                
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, fcmEndpoint);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
+                $res["fcm_responses"][] = curl_exec($ch);
             }
-
-            error_log(print_r($tokens,true));
-
-            $notificationGroup = [
-                "operation" => "create",
-                "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
-                "registration_ids" => $tokens
-            ];
-
-            $postData = json_encode($notificationGroup);
-            $headers = array(
-                'Content-Type:application/json',
-                'Authorization:key=' . fcmKey,
-                'project_id:' . fcmSenderId
-            );
-
-            error_log($postData);
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, fcmGroupEndpoint);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-            $groupId = curl_exec($ch);
-
-            error_log($groupId);
-
-            $notif = [
-                "to" => $groupId,
-                "priority" => 'high',
-                "data" => [
-                    "title" => "New Event Available",
-                    "message" => "New event at $address",
-                    'content-available'  => '1',
-                    "image" => 'logo'
-                ]
-            ];
-
-            $postNotif = json_encode($notif);
-
-            error_log($postNotif);
-            
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, fcmEndpoint);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
-            $res["notification_responses"][] = curl_exec($ch);
+    
+            error_log(json_encode($res["fcm_responses"]));
+        }
+        else {
+            $res["response"] = false;
+            $res["error"] = "Unfortunately at the moment there's no artists available within your area.";
         }
 
-        error_log(json_encode($res["notification_responses"]));
         return $res;
     }
 
@@ -149,7 +148,7 @@ class NRFCM {
                 $sql = 
                 "SELECT *
                 FROM nr_client_fcm_topics
-                WHERE topic LIKE \"$topic\"
+                WHERE fcm_topic LIKE \"$topic\"
                 AND client_id = $userId;";
         
                 if(isset(runSQLQuery($sql)["data"][0]["id"])) {
@@ -171,7 +170,7 @@ class NRFCM {
                 $sql = 
                 "SELECT *
                 FROM nr_artist_fcm_topics
-                WHERE topic LIKE \"$topic\"
+                WHERE fcm_topic LIKE \"$topic\"
                 AND artist_id = $userId;";
         
                 if(isset(runSQLQuery($sql)["data"][0]["id"])) {
