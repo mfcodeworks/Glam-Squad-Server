@@ -15,15 +15,15 @@
         // Run & return query
         $response = $db->query($sql);
 
-        switch($response) {
-            case true:
+        switch(true) {
+            case $response === true:
                 return [
                     'response' => true,
                     'error' => null,
                     'id' => $db->insert_id
                 ];
 
-            case false:
+            case $response === false:
                 return [
                     'response' => false,
                     'error_code' => $db->errno,
