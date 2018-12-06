@@ -268,25 +268,40 @@ class NREvent {
         // Get event
         if(isset($userId)) {
             $sql =
-            "SELECT j.id, j.event_address as address, j.event_datetime as datetime, j.event_note as note, j.event_price as price, j.client_id as userId, j.client_card_id as cardId, GROUP_CONCAT(p.event_package_id) as packages             
-            FROM nr_jobs as j 
-            INNER JOIN nr_job_packages as p ON p.event_id = j.id 
-            WHERE j.client_id = $userId
-            GROUP BY j.id
-            ORDER BY datetime DESC;";
+            "SELECT id            
+            FROM nr_jobs
+            WHERE client_id = $userId
+            ORDER BY event_datetime DESC;";
+
+            $res = runSQLQuery($sql);
+
+            if(!$res["response"] === true) {
+                return $res;
+            }
+            
+            $eventIds = $res["data"];
+            foreach($eventIds as $eventId) {
+                $event = new NREvent();
+                $event->getSingle($eventId['id']);
+                $events[] = $event;
+            }
+
+            return [
+                "response" => true,
+                "error" => null,
+                "data" => $events
+            ];
         }
         if(isset($jobId)) {
-            $sql =
-            "SELECT j.id, j.event_address as address, j.event_datetime as datetime, j.event_note as note, j.event_price as price, j.client_id as userId, j.client_card_id as cardId, GROUP_CONCAT(p.event_package_id) as packages             
-            FROM nr_jobs as j 
-            INNER JOIN nr_job_packages as p ON p.event_id = j.id 
-            WHERE j.id = $jobId
-            GROUP BY j.id
-            ORDER BY datetime DESC;";
+            $event = new NREvent();
+            return [
+                "response" => true,
+                "error" => null,
+                "data" => $event->getSingle($jobId)
+            ];
         }
 
-        $events = runSQLQuery($sql);
-
+        /* CHNAGED: Updated to use OOP
         for($i = 0; $i < count($events["data"]); $i++) {
             $jobId = $events["data"][$i]["id"];
 
@@ -302,8 +317,7 @@ class NREvent {
 
             $events["data"][$i]["datetime"] = (new Datetime($events["data"][$i]["datetime"]))->format(Datetime::ATOM);
         }
-
-        return $events;
+        */
     }
 
     public function getSingle($id) {
@@ -320,10 +334,10 @@ class NREvent {
             j.event_price, 
             j.client_id, 
             j.client_card_id,
-            GROUP_CONCAT(p.event_package_id)
+            GROUP_CONCAT(p.event_package_id) as event_package_id
             FROM nr_jobs as j
             INNER JOIN nr_job_packages as p ON j.id = p.event_id
-            WHERE j.id = $id
+            WHERE j.id = {$this->id}
             GROUP BY j.id;";
 
         extract(runSQLQuery($sql)["data"][0]);
@@ -337,12 +351,16 @@ class NREvent {
         $this->price = $event_price;
         $this->clientId = $client_id;
         $this->clientCardId = $client_card_id;
-        $this->packages = explode(",", $event_package_id);
+        
+        // Create package array, accounting for single package jobs
+        if(strpos($event_package_id, ",") > -1) $event_package_id = explode(",", $event_package_id);
+        else $event_package_id = [$event_package_id];
+        $this->packages = $event_package_id;
         
         // Get requirement properties
-        for($i = 0; $i < count($packages); $i++) {
+        for($i = 0; $i < count($this->packages); $i++) {
             try {
-                $this->getPackageRequirements($this->$packages[$i]);
+                $this->packages[$i] = $this->getPackageRequirements($this->packages[$i]);
             }
             catch(Exception $e) {
                 return [
@@ -406,7 +424,7 @@ class NREvent {
 
     private function getPackageRequirements($id) {
         $sql =
-        "SELECT p.id, p.package_name, pr.role_id, pr.role_amount_required, r.role_name
+        "SELECT p.id, p.package_name, p.package_description, pr.role_id, pr.role_amount_required, r.role_name
             FROM nr_packages as p
             INNER JOIN nr_package_roles as pr ON p.id = pr.package_id
             INNER JOIN nr_job_roles as r ON r.id = pr.role_id
@@ -416,10 +434,17 @@ class NREvent {
 
         if($res["response"] === true) {
             $requirements = $res["data"];
+            $package = $requirements[0];
 
             foreach($requirements as $requirement) {
                 (isset( $this->requirements[ $requirement['role_name'] ] )) ? $this->requirements[ $requirement['role_name'] ] += $requirement['role_amount_required'] : $this->requirements[ $requirement['role_name'] ] = $requirement['role_amount_required'];
             }
+
+            return [
+                "id" => $id,
+                "name" => $package["package_name"],
+                "description" => $package["package_description"]
+            ];
         }
         else {
             throw new Exception($res['error']);
