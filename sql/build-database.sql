@@ -175,6 +175,31 @@ CREATE TABLE IF NOT EXISTS nr_artist_payments(
     FOREIGN KEY (artist_stripe_account_token) REFERENCES nr_artists(stripe_account_token)
 );
 
+# MUA Role
+INSERT INTO nr_job_roles(
+    role_name
+)
+VALUES(
+    "Makeup Artist"
+);
+
+# Hair Stylist Role
+INSERT INTO nr_job_roles(
+    role_name
+)
+VALUES(
+    "Hair Stylist"
+);
+
+# Manicurist role
+INSERT INTO nr_job_roles(
+    role_name
+)
+VALUES(
+    "Manicurist"
+);
+
+# 1 MUA Package
 INSERT INTO nr_packages(
     package_name,
     package_description,
@@ -182,10 +207,11 @@ INSERT INTO nr_packages(
 )
 VALUES(
     "Package A",
-    "Package A includes xyz",
+    "Package A includes one makeup artist.",
     160.00
 );
 
+# 1 Hair Stylist Package
 INSERT INTO nr_packages(
     package_name,
     package_description,
@@ -193,10 +219,11 @@ INSERT INTO nr_packages(
 )
 VALUES(
     "Package B",
-    "Package B includes xyz",
+    "Package B includes one hair stylist.",
     320.00
 );
 
+# 1 Manicurist Package
 INSERT INTO nr_packages(
     package_name,
     package_description,
@@ -204,10 +231,11 @@ INSERT INTO nr_packages(
 )
 VALUES(
     "Package C",
-    "Package C includes xyz",
+    "Package C includes one manicursit.",
     90.00
 );
 
+# 1 of each package
 INSERT INTO nr_packages(
     package_name,
     package_description,
@@ -215,6 +243,74 @@ INSERT INTO nr_packages(
 )
 VALUES(
     "Package D",
-    "Package D includes xyz",
+    "Package D includes one manicurist, one makeup artist & a hair stylist.",
     460.00
+);
+
+# Package A(1) Requires Makeup Artist(1) Amount 1
+INSERT INTO nr_package_roles(
+    package_id,
+    role_id,
+    role_amount_required
+)
+VALUES(
+    1,
+    1,
+    1
+);
+
+# Package B(2) Requires Hair Stylist(2) Amount 1
+INSERT INTO nr_package_roles(
+    package_id,
+    role_id,
+    role_amount_required
+)
+VALUES(
+    2,
+    2,
+    1
+);
+
+# Package C(3) Requires Manicurist(3) Amount 1
+INSERT INTO nr_package_roles(
+    package_id,
+    role_id,
+    role_amount_required
+)
+VALUES(
+    3,
+    3,
+    1
+);
+
+# Package D(4) Requires all (1-3) Amount 1
+INSERT INTO nr_package_roles(
+    package_id,
+    role_id,
+    role_amount_required
+)
+VALUES(
+    4,
+    1,
+    1
+);
+INSERT INTO nr_package_roles(
+    package_id,
+    role_id,
+    role_amount_required
+)
+VALUES(
+    4,
+    2,
+    1
+);
+INSERT INTO nr_package_roles(
+    package_id,
+    role_id,
+    role_amount_required
+)
+VALUES(
+    4,
+    3,
+    1
 );
