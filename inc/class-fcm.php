@@ -63,13 +63,16 @@ class NRFCM {
 
         // Track if any requirement couldn't be fulfilled
         $pseudoRequirement = $event->requirements;
+        error_log(json_encode($event));
 
         // Loop through artists
         for($i = 0; $i < count($artists); $i++) {
 
             // Get artist
             $artist = new NRArtist();
-            $artist->get($artists[$i]['artist_id']);
+            $artist->get([
+                "userId" => $artists[$i]['artist_id']
+            ]);
 
             if($event->requirements[$artist->role] > 0) {
                 // Track requirements
