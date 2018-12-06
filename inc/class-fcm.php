@@ -21,6 +21,9 @@ class NRFCM {
     }
 
     public function sendEventNotification($event) {
+        // Log event
+        error_log(json_encode($event));
+
         // Set degree distance finder object with a range of 30km
         $distance = new DegreeDistanceFinder(30);
         $distance->lat = $event->lat;
@@ -59,92 +62,28 @@ class NRFCM {
         }
         
         // Save artists to a variable
-        $artists = $res["data"];
+        $artistList = $res["data"];
 
         // Track if any requirement couldn't be fulfilled
         $pseudoRequirement = $event->requirements;
-        error_log(json_encode($event));
 
-        // Loop through artists
-        for($i = 0; $i < count($artists); $i++) {
+        // Loop through IDs to get artist object
+        foreach($artistList as $id) {
 
             // Get artist
             $artist = new NRArtist();
             $artist->get([
-                "userId" => $artists[$i]['artist_id']
+                "userId" => $id['artist_id']
             ]);
 
-            if($event->requirements[$artist->role] > 0) {
-                // Track requirements
+            // If artist is needed for this job save reference and track requirement fulfillment
+            if(isset($event->requirements[$artist->role])) {
                 $pseudoRequirement[$artist->role]--;
-
-                $sql = 
-                "SELECT fcm_token
-                FROM nr_artist_fcm_tokens
-                WHERE artist_id = $id;";
-    
-                $tokenData = runSQLQuery($sql);
-    
-                foreach($tokenData["data"] as $tokenObj) {
-                    $tokens[] = $tokenObj["fcm_token"];
-                }
-    
-                $headers = array(
-                    'Content-Type:application/json',
-                    'Authorization:key=' . fcmKey,
-                    'project_id:' . fcmSenderId
-                );
-    
-                $notificationGroup = [
-                    "operation" => "create",
-                    "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
-                    "registration_ids" => $tokens
-                ];
-    
-                $postData = json_encode($notificationGroup);
-    
-                error_log($postData);
-    
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, fcmGroupEndpoint);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-                $groupId = json_decode(curl_exec($ch), true)["notification_key"];
-    
-                error_log($groupId);
-                $formattedDatetime = 
-    
-                $notif = [
-                    "to" => $groupId,
-                    "priority" => 'high',
-                    "data" => [
-                        "title" => "New Event Available",
-                        "message" => "New event at $address",
-                        'content-available'  => '1',
-                        "image" => 'logo'
-                    ]
-                ];
-    
-                $postNotif = json_encode($notif);
-    
-                error_log($postNotif);
-                
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, fcmEndpoint);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
-                $fcmResponses[] = curl_exec($ch);
-
+                $artists[] = $artist;
             }
         }
+
+        // Check requirement fulfillment
         foreach($pseudoRequirement as $role => $requirement) {
             if($requirement > 0) return[
                 "response" => false,
@@ -152,7 +91,75 @@ class NRFCM {
             ];
         }
 
-        error_log(json_encode($fcmResponses));
+        // Loop through artists
+        for($i = 0; $i < count($artists); $i++) {
+            $artist = $artists[$i];
+
+            $sql = 
+            "SELECT fcm_token
+                FROM nr_artist_fcm_tokens
+                WHERE artist_id = {$artist->id};";
+
+            $tokenData = runSQLQuery($sql);
+
+            foreach($tokenData["data"] as $tokenObj) {
+                $tokens[] = $tokenObj["fcm_token"];
+            }
+
+            $headers = array(
+                'Content-Type:application/json',
+                'Authorization:key=' . fcmKey,
+                'project_id:' . fcmSenderId
+            );
+
+            $notificationGroup = [
+                "operation" => "create",
+                "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
+                "registration_ids" => $tokens
+            ];
+
+            $postData = json_encode($notificationGroup);
+
+            error_log($postData);
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, fcmGroupEndpoint);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+            $groupId = json_decode(curl_exec($ch), true)["notification_key"];
+
+            error_log($groupId);
+            $formattedDatetime = 
+
+            $notif = [
+                "to" => $groupId,
+                "priority" => 'high',
+                "data" => [
+                    "title" => "New Event Available",
+                    "message" => "New event at {$event->address}",
+                    'content-available'  => '1',
+                    "image" => 'logo'
+                ]
+            ];
+
+            $postNotif = json_encode($notif);
+
+            error_log($postNotif);
+            
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, fcmEndpoint);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
+            $fcmResponses[] = curl_exec($ch);
+        }
 
         return [
             "response" => true,

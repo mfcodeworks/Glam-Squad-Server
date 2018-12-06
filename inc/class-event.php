@@ -172,12 +172,22 @@ class NREvent {
 
         $res = runSQLQuery($sql);
 
-        if($res['response'] === true) {
-            $this->packages[] = $res['id'];
-            return;
-        }
-        else {
-            throw new Exception($res['error']);
+        if($res['response'] !== true) throw new Exception($res['error']);
+
+        $this->packages[] = $package;
+
+        $sql =
+        "SELECT r.role_name, pr.role_amount_required
+            FROM nr_package_roles as pr
+            INNER JOIN nr_job_roles as r ON r.id = pr.role_id
+            WHERE pr.package_id = $package";
+        
+        $res = runSQLQuery($sql);
+
+        if($res['response'] !== true) throw new Exception($res['error']);
+
+        foreach($res['data'] as $requirement) {
+            (isset( $this->requirements[ $requirement['role_name'] ] )) ? $this->requirements[ $requirement['role_name'] ] += $requirement['role_amount_required'] : $this->requirements[ $requirement['role_name'] ] = $requirement['role_amount_required'];
         }
     }
 
