@@ -5,45 +5,36 @@
         $db = connectToDB();
 
         if( $db->connect_errno ) {
-            $data['response'] = false;
-
-            $data['error_code'] = $db->connect_errno;
-
-            $data['error'] = $db->connect_error;
-
-            return $data;
+            return [
+                'response' => false,
+                'error_code' => $db->connect_errno,
+                'error' => $db->connect_error
+            ];
         }
 
         // Run & return query
         $response = $db->query($sql);
-        
-        if( is_bool($response) ) {
-            $response = ($response) ? 'true' : 'false';
-        }
 
         switch($response) {
-            case "true":
-                $data['response'] = true;
+            case true:
+                return [
+                    'response' => true,
+                    'error' => null,
+                    'id' => $db->insert_id
+                ];
 
-                $data['error'] = null;
-
-                $data['id'] = $db->insert_id;
-
-                return $data;
-
-            case "false":
-                $data['response'] = false;
-
-                $data['error_code'] = $db->errno;
-
-                $data['error'] = $db->error;
-
-                return $data;
+            case false:
+                return [
+                    'response' => false,
+                    'error_code' => $db->errno,
+                    'error' => $db->error
+                ];
 
             default:
-                $data['response'] = true;
-
-                $data['error'] = null;
+                $data = [
+                    'response' => true,
+                    'error' => null
+                ];
 
 				if( $response->num_rows > 0) {
                     while( $row = $response->fetch_assoc() ) {

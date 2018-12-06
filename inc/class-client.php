@@ -12,9 +12,16 @@ require_once "database-interface.php";
 
 class NRClient {
     // properties
-    private $username;
-    private $email;
+    public $id;
+    public $username;
+    public $email;
     private $password;
+    public $profile_photo;
+    public $stripe_customer_id;
+    public $rating;
+    public $fcmTopics = [];
+    public $cards = [];
+    public $receipts;
 
     // functions
     public function __construct() {

@@ -11,9 +11,25 @@ require_once "database-interface.php";
 
 class NRArtist {
     // properties
-    private $username;
-    private $email;
+    public $id;
+    public $username;
+    public $email;
     private $password;
+    public $profile_photo;
+    public $bio;
+    public $portfolio = [];
+    public $rating;
+    public $stripe_account_token;
+    public $role = [
+        "id" => 0,
+        "name" => ""
+    ];
+    private $probation = 0;
+    private $locked = 1;
+    public $locations = [];
+    public $fcmTopics = [];
+    public $fcmTokens = [];
+    public $receipts;
 
     // functions
     public function __construct() {
@@ -77,27 +93,42 @@ EOD;
 
         // Build SQL
         $sql = 
-        "SELECT * 
-        FROM nr_artists
-        WHERE id = $userId;";
+        "SELECT a.id, a.username, a.profile_photo, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked
+            FROM nr_artists as a
+            INNER JOIN nr_job_roles as r ON r.id = a.role_id
+            WHERE a.id = $userId;";
 
         $response = runSQLQuery($sql);
+        extract($response['data'][0]);
 
-        // Save hashed username for session verification
-        if(isset($response["data"][0])) {
-            if($response["data"][0]["locked"]) {
-                unset($response["data"]);
-                $response["response"] = false;
-                $response["error"] = "Artist has not been approved for login yet.";
-                return $response;
-            }
+        // Save properties
+        $this->id = $id;
+        $this->username = $username;
+        $this->usernameHash = $this->hashInput($username);
+        $this->profile_photo = $profile_photo;
+        $this->email = $email;
+        $this->bio = $bio;
+        $this->rating = $rating;
+        $this->role_id = $role_id;
+        $this->role = $role_name;
+        $this->probation = $probation;
+        $this->locked = $locked;
 
-            $response["data"][0]["usernameHash"] = $this->hashInput($response["data"][0]["username"]);
-
-            unset($response["data"][0]["password"]);
+        if($this->locked) {
+            return [
+                "response" => false,
+                "error" => "Artist account is currently inactive."
+            ];
         }
 
-        return $response;
+        $sql =
+        "SELECT id, photo
+            FROM nr_artist_portfolios
+            WHERE artist_id = {$this->id};";
+
+        $this->portfolio = runSQLQuery($sql)["data"];
+
+        return $this;
     }
 
     public function update($args) {

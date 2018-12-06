@@ -12,9 +12,11 @@ require_once "database-interface.php";
 
 class NRPackage {
     // property
+    public $id;
     public $name;
     public $description;
-    public $cost;
+    public $price;
+    public $roleRequirements = [];
     
     public function __construct() {
         
@@ -39,12 +41,12 @@ class NRPackage {
         $sql = "INSERT INTO nr_packages(
             package_name, 
             package_description, 
-            package_cost
+            package_price
         );
         VALUES(
             \"$name\",
             \"$description\",
-            $cost
+            $price
         );
         ";
 

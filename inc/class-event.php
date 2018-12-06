@@ -15,13 +15,16 @@ class NREvent {
     // properties
     public $id;
     public $address;
+    public $lat;
+    public $lng;
     public $datetime;
-    public $packageId;
     public $note;
-    public $clientNo;
+    public $price;
     public $clientId;
     public $clientCardId;
     public $references = [];
+    public $packages = [];
+    public $requirements = [];
     public $artists = [];
     
     public function __construct() {
@@ -32,62 +35,49 @@ class NREvent {
         // Get arguments
         extract($args);
 
-        // Format datetime
-        $datetime = date("Y-m-d H:i:s", strtotime($datetime));
+        // Save properties
+        $this->address = $address;
+        $this->lat = $lat;
+        $this->lng = $lng;
+        $this->datetime = date("Y-m-d H:i:s", strtotime($datetime));
+        $this->note = $note;
+        $this->price = $price;
+        $this->clientId = $userId;
 
-        $sql = 
-        "SELECT *
-            FROM nr_payment_cards
-            WHERE card_token LIKE \"$card\"
-            AND client_id = $userId;
-            ";
-
-        $cardId = runSQLQuery($sql)["data"][0]["id"];
-
-        if(!$cardId) {
-            $res["error"] .= "\nInvalid card token.";
-            return $res;
+        try {
+            $this->clientCardId = $this->getCardId($userId, $card);
+        }
+        catch(Exception $e) {
+            return [
+                "response" => false,
+                "error" => $e
+            ];
         }
 
-        // Build sql
-        $sql = "
-        INSERT INTO nr_jobs(
-            event_address,
-            event_lat,
-            event_lng,
-            event_datetime,
-            event_note,
-            event_price,
-            client_id,
-            client_card_id)
-        VALUES(
-            \"$address\",
-            $lat,
-            $lng,
-            \"$datetime\",
-            \"$note\",
-            $price,
-            $userId,
-            $cardId
-        );
-        ";
-
-        $res = runSQLQuery($sql);
-
-        $eventId = $res['id'];
+        try{
+            $this->id = $this->saveEventMeta();
+        }
+        catch(Exception $e) {
+            return [
+                "response" => false,
+                "error" => $e
+            ];
+        }
 
         foreach($packages as $package) {
             try { 
-                $this->savePackageReference($package, $eventId);
+                $this->savePackageReference($package);
             }
             catch(Exception $e) {
-                $res['error'] .= "\n".$e;
+                return [
+                    "response" => false,
+                    "error" => $e
+                ];
             }
         }
 
-        $filepathArray = [];
-
         // Save images
+        $filepathArray = [];
         if (isset($photos)) {
             foreach ($photos as $photo) {
                 try {
@@ -101,8 +91,8 @@ class NREvent {
             }
         }
 
+        // Do image optimization
         if (count($filepathArray) > 0) {
-            // Begin image optimization
             $ch = curl_init("https://glam-squad-db.nygmarosebeauty.com/smush.php");
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $filepathArray);
@@ -118,23 +108,57 @@ class NREvent {
         }
 
         $fcm = new NRFCM();
-        $res["notifications"] = $fcm->sendEventNotification($args);
+        $notification = $fcm->sendEventNotification($this);
 
-        if($res["notifications"]["error"] == "Unfortunately at the moment there's no artists available within your area.") {
+        if($notification["response"] === false) {
             $this->delete(
                 [
-                    "jobId" => $res["id"],
-                    "userId" => $userId
+                    "jobId" => $this->id,
+                    "userId" => $this->clientId
                 ]
-            );            
-            
-            $res = $res["notifications"];
+            );
+            return $notification;
         }
 
-        return $res;
+        return [
+            'response' => true,
+            'error' => null,
+            'id' => $this->id,
+            'fcm' => $notification
+        ];
     }
 
-    private function savePackageReference($package, $event) {
+    private function saveEventMeta() {
+        // Build sql
+        $sql = "
+        INSERT INTO nr_jobs(
+            event_address,
+            event_lat,
+            event_lng,
+            event_datetime,
+            event_note,
+            event_price,
+            client_id,
+            client_card_id)
+        VALUES(
+            \"{$this->address}\",
+            {$this->lat},
+            {$this->lng},
+            \"{$this->datetime}\",
+            \"{$this->note}\",
+            {$this->price},
+            {$this->clientId},
+            {$this->clientCardId}
+        );
+        ";
+
+        $res = runSQLQuery($sql);
+
+        if($res['id']) return $res['id'];
+        else throw new Exception($res['error']);
+    }
+
+    private function savePackageReference($package) {
         // Build SQL
         $sql = "
         INSERT INTO nr_job_packages(
@@ -143,12 +167,13 @@ class NREvent {
         )
         VALUES(
             $package,
-            $event
+            {$this->id}
         );";
 
         $res = runSQLQuery($sql);
 
-        if($res['response'] == true) {
+        if($res['response'] === true) {
+            $this->packages[] = $res['id'];
             return;
         }
         else {
@@ -171,7 +196,8 @@ class NREvent {
 
         $res = runSQLQuery($sql);
 
-        if($res['response'] == true) {
+        if($res['response'] === true) {
+            $this->references[] = $res['id'];
             return;
         }
         else {
@@ -203,9 +229,22 @@ class NREvent {
         throw new Exception("Couldn't save blob to file: $filepath.");
     }
 
-    private function randomString($length = 32) {
-        // Create random string with current date salt for uniqueness
-        return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;
+    private function getCardId($user, $card) {
+        $sql = 
+        "SELECT *
+            FROM nr_payment_cards
+            WHERE card_token LIKE \"$card\"
+            AND client_id = $user;
+            ";
+
+        $res = runSQLQuery($sql);
+
+        if($res["data"][0]['id']) {
+            return $res["data"][0]['id'];
+        }
+        else {
+            throw new Exception($res["error"]);
+        }
     }
 
     public function get($args) {
@@ -250,6 +289,126 @@ class NREvent {
         }
 
         return $events;
+    }
+
+    public function getSingle($id) {
+        $this->id = $id;
+
+        $sql = 
+        "SELECT 
+            j.id, 
+            j.event_address, 
+            j.event_lat, 
+            j.event_lng, 
+            j.event_datetime, 
+            j.event_note, 
+            j.event_price, 
+            j.client_id, 
+            j.client_card_id,
+            GROUP_CONCAT(p.event_package_id)
+            FROM nr_jobs as j
+            INNER JOIN nr_job_packages as p ON j.id = p.event_id
+            WHERE j.id = $id
+            GROUP BY j.id;";
+
+        extract(runSQLQuery($sql)["data"][0]);
+
+        // Save basic properties
+        $this->address = $event_address;
+        $this->lat = $event_lat;
+        $this->lng = $event_lng;
+        $this->datetime = (new Datetime($event_datetime))->format(Datetime::ATOM);
+        $this->note = $event_note;
+        $this->price = $event_price;
+        $this->clientId = $client_id;
+        $this->clientCardId = $client_card_id;
+        $this->packages = explode(",", $event_package_id);
+        
+        // Get requirement properties
+        for($i = 0; $i < count($packages); $i++) {
+            try {
+                $this->getPackageRequirements($this->$packages[$i]);
+            }
+            catch(Exception $e) {
+                return [
+                    "response" => false,
+                    "error" => $e
+                ];
+            }
+        }
+
+        // Get event image references
+        try {
+            $this->getReferences();
+        }
+        catch(Exception $e) {
+            return [
+                "response" => false,
+                "error" => $e
+            ];
+        }
+
+        // Get event artists
+        try {
+            $this->getEventArtists();
+        }
+        catch(Exception $e) {
+            return [
+                "response" => false,
+                "error" => $e
+            ];
+        }
+    }
+
+    private function getEventArtists() {
+        $sql =
+        "SELECT artist_id
+            FROM nr_artist_jobs
+            WHERE event_id = {$this->id};";
+
+        $res = runSQLQuery($sql);
+        if($res['response'] !== true) throw new Exception($res['error']);
+
+        foreach($res['data'] as $artistId) {
+            $artist = new NRArtist;
+            $artist->get(["userId" => $artistID]);
+            $this->requirements[$artist->role]--;
+            $this->artists[] = $artist;
+        }
+    }
+
+    private function getReferences() {
+        $sql =
+        "SELECT id, event_reference_photo as photo
+            FROM nr_job_references
+            WHERE event_id = {$this->id};";
+
+        $res = runSQLQuery($sql);
+        if($res["response"] === true) {
+            $this->references = $res["data"];
+        }
+    }
+
+    private function getPackageRequirements($id) {
+        $sql =
+        "SELECT p.id, p.package_name, pr.role_id, pr.role_amount_required, r.role_name
+            FROM nr_packages as p
+            INNER JOIN nr_package_roles as pr ON p.id = pr.package_id
+            INNER JOIN nr_job_roles as r ON r.id = pr.role_id
+            WHERE p.id = $id;";
+
+        $res = runSQLQuery($sql);
+
+        if($res["response"] === true) {
+            $requirements = $res["data"];
+
+            foreach($requirements as $requirement) {
+                (isset( $this->requirements[ $requirement['role_name'] ] )) ? $this->requirements[ $requirement['role_name'] ] += $requirement['role_amount_required'] : $this->requirements[ $requirement['role_name'] ] = $requirement['role_amount_required'];
+            }
+        }
+        else {
+            throw new Exception($res['error']);
+        }
     }
 
     public function getNew() {
@@ -380,6 +539,11 @@ class NREvent {
         AND client_id = $userId;";
 
         return runSQLQuery($sql);
+    }
+
+    private function randomString($length = 32) {
+        // Create random string with current date salt for uniqueness
+        return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;
     }
 }
 
