@@ -18,4 +18,7 @@ define("SMTP_HOST", "server120.web-hosting.com");
 define("SMTP_USER", "it@nygmarosebeauty.com");
 define("SMTP_PASS", "sch@@l12");
 define("SMTP_PORT", 587);
+
+// Define distance constant
+define("JOB_DISTANCE", 30);
 ?>

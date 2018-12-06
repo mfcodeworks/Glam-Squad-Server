@@ -451,84 +451,85 @@ class NREvent {
         }
     }
 
-    public function getNew() {
-        /**
-         * Select future events:
-         * SELECT j.id as event_id
-         * FROM nr_jobs as j
-         * WHERE j.event_datetime >= CURDATE()
-         * 
-         * Select future events and their packages:
-         * SELECT j.id as event_id, GROUP_CONCAT(jp.event_package_id) as event_packages
-         * FROM nr_jobs as j 
-         * INNER JOIN nr_job_packages as jp ON j.id = jp.event_id 
-         * WHERE j.event_datetime >= CURDATE() 
-         * GROUP BY j.id;
-         */
+    public function getNew($args) {
+        extract($args);
 
-        // Get events and packages that are in the future
-        $sql = 
-        "SELECT j.id as event_id, GROUP_CONCAT(jp.event_package_id) as event_packages
-        FROM nr_jobs as j 
-        INNER JOIN nr_job_packages as jp ON j.id = jp.event_id 
-        WHERE j.event_datetime >= CURDATE() 
-        GROUP BY j.id;
-        ;";
+        $artist = new NRArtist();
+        $artist->get(["userId" => $userId]);
 
-        $data = runSQLQuery($sql);
-
-        // Save events to a variable
-        $events = $data["data"];
+        $sql =
+        "SELECT id, loc_lat as lat, loc_lng as lng
+            FROM nr_artist_locations
+            WHERE artist_id = {$artist->id};";
         
-        // Loop through every event
-        for($i = 0; $i < count($events); $i++) {
-            // Make packages into array
-            $events[$i]["event_packages"] = explode(",", $events[$i]["event_packages"]);
+        $res = runSQLQuery($sql);
 
-            // Save single event
-            $event = $events[$i];
+        if($res["response"] !== true) {
+            return[
+                "response" => false,
+                "error" => "Artist has no locations saved."
+            ];
+        }
 
-            // Loop through event packages
-            foreach($event["event_packages"] as $package) {
-                // Get the package requirements
-                $sql = 
-                "SELECT role_id as role, role_amount_required as required
-                FROM nr_package_roles
-                WHERE package_id = $package;";
+        $locations = $res["data"];
 
-                $obj = runSQLQuery($sql);
+        foreach($locations as $location) {
 
-                $requirement = $obj["data"][0];
+            // Set degree distance finder object with a range of 30km
+            $distance = new DegreeDistanceFinder(JOB_DISTANCE);
+            $distance->lat = $location["lat"];
+            $distance->lng = $location["lng"];
+    
+            // Get lat/lng range
+            $latRange = $distance->latRange();
+            $lngRange = $distance->lngRange();
 
-                // Count the artists in this role assigned to event
-                $sql =
-                "SELECT COUNT(a.role_id) as fulfilled
-                FROM nr_artists as a
-                INNER JOIN nr_artist_jobs as ja ON ja.artist_id = a.id
-                INNER JOIN nr_jobs as j ON j.id = ja.event_id
-                WHERE a.role_id = {$requirement['role_id']}
-                AND ja.event_id = {$event['id']};
-                ";
+            // Get events and packages that are in the future
+            $sql = 
+            "SELECT id
+                FROM nr_jobs
+                WHERE event_datetime >= CURDATE()
+                AND event_lat < {$latRange['max']}
+                AND event_lat > {$latRange['min']}
+                AND event_lng < {$lngRange['max']}
+                AND event_lng > {$lngRange['min']}
+                ORDER BY event_datetime DESC;";
 
-                $obj = runSQLQuery($sql);
+            $res = runSQLQuery($sql);
 
-                $fulfilled = $obj["data"][0];
-
-                // If the artists are less than what's required, add a requirement for this role
-                if($fulfilled["fulfilled"] < $requirement["required"]) {
-                    // TODO: Handle role requirement
-                    $event["requirement"][] = $requirement["role"];
-                }
+            if($res["response"] !== true) {
+                return[
+                    "response" => false,
+                    "error" => "No nearby events."
+                ];
             }
 
-            if(isset($event["requirement"])) {
-                $events[$i] = $event;
-            }
-            else {
-                unset($events[$i]);
+            // Merge events near this location to event list
+            foreach($res["data"] as $eventId) {
+                $eventList[] = $eventId['id'];
             }
         }
-        return $events;
+
+        // After loop prevent overlap
+        array_unique($eventList);
+
+        // Loop through IDs
+        foreach($eventList as $id) {
+            $event = new NREvent();
+            $event->getSingle($id);
+
+            // Save event if artist is needed
+            foreach($event->requirements as $role => $required) {
+                // If the role being check is the artists role and the requirement is greater than whats fulfilled, save event
+                if($role === $artist->role && $event->requirements[$role] > $event->fulfillment[$role]) $events[] = $event;
+            }
+        }
+
+        return[
+            "response" => true,
+            "error" => null,
+            "data" => $events
+        ];
     }
 
     public function update($args) {

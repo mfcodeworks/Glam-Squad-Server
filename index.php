@@ -174,6 +174,15 @@
 		case "artist-apply-job":
 			// TODO: Handle artist applying for job
 			break;
+
+		case "artist-fetch-new-events":
+			// Handle artist fetching new relevant events
+			$events = new NREvent();
+
+			$data = $events->getNew($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
 			
 		case "artist-portfolio-addition":
 			// TODO: Handle artist portfolio addition

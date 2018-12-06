@@ -25,7 +25,7 @@ class NRFCM {
         error_log(json_encode($event, JSON_PRETTY_PRINT));
 
         // Set degree distance finder object with a range of 30km
-        $distance = new DegreeDistanceFinder(30);
+        $distance = new DegreeDistanceFinder(JOB_DISTANCE);
         $distance->lat = $event->lat;
         $distance->lng = $event->lng;
 
