@@ -22,7 +22,7 @@ class NRFCM {
 
     public function sendEventNotification($event) {
         // Log event
-        error_log(json_encode($event));
+        error_log(json_encode($event, JSON_PRETTY_PRINT));
 
         // Set degree distance finder object with a range of 30km
         $distance = new DegreeDistanceFinder(30);
@@ -64,9 +64,6 @@ class NRFCM {
         // Save artists to a variable
         $artistList = $res["data"];
 
-        // Track if any requirement couldn't be fulfilled
-        $pseudoRequirement = $event->requirements;
-
         // Loop through IDs to get artist object
         foreach($artistList as $id) {
 
@@ -78,14 +75,14 @@ class NRFCM {
 
             // If artist is needed for this job save reference and track requirement fulfillment
             if(isset($event->requirements[$artist->role])) {
-                $pseudoRequirement[$artist->role]--;
+                $event->fulfillment[$artist->role]++;
                 $artists[] = $artist;
             }
         }
 
         // Check requirement fulfillment
-        foreach($pseudoRequirement as $role => $requirement) {
-            if($requirement > 0) return[
+        foreach($event->requirements as $role => $requirement) {
+            if($event->requirements[$role] > $event->fulfillment[$role]) return[
                 "response" => false,
                 "error" => "No $role available within your area. Try booking a package without $role included."
             ];
@@ -118,7 +115,7 @@ class NRFCM {
                 "registration_ids" => $tokens
             ];
 
-            $postData = json_encode($notificationGroup);
+            $postData = json_encode($notificationGroup, JSON_PRETTY_PRINT);
 
             error_log($postData);
 
@@ -146,7 +143,7 @@ class NRFCM {
                 ]
             ];
 
-            $postNotif = json_encode($notif);
+            $postNotif = json_encode($notif, JSON_PRETTY_PRINT);
 
             error_log($postNotif);
             

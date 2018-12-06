@@ -25,6 +25,7 @@ class NREvent {
     public $references = [];
     public $packages = [];
     public $requirements = [];
+    public $fulfillment = [];
     public $artists = [];
     
     public function __construct() {
@@ -74,6 +75,10 @@ class NREvent {
                     "error" => $e
                 ];
             }
+        }
+
+        foreach($this->requirements as $role => $amount) {
+            $this->fulfillment[$role] = 0;
         }
 
         // Save images
@@ -382,7 +387,7 @@ class NREvent {
         foreach($res['data'] as $artistId) {
             $artist = new NRArtist;
             $artist->get(["userId" => $artistID]);
-            $this->requirements[$artist->role]--;
+            $this->fulfillment[$artist->role]++;
             $this->artists[] = $artist;
         }
     }
