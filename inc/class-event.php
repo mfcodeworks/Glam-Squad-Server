@@ -88,10 +88,19 @@ class NREvent {
                 try {
                     $filepath = $this->saveImageBlob($photo);
                     $filepathArray[] = $filepath;
-                    $this->saveImageReference($filepath, $eventId);
+                    $this->saveImageReference($filepath);
                 }
                 catch(Exception $e) {
-                    $res['error'] .= "\n".$e;
+                    $this->delete(
+                        [
+                            "jobId" => $this->id,
+                            "userId" => $this->clientId
+                        ]
+                    );
+                    return [
+                        "response" => false,
+                        "error" => "Failed saving attached images"
+                    ];
                 }
             }
         }
@@ -196,7 +205,9 @@ class NREvent {
         }
     }
 
-    private function saveImageReference($filepath, $eventId) {
+    private function saveImageReference($filepath) {
+        $filepath = str_replace(MEDIA_PATH, MEDIA_URI, $filepath);
+
         // Build SQL
         $sql = "
         INSERT INTO nr_job_references(
@@ -205,7 +216,7 @@ class NREvent {
         )
         VALUES(
             \"$filepath\",
-            $eventId
+            {$this->id}
         );
         ";
 
