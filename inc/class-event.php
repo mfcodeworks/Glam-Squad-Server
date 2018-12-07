@@ -51,6 +51,7 @@ class NREvent {
         catch(Exception $e) {
             return [
                 "response" => false,
+                "error_code" => 107,
                 "error" => $e
             ];
         }
@@ -61,6 +62,7 @@ class NREvent {
         catch(Exception $e) {
             return [
                 "response" => false,
+                "error_code" => 107,
                 "error" => $e
             ];
         }
@@ -72,6 +74,7 @@ class NREvent {
             catch(Exception $e) {
                 return [
                     "response" => false,
+                    "error_code" => 107,
                     "error" => $e
                 ];
             }
@@ -99,6 +102,7 @@ class NREvent {
                     );
                     return [
                         "response" => false,
+                        "error_code" => 107,
                         "error" => "Failed saving attached images"
                     ];
                 }
@@ -376,6 +380,7 @@ class NREvent {
             catch(Exception $e) {
                 return [
                     "response" => false,
+                    "error_code" => 107,
                     "error" => $e
                 ];
             }
@@ -388,6 +393,7 @@ class NREvent {
         catch(Exception $e) {
             return [
                 "response" => false,
+                "error_code" => 107,
                 "error" => $e
             ];
         }
@@ -399,6 +405,7 @@ class NREvent {
         catch(Exception $e) {
             return [
                 "response" => false,
+                "error_code" => 107,
                 "error" => $e
             ];
         }
@@ -479,6 +486,7 @@ class NREvent {
         if($res["response"] !== true) {
             return[
                 "response" => false,
+                "error_code" => 611,
                 "error" => "Artist has no locations saved."
             ];
         }
@@ -512,6 +520,7 @@ class NREvent {
             if($res["response"] !== true || $res["response"] === true && !isset($res["data"])) {
                 return[
                     "response" => false,
+                    "error_code" => 611,
                     "error" => "No nearby events."
                 ];
             }

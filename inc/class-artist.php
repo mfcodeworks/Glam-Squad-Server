@@ -117,6 +117,7 @@ EOD;
         if($this->locked) {
             return [
                 "response" => false,
+                "error_code" => 223,
                 "error" => "Artist account is currently inactive."
             ];
         }
@@ -182,9 +183,11 @@ EOD;
 
         // If no rows found matching username, return and let client handle error
         if(!isset($response["data"])) {
-            $response["response"] = false;
-            $response["error"] = "Username not found.";
-            return $response;
+            return [
+                "response" => false,
+                "error_code" => 205,
+                "error" => "Username not found"
+            ];
         }
 
         // Verify password and password hash

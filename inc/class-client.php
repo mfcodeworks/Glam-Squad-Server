@@ -127,11 +127,11 @@ class NRClient {
         }
 
         // Password wasn't correct, return an error
-        $response["response"] = false;
-        $response["error"] = "Incorrect login details.";
-        unset($response["data"]);
-
-        return $response;
+        return [
+            "response" => false,
+            "error_code" => 205,
+            "error" => "Incorrect login details"
+        ];
     }
 
     public function validateSession($id, $usernameHash) {

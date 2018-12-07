@@ -49,6 +49,7 @@ class NRFCM {
         if($res['response'] !== true) {
             return [
                 'response' => false,
+                "error_code" => $res['error_code'],
                 'error' => $res['error']
             ];
         }
@@ -57,6 +58,7 @@ class NRFCM {
         if(!isset($res["data"])) {
             return [
                 "response" => false,
+                "error_code" => 611,
                 "error" => "Unfortunately at the moment there's no artists available within your area."
             ];
         }
@@ -84,6 +86,7 @@ class NRFCM {
         foreach($event->requirements as $role => $requirement) {
             if($event->requirements[$role] > $event->fulfillment[$role]) return[
                 "response" => false,
+                "error_code" => 611,
                 "error" => "No $role available within your area. Try booking a package without $role included."
             ];
         }
@@ -192,9 +195,11 @@ class NRFCM {
                 AND client_id = $userId;";
         
                 if(isset(runSQLQuery($sql)["data"][0]["id"])) {
-                    $res["response"] = false;
-                    $res["error"] = "Topic already exists for user.";
-                    return $res;
+                    return [
+                        "response" => false,
+                        "error_code" => 107,
+                        "error" => "Topic already exists for user"
+                    ];
                 }
         
                 // Build SQL
@@ -214,9 +219,11 @@ class NRFCM {
                 AND artist_id = $userId;";
         
                 if(isset(runSQLQuery($sql)["data"][0]["id"])) {
-                    $res["response"] = false;
-                    $res["error"] = "Topic already exists for artist.";
-                    return $res;
+                    return [
+                        "response" => false,
+                        "error_code" => 107,
+                        "error" => "Topic already exists for user"
+                    ];
                 }
         
                 // Build SQL
