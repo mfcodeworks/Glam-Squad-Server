@@ -401,6 +401,7 @@ class NREvent {
 
         $res = runSQLQuery($sql);
         if($res['response'] !== true) throw new Exception($res['error']);
+        if(!isset($res["data"])) return;
 
         foreach($res['data'] as $artistId) {
             $artist = new NRArtist;
@@ -497,7 +498,7 @@ class NREvent {
 
             $res = runSQLQuery($sql);
 
-            if($res["response"] !== true) {
+            if($res["response"] !== true || $res["response"] === true && !isset($res["data"])) {
                 return[
                     "response" => false,
                     "error" => "No nearby events."
@@ -511,7 +512,7 @@ class NREvent {
         }
 
         // After loop prevent overlap
-        array_unique($eventList);
+        $eventList = array_unique($eventList);
 
         // Loop through IDs
         foreach($eventList as $id) {
