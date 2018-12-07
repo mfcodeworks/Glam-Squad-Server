@@ -315,24 +315,6 @@ class NREvent {
                 "data" => $event->getSingle($jobId)
             ];
         }
-
-        /* CHNAGED: Updated to use OOP
-        for($i = 0; $i < count($events["data"]); $i++) {
-            $jobId = $events["data"][$i]["id"];
-
-            $sql = 
-            "SELECT p.id, p.package_name as name, p.package_description as description, p.package_price as price 
-            FROM nr_packages as p 
-            INNER JOIN nr_job_packages as j ON p.id = j.event_package_id 
-            WHERE j.event_id = $jobId;";
-
-            $packages = runSQLQuery($sql);
-
-            $events["data"][$i]["packages"] = $packages["data"];
-
-            $events["data"][$i]["datetime"] = (new Datetime($events["data"][$i]["datetime"]))->format(Datetime::ATOM);
-        }
-        */
     }
 
     public function getSingle($id) {
@@ -422,8 +404,8 @@ class NREvent {
         if(!isset($res["data"])) return;
 
         foreach($res['data'] as $artistId) {
-            $artist = new NRArtist;
-            $artist->get(["userId" => $artistID]);
+            $artist = new NRArtist();
+            $artist->get(["userId" => $artistId['artist_id']]);
             $this->fulfillment[$artist->role]++;
             $this->artists[] = $artist;
         }
@@ -456,6 +438,7 @@ class NREvent {
             $package = $requirements[0];
 
             foreach($requirements as $requirement) {
+                $this->fulfillment[ $requirement['role_name'] ] = 0;
                 (isset( $this->requirements[ $requirement['role_name'] ] )) ? $this->requirements[ $requirement['role_name'] ] += $requirement['role_amount_required'] : $this->requirements[ $requirement['role_name'] ] = $requirement['role_amount_required'];
             }
 
@@ -541,8 +524,19 @@ class NREvent {
 
             // Save event if artist is needed
             foreach($event->requirements as $role => $required) {
+                $roleNeeded = false;
+                $alreadyAccepted = false;
+
                 // If the role being check is the artists role and the requirement is greater than whats fulfilled, save event
-                if($role === $artist->role && $event->requirements[$role] > $event->fulfillment[$role]) $events[] = $event;
+                if($role === $artist->role && $event->requirements[$role] > $event->fulfillment[$role]) {
+                    $roleNeeded = true;
+                }
+                foreach($event->artists as $eventArtist) {
+                    if($eventArtist->id === $artist->id) {
+                        $alreadyAccepted = true;
+                    }
+                }
+                if($roleNeeded && !$alreadyAccepted) $events[] = $event;
             }
         }
 
@@ -590,6 +584,48 @@ class NREvent {
             }
         }
         return $res;
+    }
+
+    public function apply($args) {
+        extract($args);
+
+        $event = new NREvent();
+        $event->getSingle($eventId);
+
+        $artist = new NRArtist();
+        $artist->get(["userId" => $userId]);
+
+        $sql = 
+        "INSERT INTO nr_artist_jobs(event_id, artist_id)
+            VALUES(
+                \"{$event->id}\",
+                \"{$artist->id}\"
+            );";
+
+        foreach($event->artists as $eventArtist) {
+            if($eventArtist->id === $artist->id) {
+                return [
+                    "response" => false,
+                    "error_code" => 107,
+                    "error" => "Artist has already accepted this booking"
+                ];
+            }
+        }
+        
+        // Save event if artist is needed
+        foreach($event->requirements as $role => $required) {
+            // If the role being check is the artists role and the requirement is greater than whats fulfilled, save event
+            if($role === $artist->role && $event->requirements[$role] > $event->fulfillment[$role]) {
+                return runSQLQuery($sql);
+            }
+        }
+
+        // If no role had an open position
+        return [
+            "response" => false,
+            "error_code" => 107,
+            "error" => "This booking is no longer available"
+        ];
     }
 
     public function delete($args) {

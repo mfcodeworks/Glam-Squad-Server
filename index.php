@@ -172,7 +172,12 @@
 			break;
 
 		case "artist-apply-job":
-			// TODO: Handle artist applying for job
+			// Handle artist applying for job
+			$event = new NREvent();
+			
+			$data = $event->apply($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
 		case "artist-fetch-new-events":
