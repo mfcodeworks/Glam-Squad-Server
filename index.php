@@ -180,6 +180,15 @@
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
+		case "artist-cancel-job":
+			// Handle artist cancel job
+			$event = new NREvent();
+
+			$data = $event->cancel($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
 		case "artist-fetch-new-events":
 			// Handle artist fetching new relevant events
 			$events = new NREvent();

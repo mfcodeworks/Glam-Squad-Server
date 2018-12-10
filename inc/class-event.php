@@ -319,6 +319,16 @@ class NREvent {
         }
     }
 
+    public function cancel($args) {
+        extract($args);
+
+        $sql = "DELETE FROM nr_artist_jobs
+            WHERE artist_id = $userId
+            AND event_id = $jobId;";
+
+        return runSQLQuery($sql);
+    }
+
     public function getSingle($id) {
         $this->id = $id;
 
