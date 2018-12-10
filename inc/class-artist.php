@@ -53,30 +53,29 @@ class NRArtist {
             $mail->setFrom("mua@nygmarosebeauty.com", "NygmaRose");
             $mail->addAddress($email);
             $mail->Subject = "NygmaRose Glam Squad Registration";
-            $mail->Body = 
-<<<EOD
-    <html>
-        <head>
-            <style>
-                body {
-                    font-family: Arial;
-                }
-            </style>
-        </head>
-        <body>
-            <p>
-                Hi $username,
-                <br><br>
-                Your Glam Squad registration has been successfully received! 
-                <br>
-                The NR Glam Squad team will be in contact soon if your application is approved and schedule an interview.
-                <br><br>
-                Best Wishes,
-                <br>
-                NygmaRose
-            </p>
-        </body>
-    </html>
+            $mail->Body = <<<EOD
+                <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <p>
+                            Hi $username,
+                            <br><br>
+                            Your Glam Squad registration has been successfully received! 
+                            <br>
+                            The NR Glam Squad team will be in contact soon if your application is approved and schedule an interview.
+                            <br><br>
+                            Best Wishes,
+                            <br>
+                            NygmaRose
+                        </p>
+                    </body>
+                </html>
 EOD;
             $mail->send();
         }
@@ -123,7 +122,7 @@ EOD;
             ];
         }
 
-        $this->locations = $this->getLocations(["userID" => $this->id])["data"];
+        $this->locations = $this->getLocations(["userId" => $this->id])["data"];
         $this->portfolio = $this->getPortfolio();
         $this->bookings = $this->getBookings();
 
