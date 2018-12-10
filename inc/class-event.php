@@ -516,6 +516,7 @@ class NREvent {
 
         // After loop prevent overlap
         $eventList = array_unique($eventList);
+        $events = [];
 
         // Loop through IDs
         foreach($eventList as $id) {

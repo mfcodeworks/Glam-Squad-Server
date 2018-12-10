@@ -29,6 +29,7 @@ class NRArtist {
     public $locations = [];
     public $fcmTopics = [];
     public $fcmTokens = [];
+    public $bookings = [];
     public $receipts;
 
     // functions
@@ -118,18 +119,53 @@ EOD;
             return [
                 "response" => false,
                 "error_code" => 223,
-                "error" => "Artist account is currently inactive."
+                "error" => "Artist account is currently locked."
             ];
         }
 
+        $this->locations = $this->getLocations(["userID" => $this->id])["data"];
+        $this->portfolio = $this->getPortfolio();
+        $this->bookings = $this->getBookings();
+
+        return $this;
+    }
+
+    public function getBookings() {
+        $sql =
+        "SELECT event_id as event
+            FROM nr_artist_jobs
+            WHERE id = {$this->id};";
+
+        return runSQLQuery($sql)["data"];
+    }
+
+    public function getPortfolio() {
         $sql =
         "SELECT id, photo
             FROM nr_artist_portfolios
             WHERE artist_id = {$this->id};";
 
-        $this->portfolio = runSQLQuery($sql)["data"];
+        return runSQLQuery($sql)["data"];
+    }
 
-        return $this;
+    public function getLocations($args) {
+        extract($args);
+
+        $sql = 
+        "SELECT *
+        FROM nr_artist_locations
+        WHERE artist_id = $userId;";
+
+        $res = runSQLQuery($sql);
+
+        if(!isset($res["data"])) {
+            return [
+                "response" => false,
+                "error_code" => 107,
+                "error" => "No locations saved"
+            ];
+        }
+        return $res;
     }
 
     public function update($args) {
@@ -251,17 +287,6 @@ EOD;
         $sql = 
         "INSERT INTO nr_artist_locations(loc_name, loc_lat, loc_lng, artist_id)
         VALUES(\"$name\", $lat, $lng, $userId);";
-
-        return runSQLQuery($sql);
-    }
-
-    public function getLocations($args) {
-        extract($args);
-
-        $sql = 
-        "SELECT *
-        FROM nr_artist_locations
-        WHERE artist_id = $userId;";
 
         return runSQLQuery($sql);
     }
