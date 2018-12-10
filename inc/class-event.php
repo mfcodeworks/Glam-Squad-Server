@@ -309,10 +309,12 @@ class NREvent {
         }
         if(isset($jobId)) {
             $event = new NREvent();
+            $event->getSingle($jobId);
+
             return [
                 "response" => true,
                 "error" => null,
-                "data" => $event->getSingle($jobId)
+                "data" => $event
             ];
         }
     }
@@ -406,7 +408,7 @@ class NREvent {
         foreach($res['data'] as $artistId) {
             $artist = new NRArtist();
             $artist->get(["userId" => $artistId['artist_id']]);
-            $this->fulfillment[$artist->role]++;
+            $this->fulfillment[$artist->role["name"]]++;
             $this->artists[] = $artist;
         }
     }
@@ -529,7 +531,7 @@ class NREvent {
                 $alreadyAccepted = false;
 
                 // If the role being check is the artists role and the requirement is greater than whats fulfilled, save event
-                if($role === $artist->role && $event->requirements[$role] > $event->fulfillment[$role]) {
+                if($role === $artist->role["name"] && $event->requirements[$role] > $event->fulfillment[$role]) {
                     $roleNeeded = true;
                 }
                 foreach($event->artists as $eventArtist) {
@@ -616,7 +618,7 @@ class NREvent {
         // Save event if artist is needed
         foreach($event->requirements as $role => $required) {
             // If the role being check is the artists role and the requirement is greater than whats fulfilled, save event
-            if($role === $artist->role && $event->requirements[$role] > $event->fulfillment[$role]) {
+            if($role === $artist->role["name"] && $event->requirements[$role] > $event->fulfillment[$role]) {
                 return runSQLQuery($sql);
             }
         }

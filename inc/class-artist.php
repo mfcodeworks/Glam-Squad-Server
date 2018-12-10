@@ -109,8 +109,10 @@ EOD;
         $this->email = $email;
         $this->bio = $bio;
         $this->rating = $rating;
-        $this->role_id = $role_id;
-        $this->role = $role_name;
+        $this->role = [
+            "id" => $role_id,
+            "name" => $role_name,
+        ];
         $this->probation = $probation;
         $this->locked = $locked;
 
@@ -131,7 +133,7 @@ EOD;
 
     public function getBookings() {
         $sql =
-        "SELECT event_id as event
+        "SELECT event_id as id  
             FROM nr_artist_jobs
             WHERE id = {$this->id};";
 
@@ -151,7 +153,7 @@ EOD;
         extract($args);
 
         $sql = 
-        "SELECT *
+        "SELECT id, loc_name as name, loc_lat as lat, loc_lng as lng
         FROM nr_artist_locations
         WHERE artist_id = $userId;";
 
@@ -227,20 +229,19 @@ EOD;
 
         // Verify password and password hash
         if($this->verifyInput($password, $response["data"][0]["password"]) == true) {
-            // Remove password hash and return successful result
-            unset($response["data"][0]["password"]);
-
-            // Save hashed username for session verification
-            $response["data"][0]["usernameHash"] = $this->hashInput($username);
+            $artist = new NRArtist();
+            $artist->get(["userId" => $response["data"][0]["id"]]);
+            
+            $response["data"][0] = $artist;
             return $response;
         }
 
         // Password wasn't correct, return an error
-        $response["response"] = false;
-        $response["error"] = "Incorrect login details.";
-        unset($response["data"]);
-
-        return $response;
+        return [
+            "response" => false,
+            "error_code" => 205,
+            "error" => "Incorrect login details"
+        ];
     }
 
     public function validateSession($id, $usernameHash) {

@@ -76,8 +76,8 @@ class NRFCM {
             ]);
 
             // If artist is needed for this job save reference and track requirement fulfillment
-            if(isset($event->requirements[$artist->role])) {
-                $event->fulfillment[$artist->role]++;
+            if(isset($event->requirements[$artist->role["name"]])) {
+                $event->fulfillment[$artist->role["name"]]++;
                 $artists[] = $artist;
             }
         }
