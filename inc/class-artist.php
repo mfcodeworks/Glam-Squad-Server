@@ -133,9 +133,11 @@ EOD;
 
     public function getBookings() {
         $sql =
-        "SELECT event_id as id  
-            FROM nr_artist_jobs
-            WHERE id = {$this->id};";
+        "SELECT aj.event_id as id
+            FROM nr_artist_jobs as aj
+            INNER JOIN nr_jobs as j ON aj.event_id = j.id
+            WHERE artist_id = {$this->id}
+            ORDER BY j.event_datetime DESC;";
 
         return runSQLQuery($sql)["data"];
     }
@@ -245,30 +247,25 @@ EOD;
     }
 
     public function validateSession($id, $usernameHash) {
-        // Get plaintext username
-        $sql = 
-        "SELECT username
-        FROM nr_artists
-        WHERE id = $id;
-        ";
-
-        // Save response
-        $r = runSQLQuery($sql);
+        $this->get(["userId" => $id]);
 
         // If the ID exists 
-        if(isset($r["data"])) {
-
-            // Save plaintext username of ID
-            $username = $r["data"][0]["username"];
-
-            // Verify password against hash
-            if($this->verifyInput($username,$usernameHash)) {
-                return true;
-            }
+        if(isset($this->id) && $this->verifyInput($this->username, $usernameHash)) {
+            return [
+                "response" => true,
+                "error" => null,
+                "data" => $this,
+                "valid" => true
+            ];
         }
 
         // If ID doesn't exist or username hash is wrong return false
-        return false;
+        return [
+            "response" => true,
+            "error_code" => 206,
+            "error" => "User not found",
+            "valid" => false
+        ];
     }
 
     public function savePaymentInfo($args) {
