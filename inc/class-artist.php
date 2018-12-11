@@ -230,11 +230,10 @@ EOD;
         }
 
         // Verify password and password hash
-        if($this->verifyInput($password, $response["data"][0]["password"]) == true) {
-            $artist = new NRArtist();
-            $artist->get(["userId" => $response["data"][0]["id"]]);
+        if($this->verifyInput($password, $response["data"][0]["password"]) === true) {
+            $this->get(["userId" => $response["data"][0]["id"]]);
             
-            $response["data"][0] = $artist;
+            $response["data"][0] = $this;
             return $response;
         }
 
