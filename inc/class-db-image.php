@@ -23,7 +23,7 @@ class NRImage {
 
     public function getData($blob) {
         // Skip empty blobs
-        if($blob == "") return false;
+        if($blob === "" || $blob === null) return false;
 
         // Get mime
         $this->mime = explode(";",$blob)[0];
@@ -39,7 +39,7 @@ class NRImage {
         $this->data = base64_decode($this->blob);
 
         // Create random filename
-        $this->filepath = MEDIA_PATH . $this->randomString() . "." . $type;
+        $this->filepath = MEDIA_PATH . $this->randomString() . "." . $this->type;
 
         // Put file contents
         if(file_put_contents($this->filepath, $this->data) !== false) {
