@@ -147,8 +147,8 @@ CREATE TABLE IF NOT EXISTS nr_artist_jobs(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
-    FOREIGN KEY (artist_id) REFERENCES nr_artists(id)
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
 # Glam Squad Event Receipt for Client (160.00; 1 (Event); 1 (Client); 1 (Card))
