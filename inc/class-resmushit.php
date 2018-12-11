@@ -9,9 +9,8 @@
 
 class NRResmushIt {
     public function __construct($filepath) {
-        // explode /srv/nr-glam-squad/media/file.type and get filename index (4)
-        $filename = explode("/", $filepath)[4];
-        $fileURI = MEDIA_URI . $filename;
+        // get file uri
+        $fileURI = str_replace(MEDIA_PATH, MEDIA_URI, $filepath);
 
         // get json of resmushit optimization response
         $optimized = json_decode(file_get_contents(RESMUSHIT . $fileURI));

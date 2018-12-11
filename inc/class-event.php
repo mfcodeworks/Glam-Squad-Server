@@ -85,13 +85,16 @@ class NREvent {
         }
 
         // Save images
-        $filepathArray = [];
         if (isset($photos)) {
-            foreach ($photos as $photo) {
+            $filepaths = [];
+
+            foreach ($photos as $eventPhoto) {
                 try {
-                    $filepath = $this->saveImageBlob($photo);
-                    $filepathArray[] = $filepath;
-                    $this->saveImageReference($filepath);
+                    // Create photo object
+                    $photo = new NRImage();
+                    $photo->getData($eventPhoto);
+                    $filepaths[] = $photo->filepath;
+                    $this->saveImageReference($photo->publicpath);
                 }
                 catch(Exception $e) {
                     $this->delete(
@@ -107,22 +110,10 @@ class NREvent {
                     ];
                 }
             }
-        }
 
-        // Do image optimization
-        if (count($filepathArray) > 0) {
-            $ch = curl_init("https://glam-squad-db.nygmarosebeauty.com/smush.php");
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $filepathArray);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 1); 
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-            curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-            curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 10); 
-            curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-            curl_exec($ch);
-            curl_close($ch);
+            if(count($filepaths) > 0) {
+                NRImage::optimizeImage($filepaths);
+            }
         }
 
         $fcm = new NRFCM();
@@ -210,8 +201,6 @@ class NREvent {
     }
 
     private function saveImageReference($filepath) {
-        $filepath = str_replace(MEDIA_PATH, MEDIA_URI, $filepath);
-
         // Build SQL
         $sql = "
         INSERT INTO nr_job_references(
@@ -233,30 +222,6 @@ class NREvent {
         else {
             throw new Exception($res['error']);
         }
-    }
-
-    private function saveImageBlob($blob) {
-        // Skip empty blobs
-        if($blob == "") return;
-
-        // Get type from image/png or image/jpeg
-        $type = explode("/",explode(";",$blob)[0])[1];
-
-        // Validate file type
-        if(!in_array($type, ['jpg', 'jpeg', 'png', 'gif']))
-            throw new Exception("Invalid image type: $type. Not an image.");
-
-        // Get data and decode
-        $data = base64_decode(explode(",",explode(";",$blob)[1])[1]);
-
-        // Create random filename
-        $filepath = MEDIA_PATH . $this->randomString() . "." . $type;
-
-        // Put file contents
-        if(file_put_contents($filepath, $data) != false)
-            return $filepath;
-
-        throw new Exception("Couldn't save blob to file: $filepath.");
     }
 
     private function getCardId($user, $card) {

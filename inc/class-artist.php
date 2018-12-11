@@ -37,16 +37,47 @@ class NRArtist {
 
     }
 
-    public function register($username, $email, $password) {
+    public function register($args) {
+        extract($args);
+
         // Hash password
         $password = $this->hashInput($password);
 
         // Build SQL
         // FIXME: Fix locked to initially = 1 (true)
         $sql = 
-        "INSERT INTO nr_artists(username, email, password, locked)
-        VALUES(\"$username\", \"$email\", \"$password\", 0);
+        "INSERT INTO nr_artists(username, email, password, bio, instagram, facebook, twitter, role_id, locked, probation)
+        VALUES(\"$username\", \"$email\", \"$password\", \"$bio\", \"$instagram\", \"$facebook\", \"$twitter\", $role, 0, 0);
         ";
+
+        $res = runSQLQuery($sql);
+
+        $this->id = $res["id"];
+
+        if (isset($portfolio)) {
+            $filepaths = [];
+
+            foreach ($portfolio as $artistPhoto) {
+                try {
+                    // Create photo object
+                    $photo = new NRImage();
+                    $photo->getData($artistPhoto);
+                    $filepaths[] = $photo->filepath;
+                    $this->savePortfolioImage($photo->publicpath);
+                }
+                catch(Exception $e) {
+                    return [
+                        "response" => false,
+                        "error_code" => 107,
+                        "error" => "Failed saving attached portfolio images"
+                    ];
+                }
+            }
+
+            if(count($filepaths) > 0) {
+                NRImage::optimizeImage($filepaths);
+            }
+        }
 
         try {
             $mail = new Mailer();
@@ -84,7 +115,18 @@ EOD;
         }
 
         // Return SQL result
-        return runSQLQuery($sql);
+        return $res;
+    }
+
+    private function savePortfolioImage($uri) {
+        $sql = "INSERT INTO nr_artist_portfolios(photo, artist_id)
+            VALUES(\"$uri\", {$this->id});";
+
+        $res = runSQLQuery($sql);
+
+        if($res["response"] !== true) throw new Exception("Could not save image at $uri.");
+        
+        return $res["id"];
     }
 
     public function get($args) {
