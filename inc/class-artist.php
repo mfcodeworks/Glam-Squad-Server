@@ -207,7 +207,8 @@ EOD;
             return [
                 "response" => false,
                 "error_code" => 107,
-                "error" => "No locations saved"
+                "error" => "No locations saved",
+                "data" => null
             ];
         }
         return $res;

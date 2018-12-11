@@ -443,7 +443,7 @@ class NREvent {
         
         $res = runSQLQuery($sql);
 
-        if($res["response"] !== true) {
+        if($res["response"] !== true || !isset($res["data"])) {
             return[
                 "response" => false,
                 "error_code" => 611,
@@ -492,6 +492,7 @@ class NREvent {
         }
 
         // After loop prevent overlap
+        if(!isset($eventList)) return;
         $eventList = array_unique($eventList);
         $events = [];
 
