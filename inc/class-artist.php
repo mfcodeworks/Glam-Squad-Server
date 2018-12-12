@@ -214,6 +214,14 @@ EOD;
         return $res;
     }
 
+    public static function getRoles() {
+        $sql = 
+        "SELECT id, role_name as name
+            FROM nr_job_roles;";
+
+        return runSQLQuery($sql);
+    }
+
     public function update($args) {
         extract($args);
 

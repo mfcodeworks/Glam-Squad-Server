@@ -270,6 +270,13 @@
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
+		case "roles-get":
+			// Get available artist roles
+			$data = NRArtist::getRoles();
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
 		case "admin-fetch-packages":
 			$packages = new NRPackage();
 
