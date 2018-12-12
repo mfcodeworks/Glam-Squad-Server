@@ -33,6 +33,7 @@
 			$form = null;
 	}
 	else {
+		echo json_encode("No authorization header present.");
 		die();
 	}
 
@@ -266,6 +267,13 @@
 			$event = new NREvent();
 
 			$data = $event->get($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
+		case "event-packages-get":
+			// Get event packages
+			$data = NREvent::getPackages();
 
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;

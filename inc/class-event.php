@@ -526,6 +526,14 @@ class NREvent {
         ];
     }
 
+    public static function getPackages() {
+        $sql = 
+        "SELECT id, package_name as name, package_description as description, ROUND(package_price, 2) as price
+            FROM nr_packages;";
+
+        return runSQLQuery($sql);
+    }
+
     public function update($args) {
         extract($args);
 
