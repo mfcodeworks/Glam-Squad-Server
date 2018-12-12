@@ -128,13 +128,21 @@ CREATE TABLE IF NOT EXISTS nr_jobs(
     FOREIGN KEY (client_card_id) REFERENCES nr_payment_cards(id)
 );
 
-# Glam Squad Event Packages (1 (package A); 1 (Event))
+# Glam Squad Event Packages (1 (MUA Package); 1 (Event))
 CREATE TABLE IF NOT EXISTS nr_job_packages(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_package_id BIGINT NOT NULL,
     event_id BIGINT NOT NULL,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (event_package_id) REFERENCES nr_packages(id) ON DELETE CASCADE
+);
+
+# Glam Squad Event Extra Hours Booked(1 (Event); 3 (Extra hours purchased))
+CREATE TABLE IF NOT EXISTS nr_job_extra_hours(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    event_hours_booked TINYINT NOT NULL,
+    event_id BIGINT NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
 );
 
 # Glam Squad Event References ('/srv/media/file.png'; 1 (Event))
@@ -194,14 +202,6 @@ VALUES(
     "Hair Stylist"
 );
 
-# Manicurist role
-INSERT INTO nr_job_roles(
-    role_name
-)
-VALUES(
-    "Manicurist"
-);
-
 # 1 MUA Package
 INSERT INTO nr_packages(
     package_name,
@@ -209,9 +209,9 @@ INSERT INTO nr_packages(
     package_price
 )
 VALUES(
-    "Package A",
-    "Package A includes one makeup artist.",
-    160.00
+    "Makeup Artist",
+    "Get one makeup artist to elevate your face with 60 minutes of work.",
+    150.00
 );
 
 # 1 Hair Stylist Package
@@ -221,33 +221,21 @@ INSERT INTO nr_packages(
     package_price
 )
 VALUES(
-    "Package B",
-    "Package B includes one hair stylist.",
+    "Hair Stylist",
+    "Have a hair stylist to make your hair into magic with 60 minutes of work.",
     320.00
 );
 
-# 1 Manicurist Package
+# MUA Extra Hours Package
 INSERT INTO nr_packages(
     package_name,
     package_description,
     package_price
 )
 VALUES(
-    "Package C",
-    "Package C includes one manicursit.",
-    90.00
-);
-
-# 1 of each package
-INSERT INTO nr_packages(
-    package_name,
-    package_description,
-    package_price
-)
-VALUES(
-    "Package D",
-    "Package D includes one manicurist, one makeup artist & a hair stylist.",
-    460.00
+    "MUA Extension",
+    "Have your makeup artist stay beyond 60 minutes at just $20 per hour. For a 6 hour event, enter 5 for extra hours and pay just $250 for a day of makeup artistry all for you!",
+    20.00
 );
 
 # Package A(1) Requires Makeup Artist(1) Amount 1
@@ -259,61 +247,5 @@ INSERT INTO nr_package_roles(
 VALUES(
     1,
     1,
-    1
-);
-
-# Package B(2) Requires Hair Stylist(2) Amount 1
-INSERT INTO nr_package_roles(
-    package_id,
-    role_id,
-    role_amount_required
-)
-VALUES(
-    2,
-    2,
-    1
-);
-
-# Package C(3) Requires Manicurist(3) Amount 1
-INSERT INTO nr_package_roles(
-    package_id,
-    role_id,
-    role_amount_required
-)
-VALUES(
-    3,
-    3,
-    1
-);
-
-# Package D(4) Requires all (1-3) Amount 1
-INSERT INTO nr_package_roles(
-    package_id,
-    role_id,
-    role_amount_required
-)
-VALUES(
-    4,
-    1,
-    1
-);
-INSERT INTO nr_package_roles(
-    package_id,
-    role_id,
-    role_amount_required
-)
-VALUES(
-    4,
-    2,
-    1
-);
-INSERT INTO nr_package_roles(
-    package_id,
-    role_id,
-    role_amount_required
-)
-VALUES(
-    4,
-    3,
     1
 );
