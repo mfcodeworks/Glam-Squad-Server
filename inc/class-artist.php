@@ -137,7 +137,7 @@ EOD;
         $sql = 
         "SELECT a.id, a.username, a.profile_photo, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked
             FROM nr_artists as a
-            INNER JOIN nr_job_roles as r ON r.id = a.role_id
+            LEFT JOIN nr_job_roles as r ON r.id = a.role_id
             WHERE a.id = $userId;";
 
         $response = runSQLQuery($sql);
@@ -177,7 +177,7 @@ EOD;
         $sql =
         "SELECT aj.event_id as id
             FROM nr_artist_jobs as aj
-            INNER JOIN nr_jobs as j ON aj.event_id = j.id
+            LEFT JOIN nr_jobs as j ON aj.event_id = j.id
             WHERE artist_id = {$this->id}
             ORDER BY j.event_datetime DESC;";
 

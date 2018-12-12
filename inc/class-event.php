@@ -188,7 +188,7 @@ class NREvent {
         $sql =
         "SELECT r.role_name, pr.role_amount_required
             FROM nr_package_roles as pr
-            INNER JOIN nr_job_roles as r ON r.id = pr.role_id
+            LEFT JOIN nr_job_roles as r ON r.id = pr.role_id
             WHERE pr.package_id = $package";
         
         $res = runSQLQuery($sql);
@@ -310,7 +310,7 @@ class NREvent {
             j.client_card_id,
             GROUP_CONCAT(p.event_package_id) as event_package_id
             FROM nr_jobs as j
-            INNER JOIN nr_job_packages as p ON j.id = p.event_id
+            LEFT JOIN nr_job_packages as p ON j.id = p.event_id
             WHERE j.id = {$this->id}
             GROUP BY j.id;";
 
@@ -404,8 +404,8 @@ class NREvent {
         $sql =
         "SELECT p.id, p.package_name, p.package_description, pr.role_id, pr.role_amount_required, r.role_name
             FROM nr_packages as p
-            INNER JOIN nr_package_roles as pr ON p.id = pr.package_id
-            INNER JOIN nr_job_roles as r ON r.id = pr.role_id
+            LEFT JOIN nr_package_roles as pr ON p.id = pr.package_id
+            LEFT JOIN nr_job_roles as r ON r.id = pr.role_id
             WHERE p.id = $id;";
 
         $res = runSQLQuery($sql);
