@@ -278,6 +278,20 @@
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
+		case "event-artist-rating":
+			// Save artist rating
+			$data = NREvent::artistRating($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
+		case "event-client-rating":
+			// Save client rating
+			$data = NREvent::clientRating($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
 		case "roles-get":
 			// Get available artist roles
 			$data = NRArtist::getRoles();

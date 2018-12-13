@@ -645,6 +645,47 @@ class NREvent {
         ];
     }
 
+    public static function artistRating($args) {
+        extract($args);
+
+        $sql = 
+        "INSERT INTO nr_artist_ratings(
+            event_id, 
+            client_id, 
+            artist_id, 
+            rating
+        )
+        VALUES(
+            $userId,
+            $artistId,
+            $eventId,
+            $rating
+        );";
+
+        return runSQLQuery($sql);
+    }
+
+    public static function clientRating($args) {
+        extract($args);
+
+        $sql = 
+        "INSERT INTO nr_client_ratings(
+            event_id, 
+            client_id, 
+            artist_id, 
+            rating
+        )
+        VALUES(
+            $userId,
+            $artistId,
+            $eventId,
+            $rating
+        );";
+
+        return runSQLQuery($sql);
+
+    }
+
     public function delete($args) {
         extract($args);
 
