@@ -28,6 +28,7 @@ class NREvent {
     public $requirements = [];
     public $fulfillment = [];
     public $artists = [];
+    public $ratings = [];
     
     public function __construct() {
         
@@ -58,7 +59,7 @@ class NREvent {
             ];
         }
 
-        try{
+        try {
             $this->id = $this->saveEventMeta();
         }
         catch(Exception $e) {
@@ -386,6 +387,44 @@ class NREvent {
                 "error_code" => 107,
                 "error" => $e
             ];
+        }
+
+        // Get ratings for event
+        try {
+            $this->getRatings();
+        }
+        catch(Exception $e) {
+            error_log($e);
+        }
+    }
+
+    private function getRatings() {
+        // Get artist ratings
+        $sql =
+        "SELECT artist_id, client_id, rating
+            FROM nr_artist_ratings
+            WHERE event_id = {$this->id};";
+
+        $res = runSQLQuery($sql);
+
+        $this->ratings["artists"] = [];
+
+        foreach($res["data"] as $rating) {
+            $this->ratings["artists"][ $rating["artist_id"] ][] = $rating["rating"];
+        }
+
+        // Get client ratings
+        $sql =
+        "SELECT artist_id, client_id, rating
+            FROM nr_client_ratings
+            WHERE event_id = {$this->id};";
+
+        $res = runSQLQuery($sql);
+
+        $this->ratings["clients"] = [];
+
+        foreach($res["data"] as $rating) {
+            $this->ratings["clients"][ $rating["client_id"] ][] = $rating["rating"];
         }
     }
 
