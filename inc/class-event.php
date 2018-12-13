@@ -347,6 +347,8 @@ class NREvent {
         if(strpos($event_package_id, ",") > -1) $event_package_id = explode(",", $event_package_id);
         else $event_package_id = [$event_package_id];
         $this->packages = $event_package_id;
+
+        if(in_array(3, $this->packages)) $this->getHours();
         
         // Get requirement properties
         for($i = 0; $i < count($this->packages); $i++) {
@@ -385,6 +387,17 @@ class NREvent {
                 "error" => $e
             ];
         }
+    }
+
+    private function getHours() {
+        $sql =
+        "SELECT event_hours_booked as hours
+            FROM nr_job_extra_hours
+            WHERE event_id = {$this->id};";
+
+        $res = runSQLQuery($sql);
+
+        $this->extraHours = $res["data"][0]["hours"];
     }
 
     private function getEventArtists() {
