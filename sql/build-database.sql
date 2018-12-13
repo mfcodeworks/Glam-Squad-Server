@@ -223,7 +223,7 @@ INSERT INTO nr_packages(
 VALUES(
     "Hair Stylist",
     "Have a hair stylist to make your hair into magic with 60 minutes of work.",
-    320.00
+    80.00
 );
 
 # MUA Extra Hours Package
@@ -234,11 +234,12 @@ INSERT INTO nr_packages(
 )
 VALUES(
     "MUA Extension",
-    "Have your makeup artist stay beyond 60 minutes at just $20 per hour. For a 6 hour event, enter 5 for extra hours and pay just $250 for a day of makeup artistry all for you!",
+    "Have your makeup artist stay beyond 60 minutes at just $20 per hour. 
+    (Example: For a 6 hour event, enter 5 for extra hours and pay just $250 for a 6 hour day of makeup artistry all for you!)",
     20.00
 );
 
-# Package A(1) Requires Makeup Artist(1) Amount 1
+# MUA Package(1) Requires Makeup Artist(1) Amount 1
 INSERT INTO nr_package_roles(
     package_id,
     role_id,
@@ -247,5 +248,17 @@ INSERT INTO nr_package_roles(
 VALUES(
     1,
     1,
+    1
+);
+
+# Hair Stylist Package(2) Requires Hair Stylist(2) Amount 1
+INSERT INTO nr_package_roles(
+    package_id,
+    role_id,
+    role_amount_required
+)
+VALUES(
+    2,
+    2,
     1
 );

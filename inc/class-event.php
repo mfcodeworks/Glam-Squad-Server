@@ -24,6 +24,7 @@ class NREvent {
     public $clientCardId;
     public $references = [];
     public $packages = [];
+    public $extraHours = 0;
     public $requirements = [];
     public $fulfillment = [];
     public $artists = [];
@@ -44,6 +45,7 @@ class NREvent {
         $this->note = $note;
         $this->price = $price;
         $this->clientId = $userId;
+        $this->extraHours = $hours;
 
         try {
             $this->clientCardId = $this->getCardId($userId, $card);
@@ -70,6 +72,7 @@ class NREvent {
         foreach($packages as $package) {
             try { 
                 $this->savePackageReference($package);
+                if($package === 3) $this->saveEventHours();
             }
             catch(Exception $e) {
                 return [
@@ -135,6 +138,20 @@ class NREvent {
             'id' => $this->id,
             'fcm' => $notification
         ];
+    }
+
+    private function saveEventHours() {
+        $sql =
+        "INSERT INTO nr_job_extra_hours(
+            event_hours_booked,
+            event_id
+        )
+        VALUES(
+            {$this->extraHours},
+            {$this->id}
+        );";
+
+        return runSQLQuery($sql);
     }
 
     private function saveEventMeta() {
