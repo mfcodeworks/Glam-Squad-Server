@@ -27,7 +27,8 @@
                 return [
                     'response' => false,
                     'error_code' => $db->errno,
-                    'error' => $db->error
+                    'error' => $db->error,
+                    'sql' => $sql
                 ];
 
             default:

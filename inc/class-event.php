@@ -695,7 +695,7 @@ class NREvent {
             rating
         )
         VALUES(
-            $eventId,s
+            $eventId,
             $userId,
             $artistId,
             $rating
