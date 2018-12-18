@@ -46,7 +46,9 @@ class NREvent {
         $this->note = $note;
         $this->price = $price;
         $this->clientId = $userId;
-        $this->extraHours = $hours;
+
+        // Set event hours
+        (isset($hours)) ? $this->extraHours = $hours : $this->extraHours = 0;
 
         try {
             $this->clientCardId = $this->getCardId($userId, $card);
@@ -408,6 +410,8 @@ class NREvent {
         $res = runSQLQuery($sql);
 
         $this->ratings["artists"] = [];
+
+        if(!isset($res["data"])) return;
 
         foreach($res["data"] as $rating) {
             $this->ratings["artists"][ $rating["artist_id"] ][] = $rating["rating"];
