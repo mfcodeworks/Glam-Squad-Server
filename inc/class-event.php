@@ -427,6 +427,8 @@ class NREvent {
 
         $this->ratings["clients"] = [];
 
+        if(!isset($res["data"])) return;
+
         foreach($res["data"] as $rating) {
             $this->ratings["clients"][ $rating["client_id"] ][] = $rating["rating"];
         }
