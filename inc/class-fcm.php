@@ -16,8 +16,32 @@ define("fcmEndpoint", "https://fcm.googleapis.com/fcm/send");
 define("fcmGroupEndpoint", "https://fcm.googleapis.com/fcm/notification");
 
 class NRFCM {
+    // FCM Headers
+    private $headers = array(
+        'Content-Type:application/json',
+        'Authorization:key=' . fcmKey,
+        'project_id:' . fcmSenderId
+    );
+
     public function __construct() {
 
+    }
+
+    public function send($payload, $endpoint) {
+        $data = json_encode($payload, JSON_PRETTY_PRINT);
+
+        error_log($data);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $endpoint);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+        return curl_exec($ch);
     }
 
     public function sendEventNotification($event) {
@@ -106,37 +130,16 @@ class NRFCM {
                 $tokens[] = $tokenObj["fcm_token"];
             }
 
-            $headers = array(
-                'Content-Type:application/json',
-                'Authorization:key=' . fcmKey,
-                'project_id:' . fcmSenderId
-            );
-
             $notificationGroup = [
                 "operation" => "create",
                 "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
                 "registration_ids" => $tokens
             ];
-
-            $postData = json_encode($notificationGroup, JSON_PRETTY_PRINT);
-
-            error_log($postData);
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, fcmGroupEndpoint);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-            $groupId = json_decode(curl_exec($ch), true)["notification_key"];
-
-            error_log($groupId);
-            $formattedDatetime = 
+            
+            $group = json_decode($this->send($notificationGroup, fcmGroupEndpoint), true)["notification_key"];
 
             $notif = [
-                "to" => $groupId,
+                "to" => $group,
                 "priority" => 'high',
                 "data" => [
                     "title" => "New Event Available",
@@ -146,19 +149,7 @@ class NRFCM {
                 ]
             ];
 
-            $postNotif = json_encode($notif, JSON_PRETTY_PRINT);
-
-            error_log($postNotif);
-            
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, fcmEndpoint);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postNotif);
-            $fcmResponses[] = curl_exec($ch);
+            $fcmResponses[] = $this->send($notif, fcmEndpoint);
         }
 
         return [
