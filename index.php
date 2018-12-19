@@ -292,6 +292,20 @@
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
+		case "event-client-attendance":
+			// Save client attendance
+			$data = NREvent::saveClientAttendance($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
+		case "event-artist-attendance":
+			// Save artist attendance
+			$data = NREvent::saveArtistAttendance($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
 		case "roles-get":
 			// Get available artist roles
 			$data = NRArtist::getRoles();

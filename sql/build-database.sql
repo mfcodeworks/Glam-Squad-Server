@@ -135,6 +135,26 @@ CREATE TABLE IF NOT EXISTS nr_job_reminders(
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id)
 );
 
+# Glam Squad Client Attendance (1 (Event), 1 (Client))
+CREATE TABLE IF NOT EXISTS nr_job_client_attendance(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    event_id BIGINT NOT NULL,
+    client_id BIGINT NOT NULL,
+    attendance BIT NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
+    FOREIGN KEY (client_id) REFERENCES nr_clients(id)
+);
+
+# Glam Squad Artist Attendance (1 (Event), 1 (Artist))
+CREATE TABLE IF NOT EXISTS nr_job_client_attendance(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    event_id BIGINT NOT NULL,
+    artist_id BIGINT NOT NULL,
+    attendance BIT NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id)
+);
+
 # Glam Squad Event Packages (1 (MUA Package); 1 (Event))
 CREATE TABLE IF NOT EXISTS nr_job_packages(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

@@ -609,6 +609,42 @@ class NREvent {
         return runSQLQuery($sql);
     }
 
+    public static function saveClientAttendance($args) {
+        extract($args);
+
+        $sql = 
+        "INSERT INTO nr_job_client_attendance(
+            event_id, 
+            client_id,
+            attendance
+        )
+        VALUES(
+            $eventId, 
+            $clientId,
+            $attendance
+        );";
+
+        return runSQLQuery($sql);
+    }
+
+    public static function saveArtistAttendance($args) {
+        extract($args);
+
+        $sql = 
+        "INSERT INTO nr_job_artist_attendance(
+            event_id, 
+            artist_id,
+            attendance
+        )
+        VALUES(
+            $eventId, 
+            $artistId,
+            $attendance
+        );";
+
+        return runSQLQuery($sql);
+    }
+
     public function update($args) {
         extract($args);
 
