@@ -61,7 +61,7 @@
 	
 			// Try to send reminder notification
 			try {
-				$fcm->send($notification, fcmEndpoint);
+				$fcm->send($notification, FCM_NOTIFICATION_ENDPOINT);
 				setReminderSent($event->id);
 			}
 			catch(Exception $e) {

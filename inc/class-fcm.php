@@ -10,17 +10,12 @@
 
 require_once "database-interface.php";
 
-define("fcmKey", "AIzaSyAwxC-XPBcbfQxVzmHzwPNQCWCuM-TiAoc");
-define('fcmSenderId', '427808297057');
-define("fcmEndpoint", "https://fcm.googleapis.com/fcm/send");
-define("fcmGroupEndpoint", "https://fcm.googleapis.com/fcm/notification");
-
 class NRFCM {
     // FCM Headers
     private $headers = array(
         'Content-Type:application/json',
-        'Authorization:key=' . fcmKey,
-        'project_id:' . fcmSenderId
+        'Authorization:key=' . FCM_KEY,
+        'project_id:' . FCM_SENDER_ID
     );
 
     public function __construct() {
@@ -136,7 +131,7 @@ class NRFCM {
                 "registration_ids" => $tokens
             ];
             
-            $group = json_decode($this->send($notificationGroup, fcmGroupEndpoint), true)["notification_key"];
+            $group = json_decode($this->send($notificationGroup, FCM_GROUP_ENDPOINT), true)["notification_key"];
 
             $notif = [
                 "to" => $group,
@@ -149,7 +144,7 @@ class NRFCM {
                 ]
             ];
 
-            $fcmResponses[] = $this->send($notif, fcmEndpoint);
+            $fcmResponses[] = $this->send($notif, FCM_NOTIFICATION_ENDPOINT);
         }
 
         return [

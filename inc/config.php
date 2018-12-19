@@ -21,4 +21,10 @@ define("SMTP_PORT", 587);
 
 // Define distance constant
 define("JOB_DISTANCE", 30);
+
+// FCM Data
+define("FCM_KEY", "AIzaSyAwxC-XPBcbfQxVzmHzwPNQCWCuM-TiAoc");
+define('FCM_SENDER_ID', '427808297057');
+define("FCM_NOTIFICATION_ENDPOINT", "https://fcm.googleapis.com/fcm/send");
+define("FCM_GROUP_ENDPOINT", "https://fcm.googleapis.com/fcm/notification");
 ?>
