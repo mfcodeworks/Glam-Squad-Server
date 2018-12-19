@@ -21,7 +21,7 @@
         FROM nr_jobs as j 
         LEFT JOIN nr_client_receipts as r ON j.id = r.event_id 
         WHERE r.event_id IS NULL
-        AND TIMESTAMPDIFF(MINUTE, NOW(), event_datetime) <= -60;";
+        AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= -60;";
 		
 	// Get list of events
 	$query = runSQLQuery($sql);
