@@ -128,6 +128,13 @@ CREATE TABLE IF NOT EXISTS nr_jobs(
     FOREIGN KEY (client_card_id) REFERENCES nr_payment_cards(id)
 );
 
+# Glam Squad Event Reminders (1 (Event))
+CREATE TABLE IF NOT EXISTS nr_job_reminders(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    event_id BIGINT NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id)
+);
+
 # Glam Squad Event Packages (1 (MUA Package); 1 (Event))
 CREATE TABLE IF NOT EXISTS nr_job_packages(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
