@@ -271,6 +271,13 @@
 			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 			break;
 
+		case "event-recently-completed":
+			// Handle fetch recently completed events
+			$data = NREvent::getRecentlyCompletedEvents($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
+
 		case "event-packages-get":
 			// Get event packages
 			$data = NREvent::getPackages();

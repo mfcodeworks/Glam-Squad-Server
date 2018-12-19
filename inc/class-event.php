@@ -645,6 +645,55 @@ class NREvent {
         return runSQLQuery($sql);
     }
 
+    public static function getRecentlyCompletedEvents($args) {
+        extract($args);
+
+        switch($type) {
+            case "client":
+                // Get recently completed, unpaid jobs for client
+                $sql = 
+                "SELECT j.id 
+                    FROM nr_jobs as j 
+                    LEFT JOIN nr_client_receipts as r ON j.id = r.event_id 
+                    WHERE r.event_id IS NULL
+                    AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= 0
+                    AND j.client_id = $userId;";
+
+                $data = runSQLQuery($sql);
+
+                if(!isset($data["data"])) return $data;
+
+                for($i = 0; $i < count($data["data"]); $i++) {
+                    $event = new NREvent();
+                    $data["data"][0] = $event->getSingle($data["data"][0]["id"]);
+                }
+                return $data;
+                break;
+
+            case "artist":
+                // Get recently completed, unpaid jobs for artist
+                $sql = 
+                "SELECT j.id 
+                    FROM nr_jobs as j 
+                    LEFT JOIN nr_client_receipts as r ON j.id = r.event_id
+                    LEFT JOIN nr_artist_jobs as a ON j.id = a.event_id
+                    WHERE r.event_id IS NULL
+                    AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= 0
+                    AND a.artist_id = $userId;";
+
+                $data = runSQLQuery($sql);
+
+                if(!isset($data["data"])) return $data;
+
+                for($i = 0; $i < count($data["data"]); $i++) {
+                    $event = new NREvent();
+                    $data["data"][0] = $event->getSingle($data["data"][0]["id"]);
+                }
+                return $data;
+                break;
+        }
+    }
+
     public function update($args) {
         extract($args);
 
