@@ -40,6 +40,14 @@ class NRArtist {
     public function register($args) {
         extract($args);
 
+        if(!in_array($country, COUNTRIES)) {
+            return [
+                "response" => false,
+                "error_code" => 601,
+                "error" => "NR Glam Squad not available in your country at the moment."
+            ];
+        }
+
         // Hash password
         $password = $this->hashInput($password);
 
