@@ -326,14 +326,15 @@ EOD;
         ];
     }
 
-    public function savePaymentInfo($args) {
+    public function saveStripeInfo($args) {
         extract($args);
 
-        $sql;
-
-        $res = runSQLQuery($sql);
-
-        return $res;
+        $sql = 
+        "UPDATE nr_artists
+            SET stripe_account_token = \"$token\"
+            WHERE id = $userId";
+            
+        return runSQLQuery($sql);
     }
 
     public function saveLocation($args) {

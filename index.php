@@ -205,7 +205,13 @@
 			break;
 
 		case "artist-stripe-id":
-			// TODO: Handle saving artist stripe ID
+			// Handle saving artist stripe ID
+			$artist = new NRArtist();
+
+			$data = $artist->saveStripeInfo($form);
+
+			echo json_encode($data, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+			break;
 
 		case "fcm-token-registration":
 			// Handle FCM Token Saving
