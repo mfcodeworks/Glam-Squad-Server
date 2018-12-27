@@ -665,10 +665,10 @@ class NREvent {
 
                 for($i = 0; $i < count($data["data"]); $i++) {
                     $event = new NREvent();
-                    $data["data"][0] = $event->getSingle($data["data"][0]["id"]);
+                    $event->getSingle($data["data"][$i]["id"]);
+                    $data["data"][$i] = $event;
                 }
                 return $data;
-                break;
 
             case "artist":
                 // Get recently completed, unpaid jobs for artist
@@ -685,12 +685,17 @@ class NREvent {
 
                 if(!isset($data["data"])) return $data;
 
+                error_log(json_encode($data));
+
                 for($i = 0; $i < count($data["data"]); $i++) {
                     $event = new NREvent();
-                    $data["data"][0] = $event->getSingle($data["data"][0]["id"]);
+                    $event->getSingle($data["data"][$i]["id"]);
+                    $data["data"][$i] = $event;
                 }
+
+                error_log(json_encode($data));
+
                 return $data;
-                break;
         }
     }
 
