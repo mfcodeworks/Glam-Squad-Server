@@ -659,7 +659,9 @@ class NREvent {
                 "SELECT j.id 
                     FROM nr_jobs as j 
                     LEFT JOIN nr_client_receipts as r ON j.id = r.event_id 
+                    LEFT JOIN nr_job_artist_attendance as ja ON j.id = ja.event_id
                     WHERE r.event_id IS NULL
+                    AND ja.artist_id != $userId
                     AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= 0
                     AND j.client_id = $userId;";
 
@@ -675,13 +677,15 @@ class NREvent {
                 return $data;
 
             case "artist":
-                // Get recently completed, unpaid jobs for artist
+                // Get recently completed, unpaid jobs for artist where the artist hasn't confirmed the event
                 $sql = 
                 "SELECT j.id 
                     FROM nr_jobs as j 
                     LEFT JOIN nr_client_receipts as r ON j.id = r.event_id
                     LEFT JOIN nr_artist_jobs as a ON j.id = a.event_id
+                    LEFT JOIN nr_job_client_attendance as ja ON j.id = ja.event_id
                     WHERE r.event_id IS NULL
+                    AND ja.artist_id != $userId
                     AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= 0
                     AND a.artist_id = $userId;";
 

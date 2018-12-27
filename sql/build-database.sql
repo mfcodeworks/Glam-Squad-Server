@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS nr_job_client_attendance(
 );
 
 # Glam Squad Artist Attendance (1 (Event), 1 (Artist))
-CREATE TABLE IF NOT EXISTS nr_job_client_attendance(
+CREATE TABLE IF NOT EXISTS nr_job_artist_attendance(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
