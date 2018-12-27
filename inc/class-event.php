@@ -778,7 +778,7 @@ class NREvent {
                 // Send client notification
                 if($res["response"] === true) {
                     $notif = [
-                        "topic" => "event-{$event->id}-client",
+                        "to" => "/topics/event-{$event->id}-client",
                         "priority" => 'high',
                         "data" => [
                             "title" => "New Artist",
@@ -790,7 +790,7 @@ class NREvent {
                     $fcm = new NRFCM();
                     $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
                 }
-                
+
                 // Return SQL response
                 return $res;
             }
