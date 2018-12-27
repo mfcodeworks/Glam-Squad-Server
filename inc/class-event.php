@@ -697,8 +697,6 @@ class NREvent {
 
                 if(!isset($data["data"])) return $data;
 
-                error_log(json_encode($data));
-
                 for($i = 0; $i < count($data["data"]); $i++) {
                     // Check if attendance already sent 
                     $sql = "SELECT * FROM nr_job_client_attendance WHERE event_id = {$data["data"][$i]["id"]} AND artist_id = $userId;";
@@ -712,8 +710,6 @@ class NREvent {
                     $event->getSingle($data["data"][$i]["id"]);
                     $data["data"][$i] = $event;
                 }
-
-                error_log(json_encode($data));
 
                 return $data;
         }
