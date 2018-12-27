@@ -658,10 +658,8 @@ class NREvent {
                 $sql = 
                 "SELECT j.id 
                     FROM nr_jobs as j 
-                    LEFT JOIN nr_client_receipts as r ON j.id = r.event_id 
-                    LEFT JOIN nr_job_artist_attendance as ja ON j.id = ja.event_id
+                    LEFT JOIN nr_client_receipts as r ON j.id = r.event_id
                     WHERE r.event_id IS NULL
-                    AND ja.artist_id != $userId
                     AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= 0
                     AND j.client_id = $userId;";
 
@@ -670,6 +668,14 @@ class NREvent {
                 if(!isset($data["data"])) return $data;
 
                 for($i = 0; $i < count($data["data"]); $i++) {
+                    // Check if attendance already sent 
+                    $sql = "SELECT * FROM nr_job_artist_attendance WHERE event_id = {$data["data"][$i]["id"]} AND client_id = $userId;";
+                    $check = runSQLQuery($sql);
+                    if(isset($check["data"])) {
+                        unset($data["data"][$i]);
+                        break;
+                    }
+
                     $event = new NREvent();
                     $event->getSingle($data["data"][$i]["id"]);
                     $data["data"][$i] = $event;
@@ -683,11 +689,9 @@ class NREvent {
                     FROM nr_jobs as j 
                     LEFT JOIN nr_client_receipts as r ON j.id = r.event_id
                     LEFT JOIN nr_artist_jobs as a ON j.id = a.event_id
-                    LEFT JOIN nr_job_client_attendance as ja ON j.id = ja.event_id
                     WHERE r.event_id IS NULL
-                    AND ja.artist_id != $userId
                     AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= 0
-                    AND a.artist_id = $userId;";
+                    AND a.artist_id = 2;";
 
                 $data = runSQLQuery($sql);
 
@@ -696,6 +700,14 @@ class NREvent {
                 error_log(json_encode($data));
 
                 for($i = 0; $i < count($data["data"]); $i++) {
+                    // Check if attendance already sent 
+                    $sql = "SELECT * FROM nr_job_client_attendance WHERE event_id = {$data["data"][$i]["id"]} AND artist_id = $userId;";
+                    $check = runSQLQuery($sql);
+                    if(isset($check["data"])) {
+                        unset($data["data"][$i]);
+                        break;
+                    }
+
                     $event = new NREvent();
                     $event->getSingle($data["data"][$i]["id"]);
                     $data["data"][$i] = $event;
