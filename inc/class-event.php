@@ -616,11 +616,13 @@ class NREvent {
         "INSERT INTO nr_job_client_attendance(
             event_id, 
             client_id,
+            artist_id,
             attendance
         )
         VALUES(
             $eventId, 
             $clientId,
+            $userId,
             $attendance
         );";
 
@@ -633,11 +635,13 @@ class NREvent {
         $sql = 
         "INSERT INTO nr_job_artist_attendance(
             event_id, 
+            client_id,
             artist_id,
             attendance
         )
         VALUES(
             $eventId, 
+            $userId,
             $artistId,
             $attendance
         );";
@@ -768,7 +772,27 @@ class NREvent {
         foreach($event->requirements as $role => $required) {
             // If the role being check is the artists role and the requirement is greater than whats fulfilled, save event
             if($role === $artist->role["name"] && $event->requirements[$role] > $event->fulfillment[$role]) {
-                return runSQLQuery($sql);
+                // Run SQL
+                $res = runSQLQuery($sql);
+                
+                // Send client notification
+                if($res["response"] === true) {
+                    $notif = [
+                        "topic" => "event-{$event->id}-client",
+                        "priority" => 'high',
+                        "data" => [
+                            "title" => "New Artist",
+                            "message" => "Artist {$artist->username} has accepted the booking at {$event->address}",
+                            'content-available'  => '1',
+                            "image" => 'logo'
+                        ]
+                    ];
+                    $fcm = new NRFCM();
+                    $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
+                }
+                
+                // Return SQL response
+                return $res;
             }
         }
 
