@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS  nr_clients(
 );
 
 # Glam Squad Artist Accounts
+# FIXME: Removed UNIQUE from stripe_account_token for testing purposes
 CREATE TABLE IF NOT EXISTS nr_artists(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
@@ -54,7 +55,7 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     twitter VARCHAR(255),
     instagram VARCHAR(255),
     rating TINYINT,
-    stripe_account_token VARCHAR(255) UNIQUE,
+    stripe_account_token VARCHAR(255), 
     role_id BIGINT,
     probation BIT,
     locked BIT,
@@ -242,10 +243,9 @@ CREATE TABLE IF NOT EXISTS nr_artist_payments(
     artist_payment_amount DECIMAL(13,4) NOT NULL,
     event_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
-    artist_stripe_account_token VARCHAR(255) NOT NULL,
+    artist_stripe_account VARCHAR(255) NOT NULL,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
-    FOREIGN KEY (artist_id) REFERENCES nr_artists(id),
-    FOREIGN KEY (artist_stripe_account_token) REFERENCES nr_artists(stripe_account_token)
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id)
 );
 
 # MUA Role
