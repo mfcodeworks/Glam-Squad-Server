@@ -7,7 +7,7 @@
     ignore_user_abort(true);
 
     require_once "inc/config.php";
-    require_once "inc/class-resmushit.php";
+    require_once "inc/NRResmushIt.php";
 
     $photos = $_POST;
 

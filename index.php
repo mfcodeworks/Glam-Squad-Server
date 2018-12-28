@@ -10,14 +10,14 @@
 
 	// Require classes
 	require_once PROJECT_INC . "config.php";
-	require_once PROJECT_INC . "class-client.php";
-	require_once PROJECT_INC . "class-artist.php";
-	require_once PROJECT_INC . "class-fcm.php";
-	require_once PROJECT_INC . "class-event.php";
-	require_once PROJECT_INC . "class-package.php";
-	require_once PROJECT_INC . "class-db-image.php";
-	require_once PROJECT_INC . "class-degree-distance-finder.php";
-	require_once PROJECT_INC . "mail.php";
+	require_once PROJECT_INC . "DegreeDistanceFinder.php";
+	require_once PROJECT_INC . "Mailer.php";
+	require_once PROJECT_INC . "NRArtist.php";
+	require_once PROJECT_INC . "NRClient.php";
+	require_once PROJECT_INC . "NREvent.php";
+	require_once PROJECT_INC . "NRFCM.php";
+	require_once PROJECT_INC . "NRImage.php";
+	require_once PROJECT_INC . "NRPackage.php";
 
 	// If request has HMAC header
 	if(isset($_SERVER["HTTP_NR_HASH"])) {

@@ -9,7 +9,7 @@
  */
 
 require_once "database-interface.php";
-require_once "class-resmushit.php";
+require_once "NRResmushIt.php";
 
 class NREvent {
     // properties
