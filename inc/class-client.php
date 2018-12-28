@@ -113,7 +113,11 @@ class NRClient {
 
         // If no rows found matching username, return and let client handle error
         if(!isset($response["data"])) {
-            return $response;
+            return [
+                "response" => false,
+                "error_code" => 205,
+                "error" => "Incorrect login details"
+            ];
         }
 
         // Verify password and password hash
