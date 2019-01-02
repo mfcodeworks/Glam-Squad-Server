@@ -458,7 +458,16 @@ class NREvent {
         foreach($res['data'] as $artistId) {
             $artist = new NRArtist();
             $artist->get(["userId" => $artistId['artist_id']]);
+
+            // Remove irrelevant information
             unset($artist->usernameHash);
+            unset($artist->bookings);
+            unset($artist->fcmTokens);
+            unset($artist->fcmTopics);
+            unset($artist->locations);
+            unset($artist->receipts);
+            unset($artist->stripe_account_token);
+
             $this->fulfillment[$artist->role["name"]]++;
             $this->artists[] = $artist;
         }
