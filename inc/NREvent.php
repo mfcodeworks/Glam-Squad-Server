@@ -677,15 +677,10 @@ class NREvent {
                         WHERE event_id = {$data["data"][$i]["id"]} 
                         AND client_id = $userId;";
                     $check = runSQLQuery($sql);
-                    error_log(print_r($check, true));
-                    
                     if(isset($check["data"])) {
                         unset($data["data"][$i]);
-                        break;
+                        continue;
                     }
-
-                    error_log("Found job without attendance taken");
-
                     $event = new static();
                     error_log("Getting event {$data["data"][$i]["id"]}");
                     $event->getSingle($data["data"][$i]["id"]);
@@ -718,7 +713,7 @@ class NREvent {
                     $check = runSQLQuery($sql);
                     if(isset($check["data"])) {
                         unset($data["data"][$i]);
-                        break;
+                        continue;
                     }
 
                     $event = new NREvent();
