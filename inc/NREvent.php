@@ -667,9 +667,6 @@ class NREvent {
 
                 if(!isset($data["data"])) return $data;
 
-                error_log("Recently completed events found");
-                error_log(print_r($data, true));
-
                 // Set count before events get removed
                 $count = count($data["data"]);
 
@@ -679,20 +676,22 @@ class NREvent {
                     "SELECT * FROM nr_job_artist_attendance 
                         WHERE event_id = {$data["data"][$i]["id"]} 
                         AND client_id = $userId;";
-                    error_log($sql);
+                        
                     $check = runSQLQuery($sql);
-                    error_log(print_r($check, true));
+                    
                     if(isset($check["data"])) {
                         unset($data["data"][$i]);
                         continue;
                     }
 
                     $event = new NREvent();
-                    error_log("Getting event {$data["data"][$i]["id"]}");
                     $event->getSingle($data["data"][$i]["id"]);
                     $data["data"][$i] = $event;
                 }
-                error_log(print_r($data, true));
+
+                // Reindex events array after possible event deletion
+                $data["data"] = array_values($data["data"]);
+                
                 return $data;
 
             case "artist":
@@ -719,7 +718,9 @@ class NREvent {
                     "SELECT * FROM nr_job_client_attendance 
                         WHERE event_id = {$data["data"][$i]["id"]} 
                         AND artist_id = $userId;";
+
                     $check = runSQLQuery($sql);
+
                     if(isset($check["data"])) {
                         unset($data["data"][$i]);
                         continue;
@@ -730,6 +731,9 @@ class NREvent {
                     $data["data"][$i] = $event;
                 }
 
+                // Reindex events array after possible event deletion
+                $data["data"] = array_values($data["data"]);
+                
                 return $data;
         }
     }
