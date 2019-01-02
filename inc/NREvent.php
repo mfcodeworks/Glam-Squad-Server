@@ -458,6 +458,7 @@ class NREvent {
         foreach($res['data'] as $artistId) {
             $artist = new NRArtist();
             $artist->get(["userId" => $artistId['artist_id']]);
+            unset($artist->usernameHash);
             $this->fulfillment[$artist->role["name"]]++;
             $this->artists[] = $artist;
         }
@@ -728,6 +729,7 @@ class NREvent {
 
                     $event = new NREvent();
                     $event->getSingle($data["data"][$i]["id"]);
+
                     $data["data"][$i] = $event;
                 }
 
