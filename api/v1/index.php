@@ -36,11 +36,11 @@
         return $response->write(json_encode(`Hello {$args["name"]} Saved`));
     });
     // Put /hello/[name of object to update]
-    $api->post('/hello/{name}', function($request, $response, $args) {
+    $api->put('/hello/{name}', function($request, $response, $args) {
         return $response->write(json_encode(`Hello {$args["name"]} Updated`));
     });
     // Delete /hello/[name of object to delete]
-    $api->post('/hello/{name}', function($request, $response, $args) {
+    $api->delete('/hello/{name}', function($request, $response, $args) {
         return $response->write(json_encode(`Hello {$args["name"]} Deleted`));
     });
 
