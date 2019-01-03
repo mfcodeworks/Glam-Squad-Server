@@ -25,7 +25,29 @@
 	 */
     $api = new \Slim\App;
 
-    // Define app routes
+    // HMAC check for queries 
+    $api->add(function ($request, $response, $next) {
+        // Get HMAC sent with request
+        $hmac = $request->getHeader("NR_HASH");
+
+        // Calculate HMAC of message with API key
+        $hash = hash_hmac('sha512', $request->getBody(), API_SECRET);
+
+        // If HMAC is correct proceed
+        if($hash === $hmac) {
+            return $next($request, $response);
+        // If HMAC incorrect return 401 Unauthorized
+        } else {
+            return $response->withStatus(401)
+                ->withHeader("NR-HASH", $hash)
+                ->write("No Authorization Header");
+        }
+    });
+
+    /** 
+     * FIXME: Test routes
+     * Define sample app routes
+     */
 
     // Get /hello/[name of hello object to retreieve]
     $api->get('/hello/{name}', function($request, $response, $args) {
@@ -43,6 +65,10 @@
     $api->delete('/hello/{name}', function($request, $response, $args) {
         return $response->getBody()->write(json_encode("Hello {$args["name"]} Deleted"));
     });
+
+    /**
+     * API: Production routes for Glam Squad API
+     */
 
     // Run API
     $api->run();
