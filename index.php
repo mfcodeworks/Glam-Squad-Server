@@ -18,23 +18,28 @@
 	require_once PROJECT_INC . "NRFCM.php";
 	require_once PROJECT_INC . "NRImage.php";
 	require_once PROJECT_INC . "NRPackage.php";
+	require_once PROJECT_LIB . "autoload.php";
 
 	// If request has HMAC header
 	if(isset($_SERVER["HTTP_NR_HASH"])) {
-		// Save form
-		$form = json_decode(file_get_contents('php://input'), true);
 
 		// Verify HMAC
 		$hash = hash_hmac('sha512', file_get_contents('php://input'), API_SECRET);
 		header("NR-Hash: $hash");
 
 		// If invalid HMAC, nullify form
-		if($hash != $_SERVER["HTTP_NR_HASH"]) 
+		if($hash === $_SERVER["HTTP_NR_HASH"]) {
+			// Decode form
+			$form = json_decode(file_get_contents('php://input'), true);
+		} else {
+			// Nullify form
+			http_response_code(401);
 			$form = null;
-	}
-	else {
-		echo json_encode("No authorization header present.");
-		die();
+		}
+
+	} else {
+		http_response_code(401);
+		die(json_encode("No authorization header present."));
 	}
 
 	// Handle form by context
