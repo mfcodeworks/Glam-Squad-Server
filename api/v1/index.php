@@ -29,19 +29,19 @@
 
     // Get /hello/[name of hello object to retreieve]
     $api->get('/hello/{name}', function($request, $response, $args) {
-        return $response->getBody()->write(json_encode(`Hello {$args["name"]}`));
+        return $response->getBody()->write(json_encode("Hello {$args["name"]}"));
     });
     // Post /hello/[name of object to save]
     $api->post('/hello/{name}', function($request, $response, $args) {
-        return $response->getBody()->write(json_encode(`Hello {$args["name"]} Saved`));
+        return $response->getBody()->write(json_encode("Hello {$args["name"]} Saved"));
     });
     // Put /hello/[name of object to update]
     $api->put('/hello/{name}', function($request, $response, $args) {
-        return $response->getBody()->write(json_encode(`Hello {$args["name"]} Updated`));
+        return $response->getBody()->write(json_encode("Hello {$args["name"]} Updated"));
     });
     // Delete /hello/[name of object to delete]
     $api->delete('/hello/{name}', function($request, $response, $args) {
-        return $response->getBody()->write(json_encode(`Hello {$args["name"]} Deleted`));
+        return $response->getBody()->write(json_encode("Hello {$args["name"]} Deleted"));
     });
 
     // Run API
