@@ -622,6 +622,8 @@ class NREvent {
     public static function saveClientAttendance($args) {
         extract($args);
 
+        ($attendance) ? $attendance = 1 : $attendance = 0;
+
         $sql = 
         "INSERT INTO nr_job_client_attendance(
             event_id, 
@@ -641,6 +643,8 @@ class NREvent {
 
     public static function saveArtistAttendance($args) {
         extract($args);
+
+        ($attendance) ? $attendance = 1 : $attendance = 0;
 
         $sql = 
         "INSERT INTO nr_job_artist_attendance(
