@@ -143,27 +143,23 @@ CREATE TABLE IF NOT EXISTS nr_job_confirmation_reminders(
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id)
 );
 
-# Glam Squad Client Attendance (1 (Event), 1 (Client), 1 (Artist))
+# Glam Squad Client Attendance (1 (Event), 1 (Client), 1 (Attendance))
 CREATE TABLE IF NOT EXISTS nr_job_client_attendance(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
     attendance BIT NOT NULL,
-    artist_id BIGINT NOT NULL,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
-    FOREIGN KEY (client_id) REFERENCES nr_clients(id),
-    FOREIGN KEY (artist_id) REFERENCES nr_artists(id)
+    FOREIGN KEY (client_id) REFERENCES nr_clients(id)
 );
 
-# Glam Squad Artist Attendance (1 (Event), 1 (Artist))
+# Glam Squad Artist Attendance (1 (Event), 1 (Artist), 1 (Attendance))
 CREATE TABLE IF NOT EXISTS nr_job_artist_attendance(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
-    client_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
     attendance BIT NOT NULL,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
-    FOREIGN KEY (client_id) REFERENCES nr_clients(id),
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id)
 );
 

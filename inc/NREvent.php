@@ -628,12 +628,10 @@ class NREvent {
         "INSERT INTO nr_job_client_attendance(
             event_id, 
             client_id,
-            artist_id,
             attendance
         )
         VALUES(
             $eventId, 
-            $clientId,
             $userId,
             $attendance
         );";
@@ -648,15 +646,13 @@ class NREvent {
 
         $sql = 
         "INSERT INTO nr_job_artist_attendance(
-            event_id, 
-            client_id,
+            event_id,
             artist_id,
             attendance
         )
         VALUES(
             $eventId, 
             $userId,
-            $artistId,
             $attendance
         );";
 
