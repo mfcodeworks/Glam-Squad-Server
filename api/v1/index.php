@@ -73,17 +73,34 @@
      * API: Production routes for Glam Squad API
      */
     $api->post('/client', function($request, $response, $args) {
-        $return = $request->getParsedBody();
-        //$return = json_encode(
-        //    (new NRClient)->register($form["username"], $form["email"], $form["password"]), 
-        //    JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
-        //);
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Create return variable from NRClient response
+        $return = json_encode(
+            (new NRClient)->register($form["username"], $form["email"], $form["password"]), 
+            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+        );
 
         return $response->getBody()->write($return);
     });
     $api->post('/client/authenticate', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Create return variable from NRClient response
         $return = json_encode(
             (new NRClient)->register($form["username"], $form["email"], $form["password"]), 
+            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+        );
+
+        return $response->getBody()->write($return);
+    });
+
+    $api->get('/client/{userId}', function($request, $response, $args) {
+        // Get client from ID
+        $return = json_encode(
+            (new NRClient)->get($args), 
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
