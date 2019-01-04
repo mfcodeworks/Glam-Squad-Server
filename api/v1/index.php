@@ -47,30 +47,8 @@
      *  });
      */
 
-    /** 
-     * FIXME: Test routes
-     * Define sample app routes
-     */
-
-    // Get /hello/[name of hello object to retreieve]
-    $api->get('/hello/{name}', function($request, $response, $args) {
-        return $response->getBody()->write(json_encode("Hello {$args["name"]}"));
-    });
-    // Post /hello/[name of object to save]
-    $api->post('/hello', function($request, $response, $args) {
-        return $response->getBody()->write(json_encode($request->getParsedBody(), JSON_PRETTY_PRINT));
-    });
-    // Put /hello/[name of object to update]
-    $api->put('/hello/{name}', function($request, $response, $args) {
-        return $response->getBody()->write(json_encode("Hello {$args["name"]} Updated"));
-    });
-    // Delete /hello/[name of object to delete]
-    $api->delete('/hello/{name}', function($request, $response, $args) {
-        return $response->getBody()->write(json_encode("Hello {$args["name"]} Deleted"));
-    });
-
     /**
-     * API: Production routes for Glam Squad API
+     * CLIENT: Client Class Functions
      */
     $api->post('/client', function($request, $response, $args) {
         // Get POST form
@@ -96,11 +74,22 @@
 
         return $response->getBody()->write($return);
     });
-
     $api->get('/client/{userId}', function($request, $response, $args) {
         // Get client from ID
         $return = json_encode(
             (new NRClient)->get($args), 
+            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+        );
+
+        return $response->getBody()->write($return);
+    });
+    $api->put('/client/{userId}', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Update Client Info 
+        $return = json_encode(
+            (new NRClient)->update($form),
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
