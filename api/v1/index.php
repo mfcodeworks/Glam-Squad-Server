@@ -90,7 +90,7 @@
 
         // Create return variable from NRClient response
         $return = json_encode(
-            (new NRClient)->register($form["username"], $form["email"], $form["password"]), 
+            (new NRClient)->authenticate($form["username"], $form["password"]), 
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
