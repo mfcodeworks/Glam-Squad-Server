@@ -44,7 +44,7 @@ class NREvent {
         $this->address = $address;
         $this->lat = $lat;
         $this->lng = $lng;
-        $this->datetime = date("Y-m-d H:i:s", strtotime($datetime));
+        $this->datetime = date("Y-m-d H:i:s", $datetime);
         $this->note = $note;
         $this->price = $price;
         $this->clientId = $userId;
