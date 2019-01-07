@@ -50,7 +50,7 @@
      */
 
     /**
-     * CLIENT: Client Class Functions
+     * CLIENT: Client Functions
      */
     $api->post('/clients', function($request, $response, $args) {
         // Get POST form
@@ -117,7 +117,7 @@
     });
 
     /**
-     * ARTIST: Artist Class Functions
+     * ARTIST: Artist Functions
      */
     $api->post('/artists', function($request, $response, $args) {
         // Get POST form
@@ -190,6 +190,20 @@
         $return = (new NRArtist)->deleteLocation($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
+
+    /** 
+     * EVENT: Event Functions
+     */
+    $api->post('/events/{id}/apply', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+
+        // Artist apply for job
+        $return = (new NREvent)->apply($form);
     });
 
     // Run API

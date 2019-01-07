@@ -792,10 +792,10 @@ class NREvent {
         extract($args);
 
         $event = new NREvent();
-        $event->getSingle($eventId);
+        $event->getSingle($id);
 
         $artist = new NRArtist();
-        $artist->get(["userId" => $userId]);
+        $artist->get(["id" => $userId]);
 
         $sql = 
         "INSERT INTO nr_artist_jobs(event_id, artist_id)
