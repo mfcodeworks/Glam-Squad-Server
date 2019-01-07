@@ -344,8 +344,8 @@ EOD;
 
         $sql =
         "DELETE FROM nr_artist_locations
-        WHERE artist_id = $userId
-        AND id = $locId;";
+        WHERE artist_id = $id
+        AND id = $loc_id;";
 
         return runSQLQuery($sql);
     }

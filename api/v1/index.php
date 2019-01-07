@@ -171,7 +171,7 @@
         // Merge form and URL arguments
         $form["id"] = $args["id"];
 
-        // Validate Artist Session 
+        // Save Artist Location
         $return = (new NRArtist)->saveLocation($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
@@ -179,9 +179,15 @@
     $api->get('/artists/{id}/locations', function($request, $response, $args) {
         // Merge form and URL arguments
         $form["id"] = $args["id"];
-        
+
         // Get Artist Locations
         $return = (new NRArtist)->getLocations($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
+    $api->delete('/artists/{id}/locations/{loc_id}', function($request, $response, $args) {
+        // Delete Artist Location
+        $return = (new NRArtist)->deleteLocation($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
