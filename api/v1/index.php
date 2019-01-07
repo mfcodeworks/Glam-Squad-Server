@@ -195,6 +195,15 @@
     /** 
      * EVENT: Event Functions
      */
+    $api->post('/events', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Create new event 
+        $return = (new NREvent)->save($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
     $api->post('/events/{id}/apply', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();
@@ -204,6 +213,8 @@
 
         // Artist apply for job
         $return = (new NREvent)->apply($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
 
     // Run API
