@@ -219,6 +219,12 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
+    $api->get('/events/{id: [0-9]+}', function($request, $response, $args) {
+        // Get Artist Locations
+        $return = (new NREvent)->getSingle($args["id"]);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
     $api->post('/events/{id: [0-9]+}/apply', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();
