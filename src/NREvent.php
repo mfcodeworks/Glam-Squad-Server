@@ -564,13 +564,9 @@ class NREvent {
 
             $res = runSQLQuery($sql);
 
-            if($res["response"] !== true || $res["response"] === true && !isset($res["data"])) {
-                return[
-                    "response" => false,
-                    "error_code" => 611,
-                    "error" => "No nearby events."
-                ];
-            }
+            error_log($sql);
+
+            if(!isset($res["data"])) continue;
 
             // Merge events near this location to event list
             foreach($res["data"] as $eventId) {
@@ -579,7 +575,12 @@ class NREvent {
         }
 
         // After loop prevent overlap
-        if(!isset($eventList)) return;
+        if(!isset($eventList)) return [
+            "response" => false,
+            "error_code" => 611,
+            "error" => "No nearby events."
+        ];
+
         $eventList = array_unique($eventList);
         $events = [];
 
