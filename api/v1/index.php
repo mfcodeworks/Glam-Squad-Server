@@ -224,7 +224,7 @@
         $form = $request->getParsedBody();
 
         // Artist cancel job booking
-        $return = (new NREvent)->apply($args);
+        $return = (new NREvent)->cancel($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
