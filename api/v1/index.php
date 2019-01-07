@@ -191,6 +191,9 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
+    $api->put('/artists/{id: [0-9]+}/portfolio', function($request, $response, $args) {
+        // TODO: Implement artist portfolio update
+    });
 
     /** 
      * EVENT: Event Functions
@@ -222,6 +225,12 @@
 
         // Artist cancel job booking
         $return = (new NREvent)->apply($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
+    $api->get('/events/new/artist/{userId}', function($request, $response, $args) {
+        // Get artist by ID
+        $return = (new NREvent)->getNew($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });

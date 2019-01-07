@@ -519,7 +519,7 @@ class NREvent {
         extract($args);
 
         $artist = new NRArtist();
-        $artist->get(["userId" => $userId]);
+        $artist->get(["id" => $userId]);
 
         $sql =
         "SELECT id, loc_lat as lat, loc_lng as lng
