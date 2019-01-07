@@ -239,7 +239,7 @@ EOD;
                 $sql = 
                 "UPDATE nr_artists
                 SET username = \"$username\", email = \"$email\"
-                WHERE id = $userId;";
+                WHERE id = $id;";
 
                 $response = runSQLQuery($sql);
                 break;
@@ -251,22 +251,13 @@ EOD;
                 $sql = 
                 "UPDATE nr_artists
                 SET username = \"$username\", email = \"$email\", password = \"$password\"
-                WHERE id = $userId;";
+                WHERE id = $id;";
 
                 $response = runSQLQuery($sql);
                 break;
         }
-        if($response["response"] == true) {
-            $sql = 
-            "SELECT * FROM nr_clients
-            WHERE id = $userId;";
-
-            $response = runSQLQuery($sql);
-
-            unset($response["data"][0]["password"]);
-            $response["data"][0]["usernameHash"] = $this->hashInput($username);
-        }
-        return $response;
+        if($response["response"] === true) return $this->get(["id" => $id]);
+        else return $response;
     }
 
     public function authenticate($username, $password) {

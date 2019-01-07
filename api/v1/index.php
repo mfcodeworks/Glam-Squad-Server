@@ -56,7 +56,7 @@
         // Get POST form
         $form = $request->getParsedBody();
 
-        // Create return variable from NRClient response
+        // Register new client
         $return = (new NRClient)->register($form["username"], $form["email"], $form["password"]);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
@@ -65,7 +65,7 @@
         // Get POST form
         $form = $request->getParsedBody();
 
-        // Create return variable from NRClient response
+        // Authenticate client
         $return = (new NRClient)->authenticate($form["username"], $form["password"]);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
@@ -123,14 +123,35 @@
         // Get POST form
         $form = $request->getParsedBody();
 
-        // Create return variable from NRAdmin response
+        // Register new artist
         $return = (new NRArtist)->register($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
+    $api->post('/artists/authenticate', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Authenticate artist
+        $return = (new NRArtist)->authenticate($form["username"], $form["password"]);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
     $api->get('/artists/{id}', function($request, $response, $args) {
-        // Get artist from ID
+        // Get artist by ID
         $return = (new NRArtist)->get($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
+    $api->put('/artists/{id}', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Merge form with URL arguments
+        $form["id"] = $args["id"];
+
+        // Update artist info
+        $return = (new NRArtist)->update($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
