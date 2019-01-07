@@ -70,13 +70,13 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->get('/clients/{id}', function($request, $response, $args) {
+    $api->get('/clients/{id: [0-9]+}', function($request, $response, $args) {
         // Get client from ID
         $return = (new NRClient)->get($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->put('/clients/{id}', function($request, $response, $args) {
+    $api->put('/clients/{id: [0-9]+}', function($request, $response, $args) {
         // Get PUT form
         $form = $request->getParsedBody();
 
@@ -88,7 +88,7 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->post('/clients/{id}/validate', function($request, $response, $args) {
+    $api->post('/clients/{id: [0-9]+}/validate', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();
 
@@ -97,7 +97,7 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->put('/clients/{id}/payment', function($request, $response, $args) {
+    $api->put('/clients/{id: [0-9]+}/payment', function($request, $response, $args) {
         // Get PUT form
         $form = $request->getParsedBody();
 
@@ -109,7 +109,7 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->delete('/clients/{id}/payment/{cardId}', function($request, $response, $args) {
+    $api->delete('/clients/{id: [0-9]+}/payment/{cardId: [0-9]+}', function($request, $response, $args) {
         // Delete Client Payment Info 
         $return = (new NRClient)->deleteCard($args);
 
@@ -137,13 +137,13 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->get('/artists/{id}', function($request, $response, $args) {
+    $api->get('/artists/{id: [0-9]+}', function($request, $response, $args) {
         // Get artist by ID
         $return = (new NRArtist)->get($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->put('/artists/{id}', function($request, $response, $args) {
+    $api->put('/artists/{id: [0-9]+}', function($request, $response, $args) {
         // Get PUT form
         $form = $request->getParsedBody();
 
@@ -155,7 +155,7 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->post('/artists/{id}/validate', function($request, $response, $args) {
+    $api->post('/artists/{id: [0-9]+}/validate', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();
 
@@ -164,7 +164,7 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->put('/artists/{id}/locations', function($request, $response, $args) {
+    $api->put('/artists/{id: [0-9]+}/locations', function($request, $response, $args) {
         // Get PUT form
         $form = $request->getParsedBody();
 
@@ -176,7 +176,7 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->get('/artists/{id}/locations', function($request, $response, $args) {
+    $api->get('/artists/{id: [0-9]+}/locations', function($request, $response, $args) {
         // Merge form and URL arguments
         $form["id"] = $args["id"];
 
@@ -185,7 +185,7 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->delete('/artists/{id}/locations/{loc_id}', function($request, $response, $args) {
+    $api->delete('/artists/{id: [0-9]+}/locations/{loc_id: [0-9]+}', function($request, $response, $args) {
         // Delete Artist Location
         $return = (new NRArtist)->deleteLocation($args);
 
@@ -204,7 +204,7 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
-    $api->post('/events/{id}/apply', function($request, $response, $args) {
+    $api->post('/events/{id: [0-9]+}/apply', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();
 
@@ -213,6 +213,15 @@
 
         // Artist apply for job
         $return = (new NREvent)->apply($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
+    $api->post('/events/{id: [0-9]+}/artist/{userId: [0-9]+}/cancel', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Artist cancel job booking
+        $return = (new NREvent)->apply($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });

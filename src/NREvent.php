@@ -309,7 +309,7 @@ class NREvent {
 
         $sql = "DELETE FROM nr_artist_jobs
             WHERE artist_id = $userId
-            AND event_id = $jobId;";
+            AND event_id = $id;";
 
         return runSQLQuery($sql);
     }
