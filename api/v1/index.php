@@ -59,7 +59,7 @@
         // Create return variable from NRClient response
         $return = (new NRClient)->register($form["username"], $form["email"], $form["password"]);
 
-        return $response->withJson($return);
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
     $api->post('/clients/authenticate', function($request, $response, $args) {
         // Get POST form
@@ -68,13 +68,13 @@
         // Create return variable from NRClient response
         $return = (new NRClient)->authenticate($form["username"], $form["password"]);
 
-        return $response->withJson($return);
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
     $api->get('/clients/{id}', function($request, $response, $args) {
         // Get client from ID
         $return = (new NRClient)->get($args);
 
-        return $response->withJson($return);
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
     $api->put('/clients/{id}', function($request, $response, $args) {
         // Get PUT form
@@ -86,7 +86,7 @@
         // Update Client Info 
         $return = (new NRClient)->update($form);
 
-        return $response->withJson($return);
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
     $api->post('/clients/{id}/validate', function($request, $response, $args) {
         // Get POST form
@@ -95,7 +95,7 @@
         // Validate Client Session 
         $return = (new NRClient)->validateSession($args["id"], $form["usernameHash"]);
 
-        return $response->withJson($return);
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
     $api->put('/clients/{id}/payment', function($request, $response, $args) {
         // Get PUT form
@@ -107,13 +107,32 @@
         // Save Client Payment Info 
         $return = (new NRClient)->savePaymentInfo($form);
 
-        return $response->withJson($return);
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
     $api->delete('/clients/{id}/payment/{cardId}', function($request, $response, $args) {
         // Delete Client Payment Info 
         $return = (new NRClient)->deleteCard($args);
 
-        return $response->withJson($return);
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
+
+    /**
+     * ARTIST: Artist Class Functions
+     */
+    $api->post('/artists', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Create return variable from NRAdmin response
+        $return = (new NRArtist)->register($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
+    $api->get('/artists/{id}', function($request, $response, $args) {
+        // Get artist from ID
+        $return = (new NRArtist)->get($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
 
     // Run API

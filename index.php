@@ -4,7 +4,7 @@
 	header('Access-Control-Allow-Headers: *');
 
 	// Paths
-    define('PROJECT_ROOT', dirname(dirname(dirname(__FILE__))));
+    define('PROJECT_ROOT', dirname(__FILE__));
     define('PROJECT_CONFIG', PROJECT_ROOT . '/config/');
 	define('PROJECT_INC', PROJECT_ROOT . '/src/');
 	define('PROJECT_LIB', PROJECT_ROOT . '/vendor/');

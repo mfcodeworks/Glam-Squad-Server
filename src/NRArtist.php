@@ -146,7 +146,7 @@ EOD;
         "SELECT a.id, a.username, a.profile_photo, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token
             FROM nr_artists as a
             LEFT JOIN nr_job_roles as r ON r.id = a.role_id
-            WHERE a.id = $userId;";
+            WHERE a.id = $id;";
 
         $response = runSQLQuery($sql);
         extract($response['data'][0]);

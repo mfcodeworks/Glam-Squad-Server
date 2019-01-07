@@ -34,7 +34,8 @@
             default:
                 $data = [
                     'response' => true,
-                    'error' => null
+                    'error' => null,
+                    'id' => $db->insert_id
                 ];
 
 				if( $response->num_rows > 0) {
