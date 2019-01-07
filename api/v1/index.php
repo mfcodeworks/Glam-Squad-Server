@@ -87,6 +87,9 @@
         // Get PUT form
         $form = $request->getParsedBody();
 
+        // Merge URL arguments and form parameters
+        $form["userId"] = $args["userId"];
+
         // Update Client Info 
         $return = json_encode(
             (new NRClient)->update($form),
