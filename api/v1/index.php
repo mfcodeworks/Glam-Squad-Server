@@ -194,6 +194,18 @@
     $api->put('/artists/{id: [0-9]+}/portfolio', function($request, $response, $args) {
         // TODO: Implement artist portfolio update
     });
+    $api->put('/artists/{id: [0-9]+}/payment/id', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+
+        // Save Artist Location
+        $return = (new NRArtist)->saveStripeInfo($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
 
     /** 
      * EVENT: Event Functions

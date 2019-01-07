@@ -324,7 +324,7 @@ EOD;
         $sql = 
         "UPDATE nr_artists
             SET stripe_account_token = \"$token\"
-            WHERE id = $userId";
+            WHERE id = $id";
             
         return runSQLQuery($sql);
     }
