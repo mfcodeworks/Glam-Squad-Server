@@ -35,6 +35,8 @@ class NREvent {
     }
 
     public function save($args) {
+        error_log(print_r($args, true));
+
         // Get arguments
         extract($args);
 
