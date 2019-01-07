@@ -297,7 +297,7 @@ EOD;
     }
 
     public function validateSession($id, $usernameHash) {
-        $this->get(["userId" => $id]);
+        $this->get(["id" => $id]);
 
         // If the ID exists 
         if(isset($this->id) && $this->verifyInput($this->username, $usernameHash)) {

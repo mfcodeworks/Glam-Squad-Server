@@ -155,6 +155,15 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
+    $api->post('/artists/{id}/validate', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Validate Artist Session 
+        $return = (new NRArtist)->validateSession($args["id"], $form["usernameHash"]);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
 
     // Run API
     $api->run();
