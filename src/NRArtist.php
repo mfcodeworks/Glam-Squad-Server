@@ -175,7 +175,7 @@ EOD;
             ];
         }
 
-        $this->locations = $this->getLocations(["userId" => $this->id])["data"];
+        $this->locations = $this->getLocations(["id" => $this->id])["data"];
         $this->portfolio = $this->getPortfolio();
         $this->bookings = $this->getBookings();
 
@@ -208,7 +208,7 @@ EOD;
         $sql = 
         "SELECT id, loc_name as name, loc_lat as lat, loc_lng as lng
         FROM nr_artist_locations
-        WHERE artist_id = $userId;";
+        WHERE artist_id = $id;";
 
         $res = runSQLQuery($sql);
 
@@ -334,7 +334,7 @@ EOD;
 
         $sql = 
         "INSERT INTO nr_artist_locations(loc_name, loc_lat, loc_lng, artist_id)
-        VALUES(\"$name\", $lat, $lng, $userId);";
+        VALUES(\"$name\", $lat, $lng, $id);";
 
         return runSQLQuery($sql);
     }

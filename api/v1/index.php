@@ -144,7 +144,7 @@
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
     $api->put('/artists/{id}', function($request, $response, $args) {
-        // Get POST form
+        // Get PUT form
         $form = $request->getParsedBody();
 
         // Merge form with URL arguments
@@ -161,6 +161,27 @@
 
         // Validate Artist Session 
         $return = (new NRArtist)->validateSession($args["id"], $form["usernameHash"]);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
+    $api->put('/artists/{id}/locations', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+
+        // Validate Artist Session 
+        $return = (new NRArtist)->saveLocation($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT);
+    });
+    $api->get('/artists/{id}/locations', function($request, $response, $args) {
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+        
+        // Get Artist Locations
+        $return = (new NRArtist)->getLocations($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT);
     });
