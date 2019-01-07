@@ -55,10 +55,7 @@
         $form = $request->getParsedBody();
 
         // Create return variable from NRClient response
-        $return = json_encode(
-            (new NRClient)->register($form["username"], $form["email"], $form["password"]), 
-            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
-        );
+        $return = (new NRClient)->register($form["username"], $form["email"], $form["password"]);
 
         return $response->withJson($return);
     });
@@ -67,19 +64,13 @@
         $form = $request->getParsedBody();
 
         // Create return variable from NRClient response
-        $return = json_encode(
-            (new NRClient)->authenticate($form["username"], $form["password"]), 
-            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
-        );
+        $return = (new NRClient)->authenticate($form["username"], $form["password"]);
 
         return $response->withJson($return);
     });
     $api->get('/clients/{id}', function($request, $response, $args) {
         // Get client from ID
-        $return = json_encode(
-            (new NRClient)->get($args), 
-            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
-        );
+        $return = (new NRClient)->get($args);
 
         return $response->withJson($return);
     });
@@ -91,10 +82,7 @@
         $form["id"] = $args["id"];
 
         // Update Client Info 
-        $return = json_encode(
-            (new NRClient)->update($form),
-            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
-        );
+        $return = (new NRClient)->update($form);
 
         return $response->withJson($return);
     });
@@ -103,10 +91,7 @@
         $form = $request->getParsedBody();
 
         // Validate Client Session 
-        $return = json_encode(
-            (new NRClient)->validateSession($args["id"], $form["usernameHash"]),
-            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
-        );
+        $return = (new NRClient)->validateSession($args["id"], $form["usernameHash"]);
 
         return $response->withJson($return);
     });
@@ -118,19 +103,13 @@
         $form["id"] = $args["id"];
 
         // Save Client Payment Info 
-        $return = json_encode(
-            (new NRClient)->savePaymentInfo($form),
-            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
-        );
+        $return = (new NRClient)->savePaymentInfo($form);
 
         return $response->withJson($return);
     });
     $api->delete('/clients/{id}/payment/{cardId}', function($request, $response, $args) {
         // Delete Client Payment Info 
-        $return = json_encode(
-            (new NRClient)->deleteCard($args),
-            JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
-        );
+        $return = (new NRClient)->deleteCard($args);
 
         return $response->withJson($return);
     });
