@@ -336,7 +336,9 @@ class NREvent {
             WHERE j.id = {$this->id}
             GROUP BY j.id;";
 
-        extract(runSQLQuery($sql)["data"][0]);
+        $res = runSQLQuery($sql)["data"][0];
+
+        extract($res);
 
         // Save basic properties
         $this->address = $event_address;
@@ -400,6 +402,8 @@ class NREvent {
         catch(Exception $e) {
             error_log($e);
         }
+
+        return $this;
     }
 
     private function getRatings() {
@@ -459,7 +463,7 @@ class NREvent {
 
         foreach($res['data'] as $artistId) {
             $artist = new NRArtist();
-            $artist->get(["userId" => $artistId['artist_id']]);
+            $artist->get(["id" => $artistId['artist_id']]);
 
             // Remove irrelevant information
             unset($artist->usernameHash);
