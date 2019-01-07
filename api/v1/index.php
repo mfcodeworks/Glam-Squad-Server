@@ -60,7 +60,7 @@
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
-        return $response->getBody()->write($return);
+        return $response->withJson($return);
     });
     $api->post('/clients/authenticate', function($request, $response, $args) {
         // Get POST form
@@ -72,7 +72,7 @@
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
-        return $response->getBody()->write($return);
+        return $response->withJson($return);
     });
     $api->get('/clients/{id}', function($request, $response, $args) {
         // Get client from ID
@@ -81,7 +81,7 @@
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
-        return $response->getBody()->write($return);
+        return $response->withJson($return);
     });
     $api->put('/clients/{id}', function($request, $response, $args) {
         // Get PUT form
@@ -96,7 +96,7 @@
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
-        return $response->getBody()->write($return);
+        return $response->withJson($return);
     });
     $api->post('/clients/{id}/validate', function($request, $response, $args) {
         // Get POST form
@@ -108,7 +108,7 @@
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
-        return $response->getBody()->write($return);
+        return $response->withJson($return);
     });
     $api->put('/clients/{id}/payment', function($request, $response, $args) {
         // Get PUT form
@@ -123,7 +123,7 @@
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
-        return $response->getBody()->write($return);
+        return $response->withJson($return);
     });
     $api->delete('/clients/{id}/payment/{cardId}', function($request, $response, $args) {
         // Delete Client Payment Info 
@@ -132,7 +132,7 @@
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
-        return $response->getBody()->write($return);
+        return $response->withJson($return);
     });
 
     // Run API
