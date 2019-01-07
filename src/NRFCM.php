@@ -91,7 +91,7 @@ class NRFCM {
             // Get artist
             $artist = new NRArtist();
             $artist->get([
-                "userId" => $id['artist_id']
+                "id" => $id['artist_id']
             ]);
 
             // If artist is needed for this job save reference and track requirement fulfillment
