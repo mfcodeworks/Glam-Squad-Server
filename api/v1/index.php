@@ -114,6 +114,9 @@
         // Get PUT form
         $form = $request->getParsedBody();
 
+        // Merge URL arguments and form parameters
+        $form["userId"] = $args["userId"];
+
         // Save Client Payment Info 
         $return = json_encode(
             (new NRClient)->savePaymentInfo($form),

@@ -173,7 +173,7 @@ class NRClient {
             $sql = 
             "UPDATE nr_clients
             SET stripe_customer_id = \"$stripeId\"
-            WHERE id = $userID;
+            WHERE id = $userId;
             ";
     
             $res = runSQLQuery($sql);
@@ -191,7 +191,7 @@ class NRClient {
             \"$type\",
             $lastFour,
             \"$token\",
-            $userID
+            $userId
         );";
 
         $res = runSQLQuery($sql);
