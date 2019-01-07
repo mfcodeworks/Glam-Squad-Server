@@ -50,10 +50,11 @@ class NRClient {
         $sql = 
         "SELECT * 
         FROM nr_clients
-        WHERE id = $userId;";
+        WHERE id = $id;";
 
         $response = runSQLQuery($sql);
 
+        // FIXME: Fix giving username hash for all get requests
         // Save hashed username for session verification
         $response["data"][0]["usernameHash"] = $this->hashInput($response["data"][0]["username"]);
 
@@ -70,7 +71,7 @@ class NRClient {
                 $sql = 
                 "UPDATE nr_clients
                 SET username = \"$username\", email = \"$email\"
-                WHERE id = $userId;";
+                WHERE id = $id;";
 
                 $response = runSQLQuery($sql);
                 break;
@@ -82,22 +83,13 @@ class NRClient {
                 $sql = 
                 "UPDATE nr_clients
                 SET username = \"$username\", email = \"$email\", password = \"$password\"
-                WHERE id = $userId;";
+                WHERE id = $id;";
 
                 $response = runSQLQuery($sql);
                 break;
         }
-        if($response["response"] == true) {
-            $sql = 
-            "SELECT * FROM nr_clients
-            WHERE id = $userId;";
-
-            $response = runSQLQuery($sql);
-
-            unset($response["data"][0]["password"]);
-            $response["data"][0]["usernameHash"] = $this->hashInput($username);
-        }
-        return $response;
+        if($response["response"] === true) return $this->get(["id" => $id]);
+        else return $response;
     }
 
     public function authenticate($username, $password) {
@@ -152,7 +144,7 @@ class NRClient {
         // If the ID exists 
         if(isset($r["data"])) {
 
-            // Save plaintext username of ID
+            // plaintext username of ID
             $username = $r["data"][0]["username"];
 
             // Verify password against hash
@@ -173,7 +165,7 @@ class NRClient {
             $sql = 
             "UPDATE nr_clients
             SET stripe_customer_id = \"$stripeId\"
-            WHERE id = $userId;
+            WHERE id = $id;
             ";
     
             $res = runSQLQuery($sql);
@@ -191,7 +183,7 @@ class NRClient {
             \"$type\",
             $lastFour,
             \"$token\",
-            $userId
+            $id
         );";
 
         $res = runSQLQuery($sql);
@@ -204,7 +196,7 @@ class NRClient {
 
         $sql = 
         "DELETE FROM nr_payment_cards
-        WHERE client_id = $userId
+        WHERE client_id = $id
         AND card_token LIKE \"$cardId\";
         ";
 

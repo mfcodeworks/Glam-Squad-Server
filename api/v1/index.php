@@ -74,7 +74,7 @@
 
         return $response->getBody()->write($return);
     });
-    $api->get('/clients/{userId}', function($request, $response, $args) {
+    $api->get('/clients/{id}', function($request, $response, $args) {
         // Get client from ID
         $return = json_encode(
             (new NRClient)->get($args), 
@@ -83,12 +83,12 @@
 
         return $response->getBody()->write($return);
     });
-    $api->put('/clients/{userId}', function($request, $response, $args) {
+    $api->put('/clients/{id}', function($request, $response, $args) {
         // Get PUT form
         $form = $request->getParsedBody();
 
         // Merge URL arguments and form parameters
-        $form["userId"] = $args["userId"];
+        $form["id"] = $args["id"];
 
         // Update Client Info 
         $return = json_encode(
@@ -98,24 +98,24 @@
 
         return $response->getBody()->write($return);
     });
-    $api->post('/clients/{userId}/validate', function($request, $response, $args) {
+    $api->post('/clients/{id}/validate', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();
 
         // Validate Client Session 
         $return = json_encode(
-            (new NRClient)->validateSession($args["userId"], $form["usernameHash"]),
+            (new NRClient)->validateSession($args["id"], $form["usernameHash"]),
             JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
         return $response->getBody()->write($return);
     });
-    $api->put('/clients/{userId}/payment', function($request, $response, $args) {
+    $api->put('/clients/{id}/payment', function($request, $response, $args) {
         // Get PUT form
         $form = $request->getParsedBody();
 
         // Merge URL arguments and form parameters
-        $form["userId"] = $args["userId"];
+        $form["id"] = $args["id"];
 
         // Save Client Payment Info 
         $return = json_encode(
@@ -125,7 +125,7 @@
 
         return $response->getBody()->write($return);
     });
-    $api->delete('/clients/{userId}/payment/{cardId}', function($request, $response, $args) {
+    $api->delete('/clients/{id}/payment/{cardId}', function($request, $response, $args) {
         // Delete Client Payment Info 
         $return = json_encode(
             (new NRClient)->deleteCard($args),
