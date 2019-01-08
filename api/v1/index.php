@@ -432,7 +432,10 @@
      * DEFAULT: Default Route
      */
     $api->any('/', function($request, $response, $args) {
-        return $response->write("No parameters given")
+        return $response->write(
+                "<h1>No parameters given</h1>
+                <p>No parameters were given in API request so no data can be returned.</p>"
+            )
             ->withStatus(400);
     });
 
