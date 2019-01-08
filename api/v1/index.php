@@ -128,6 +128,15 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->get('/clients/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
+        // Set fcm fetch type
+        $args["type"] = "client";
+
+        // Get artist by ID
+        $return = (new NRFCM)->getTopics($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+    });
 
     /**
      * ARTIST: Artist Functions
@@ -243,6 +252,15 @@
         $return = (new NRFCM)->registerTopic($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->get('/artists/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
+        // Set fcm fetch type
+        $args["type"] = "artist";
+
+        // Get artist by ID
+        $return = (new NRFCM)->getTopics($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
     });
 
     /** 

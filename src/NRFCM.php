@@ -233,7 +233,7 @@ class NRFCM {
                 $sql = "
                 SELECT *
                 FROM nr_client_fcm_topics
-                WHERE client_id = $userId;
+                WHERE client_id = $id;
                 ";
 
                 return runSQLQuery($sql);
@@ -243,7 +243,7 @@ class NRFCM {
                 $sql = "
                 SELECT *
                 FROM nr_artist_fcm_topics
-                WHERE artist_id = $userId;
+                WHERE artist_id = $id;
                 ";
 
                 return runSQLQuery($sql);
