@@ -1,5 +1,11 @@
-# Redirect requests to v1 API
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /api/v1/index.php [QSA,L]
+# Redirect invalid requests to v1 API
+ErrorDocument 404 /api/v1/index.php
+ErrorDocument 403 /api/v1/index.php
+
+# Redirect all requests to v1 API
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ /api/v1/index.php [QSA,L]
+</IfModule>
