@@ -137,6 +137,12 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->delete('/clients/{id: [0-9]+}/event/{eventId: [0-9]+}', function($request, $response, $args) {
+        // Delete event 
+        $return = (new NREvent)->delete($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
 
     /**
      * ARTIST: Artist Functions
@@ -288,7 +294,7 @@
         // Merge form and URL arguments
         $form["id"] = $args["id"];
 
-        // Create new event 
+        // Update event 
         $return = (new NREvent)->update($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);

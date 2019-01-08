@@ -903,8 +903,8 @@ class NREvent {
 
         $sql = 
         "DELETE from nr_jobs
-        WHERE id = $jobId
-        AND client_id = $userId;";
+        WHERE id = $eventId
+        AND client_id = $id;";
 
         return runSQLQuery($sql);
     }
