@@ -404,9 +404,28 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
-    $api->get('/events/packages', function($request, $response, $args) {
-        // Get event packages
-        $return = NREvent::getPackages();        
+
+    /**
+     * PACKAGE: Package Functions
+     */
+    $api->post('/packages', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Create new event 
+        $return = (new NRPackage)->save($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->get('/packages[/{id: [0-9]+}]', function($request, $response, $args) {
+        // Get Packages
+        $return = (new NRPackage)->get($args);      
+        
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->delete('/packages/{id: [0-9]+}', function($request, $response, $args) {
+        // Delete package 
+        $return = (new NRPackage)->delete($args);
         
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });

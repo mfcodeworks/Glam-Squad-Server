@@ -25,10 +25,13 @@ class NRPackage {
     public function get($id = null) {
         // Build SQL
         if($id)
-            $sql = "SELECT * FROM nr_packages 
-                WHERE id = $id;";
+            $sql = "SELECT id, package_name as name, package_description as description, ROUND(package_price, 2) as price
+            FROM nr_packages
+            WHERE id = $id;";
         else
-            $sql = "SELECT * FROM nr_packages;";
+            $sql = "SELECT id, package_name as name, package_description as description, ROUND(package_price, 2) as price
+            FROM nr_packages
+            ORDER BY id ASC;";
 
         return runSQLQuery($sql);
     }
@@ -53,9 +56,11 @@ class NRPackage {
         return runSQLQuery($sql);
     }
 
-    public function delete($id = null) {
-        if(!$id)
-            return;
+    public function delete($id) {
+        if(!$id) return [
+            "error_code" => 606,
+            "error" => "Package ID missing."
+        ];
 
         // Build SQL
         $sql = "DELETE FROM nr_packages
