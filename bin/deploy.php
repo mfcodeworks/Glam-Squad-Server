@@ -7,6 +7,9 @@
     if(verify_payload()) {
         $path = dirname(__FILE__);
         echo shell_exec("$path/deploy.sh");
+    } else {
+        http_response_code(401);
+        echo "Unauthorized Access";
     }
 
     function verify_payload() {
