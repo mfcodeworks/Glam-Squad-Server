@@ -14,7 +14,9 @@
     require_once PROJECT_CONFIG . "config.php";
     require_once PROJECT_INC . "NRResmushIt.php";
 
-    if(isset($_POST) && $_POST != null) {
+    error_log(print_r($_POST, true));
+
+    if(!isset($_POST) || $_POST != null) {
         $photos = $_POST;
     
         foreach($photos as $photo) {
