@@ -27,7 +27,7 @@
     $api = new \Slim\App;
 
     /** 
-     * FIXME: Reactive after go-live
+     * FIXME: Reactivate after go-live
      *  // HMAC check for queries 
      *  $api->add(function ($request, $response, $next) {
      *      // Get HMAC sent with request
@@ -204,7 +204,32 @@
         // Save Artist Location
         $return = (new NRArtist)->saveStripeInfo($form);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->put('/artists/{id: [0-9]+}/fcm/token', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+
+        // Save Artist Location
+        $return = (new NRFCM)->registerToken($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->put('/artists/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+        $form["type"] = "artist";
+
+        // Save Artist Location
+        $return = (new NRFCM)->registerTopic($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
 
     /** 

@@ -164,7 +164,7 @@ class NRFCM {
 
         $sql = 
         "INSERT INTO nr_artist_fcm_tokens(fcm_token, artist_id)
-        VALUES(\"$token\", $userId);";
+        VALUES(\"$token\", $id);";
 
         return runSQLQuery($sql);
     }
@@ -178,7 +178,7 @@ class NRFCM {
                 "SELECT *
                 FROM nr_client_fcm_topics
                 WHERE fcm_topic LIKE \"$topic\"
-                AND client_id = $userId;";
+                AND client_id = $id;";
         
                 if(isset(runSQLQuery($sql)["data"][0]["id"])) {
                     return [
@@ -191,7 +191,7 @@ class NRFCM {
                 // Build SQL
                 $sql = 
                 "INSERT INTO nr_client_fcm_topics(fcm_topic, client_id)
-                VALUES(\"$topic\", $userId);
+                VALUES(\"$topic\", $id);
                 ";
         
                 return runSQLQuery($sql);
@@ -202,7 +202,7 @@ class NRFCM {
                 "SELECT *
                 FROM nr_artist_fcm_topics
                 WHERE fcm_topic LIKE \"$topic\"
-                AND artist_id = $userId;";
+                AND artist_id = $id;";
         
                 if(isset(runSQLQuery($sql)["data"][0]["id"])) {
                     return [
@@ -215,7 +215,7 @@ class NRFCM {
                 // Build SQL
                 $sql = 
                 "INSERT INTO nr_artist_fcm_topics(fcm_topic, artist_id)
-                VALUES(\"$topic\", $userId);
+                VALUES(\"$topic\", $id);
                 ";
         
                 return runSQLQuery($sql);
