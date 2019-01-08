@@ -149,6 +149,15 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->get('/clients/{id: [0-9]+}/events/recent/unpaid', function($request, $response, $args) {
+        // Set events get type 
+        $args["type"] = "client";
+
+        // Get recently completed unpaid events 
+        $return = (new NREvent)->getRecentlyCompletedEvents($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
 
     /**
      * ARTIST: Artist Functions
@@ -271,6 +280,15 @@
 
         // Get artist by ID
         $return = (new NRFCM)->getTopics($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->get('/artists/{id: [0-9]+}/events/recent/unpaid', function($request, $response, $args) {
+        // Set events get type 
+        $args["type"] = "artist";
+
+        // Get recently completed unpaid events 
+        $return = (new NREvent)->getRecentlyCompletedEvents($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });

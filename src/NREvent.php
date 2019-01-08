@@ -666,7 +666,7 @@ class NREvent {
                     LEFT JOIN nr_client_receipts as r ON j.id = r.event_id
                     WHERE r.event_id IS NULL
                     AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= 0
-                    AND j.client_id = $userId;";
+                    AND j.client_id = $id;";
 
                 $data = runSQLQuery($sql);
 
@@ -680,7 +680,7 @@ class NREvent {
                     $sql = 
                     "SELECT * FROM nr_job_artist_attendance 
                         WHERE event_id = {$data["data"][$i]["id"]} 
-                        AND client_id = $userId;";
+                        AND client_id = $id;";
                         
                     $check = runSQLQuery($sql);
                     
@@ -708,7 +708,7 @@ class NREvent {
                     LEFT JOIN nr_artist_jobs as a ON j.id = a.event_id
                     WHERE r.event_id IS NULL
                     AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= 0
-                    AND a.artist_id = 2;";
+                    AND a.artist_id = $id;";
 
                 $data = runSQLQuery($sql);
 
@@ -722,7 +722,7 @@ class NREvent {
                     $sql = 
                     "SELECT * FROM nr_job_client_attendance 
                         WHERE event_id = {$data["data"][$i]["id"]} 
-                        AND artist_id = $userId;";
+                        AND artist_id = $id;";
 
                     $check = runSQLQuery($sql);
 
