@@ -47,7 +47,7 @@ class NRPackage {
             package_name, 
             package_description, 
             package_price
-        );
+        )
         VALUES(
             \"$name\",
             \"$description\",
