@@ -268,42 +268,30 @@ class NREvent {
         extract($args);
 
         // Get event
-        if(isset($userId)) {
-            $sql =
-            "SELECT id            
-            FROM nr_jobs
-            WHERE client_id = $userId
-            ORDER BY event_datetime DESC;";
+        $sql =
+        "SELECT id            
+        FROM nr_jobs
+        WHERE client_id = $id
+        ORDER BY event_datetime DESC;";
 
-            $res = runSQLQuery($sql);
+        $res = runSQLQuery($sql);
 
-            if(!$res["response"] === true) {
-                return $res;
-            }
-            
-            $eventIds = $res["data"];
-            foreach($eventIds as $eventId) {
-                $event = new NREvent();
-                $event->getSingle($eventId['id']);
-                $events[] = $event;
-            }
-
-            return [
-                "response" => true,
-                "error" => null,
-                "data" => $events
-            ];
+        if($res["response"] !== true) {
+            return $res;
         }
-        if(isset($jobId)) {
+        
+        $eventIds = $res["data"];
+        foreach($eventIds as $eventId) {
             $event = new NREvent();
-            $event->getSingle($jobId);
-
-            return [
-                "response" => true,
-                "error" => null,
-                "data" => $event
-            ];
+            $event->getSingle($eventId['id']);
+            $events[] = $event;
         }
+
+        return [
+            "response" => true,
+            "error" => null,
+            "data" => $events
+        ];
     }
 
     public function cancel($args) {

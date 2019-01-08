@@ -137,7 +137,13 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
-    $api->delete('/clients/{id: [0-9]+}/event/{eventId: [0-9]+}', function($request, $response, $args) {
+    $api->get('/clients/{id: [0-9]+}/events', function($request, $response, $args) {
+        // Get artist by ID
+        $return = (new NREvent)->get($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->delete('/clients/{id: [0-9]+}/events/{eventId: [0-9]+}', function($request, $response, $args) {
         // Delete event 
         $return = (new NREvent)->delete($args);
 
