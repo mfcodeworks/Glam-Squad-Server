@@ -1,6 +1,7 @@
 <?php
 // API HMAC shared secret
 define("API_SECRET", '1GSqDjCYAXeBLuLLVBx3bXlpC5NKUPqC');
+define("GIT_SECRET", "ZKeU8S6FXT4BSt7i0mM8VBdtmVch7t5c");
 
 // MySQL constants
 define("DB_SERVER", "nrglamsquad.czcoidkwv3pf.us-east-2.rds.amazonaws.com");
