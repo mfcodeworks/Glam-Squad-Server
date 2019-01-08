@@ -115,6 +115,19 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
     });
+    $api->put('/clients/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+        $form["type"] = "client";
+
+        // Save Artist Location
+        $return = (new NRFCM)->registerTopic($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
 
     /**
      * ARTIST: Artist Functions
