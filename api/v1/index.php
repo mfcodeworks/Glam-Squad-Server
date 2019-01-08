@@ -59,7 +59,7 @@
         // Register new client
         $return = (new NRClient)->register($form["username"], $form["email"], $form["password"]);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->post('/clients/authenticate', function($request, $response, $args) {
         // Get POST form
@@ -68,13 +68,13 @@
         // Authenticate client
         $return = (new NRClient)->authenticate($form["username"], $form["password"]);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->get('/clients/{id: [0-9]+}', function($request, $response, $args) {
         // Get client from ID
         $return = (new NRClient)->get($args);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->put('/clients/{id: [0-9]+}', function($request, $response, $args) {
         // Get PUT form
@@ -86,7 +86,7 @@
         // Update Client Info 
         $return = (new NRClient)->update($form);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->post('/clients/{id: [0-9]+}/validate', function($request, $response, $args) {
         // Get POST form
@@ -95,7 +95,7 @@
         // Validate Client Session 
         $return = (new NRClient)->validateSession($args["id"], $form["usernameHash"]);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->put('/clients/{id: [0-9]+}/payment', function($request, $response, $args) {
         // Get PUT form
@@ -107,13 +107,13 @@
         // Save Client Payment Info 
         $return = (new NRClient)->savePaymentInfo($form);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->delete('/clients/{id: [0-9]+}/payment/{cardId: [0-9]+}', function($request, $response, $args) {
         // Delete Client Payment Info 
         $return = (new NRClient)->deleteCard($args);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->put('/clients/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
         // Get PUT form
@@ -135,7 +135,7 @@
         // Get artist by ID
         $return = (new NRFCM)->getTopics($args);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
 
     /**
@@ -148,7 +148,7 @@
         // Register new artist
         $return = (new NRArtist)->register($form);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->post('/artists/authenticate', function($request, $response, $args) {
         // Get POST form
@@ -157,13 +157,13 @@
         // Authenticate artist
         $return = (new NRArtist)->authenticate($form["username"], $form["password"]);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->get('/artists/{id: [0-9]+}', function($request, $response, $args) {
         // Get artist by ID
         $return = (new NRArtist)->get($args);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->put('/artists/{id: [0-9]+}', function($request, $response, $args) {
         // Get PUT form
@@ -175,7 +175,7 @@
         // Update artist info
         $return = (new NRArtist)->update($form);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->post('/artists/{id: [0-9]+}/validate', function($request, $response, $args) {
         // Get POST form
@@ -184,7 +184,7 @@
         // Validate Artist Session 
         $return = (new NRArtist)->validateSession($args["id"], $form["usernameHash"]);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->put('/artists/{id: [0-9]+}/locations', function($request, $response, $args) {
         // Get PUT form
@@ -196,7 +196,7 @@
         // Save Artist Location
         $return = (new NRArtist)->saveLocation($form);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->get('/artists/{id: [0-9]+}/locations', function($request, $response, $args) {
         // Merge form and URL arguments
@@ -205,13 +205,13 @@
         // Get Artist Locations
         $return = (new NRArtist)->getLocations($form);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->delete('/artists/{id: [0-9]+}/locations/{loc_id: [0-9]+}', function($request, $response, $args) {
         // Delete Artist Location
         $return = (new NRArtist)->deleteLocation($args);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->put('/artists/{id: [0-9]+}/portfolio', function($request, $response, $args) {
         // TODO: Implement artist portfolio update
@@ -260,7 +260,7 @@
         // Get artist by ID
         $return = (new NRFCM)->getTopics($args);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
 
     /** 
@@ -273,13 +273,25 @@
         // Create new event 
         $return = (new NREvent)->save($form);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->get('/events/{id: [0-9]+}', function($request, $response, $args) {
         // Get Event
         $return = (new NREvent)->getSingle($args["id"]);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->put('/events/{id: [0-9]+}', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+
+        // Create new event 
+        $return = (new NREvent)->update($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->post('/events/{id: [0-9]+}/apply', function($request, $response, $args) {
         // Get POST form
@@ -291,7 +303,7 @@
         // Artist apply for job
         $return = (new NREvent)->apply($form);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->post('/events/{id: [0-9]+}/artist/{userId: [0-9]+}/cancel', function($request, $response, $args) {
         // Get POST form
@@ -300,13 +312,13 @@
         // Artist cancel job booking
         $return = (new NREvent)->cancel($args);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->get('/events/new/artist/{userId}', function($request, $response, $args) {
         // Get events near artist from ID
         $return = (new NREvent)->getNew($args);
 
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES) ;
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
 
     // Run API

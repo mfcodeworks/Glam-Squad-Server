@@ -763,7 +763,7 @@ class NREvent {
             $sql =
             "UPDATE nr_jobs
             SET address = \"$address\"
-            WHERE id = $jobId;";
+            WHERE id = $id;";
     
             $res = runSQLQuery($sql);
             if($res["response"] !== true) {
@@ -774,7 +774,7 @@ class NREvent {
             $sql =
             "UPDATE nr_jobs
             SET datetime = \"$datetime\"
-            WHERE id = $jobId;";
+            WHERE id = $id;";
     
             $res = runSQLQuery($sql);
             if($res["response"] !== true) {
@@ -785,7 +785,7 @@ class NREvent {
             $sql =
             "UPDATE nr_jobs
             SET client_card_id = $cardId
-            WHERE id = $jobId;";
+            WHERE id = $id;";
     
             $res = runSQLQuery($sql);
             if($res["response"] !== true) {
