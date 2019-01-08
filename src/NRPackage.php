@@ -22,7 +22,9 @@ class NRPackage {
         
     }
 
-    public function get($id = null) {
+    public function get($args) {
+        extract($args);
+        
         // Build SQL
         if($id)
             $sql = "SELECT id, package_name as name, package_description as description, ROUND(package_price, 2) as price
@@ -56,7 +58,9 @@ class NRPackage {
         return runSQLQuery($sql);
     }
 
-    public function delete($id) {
+    public function delete($args) {
+        extract($args);
+
         if(!$id) return [
             "error_code" => 606,
             "error" => "Package ID missing."
