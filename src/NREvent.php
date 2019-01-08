@@ -627,8 +627,8 @@ class NREvent {
             attendance
         )
         VALUES(
-            $eventId, 
-            $userId,
+            $id, 
+            $clientId,
             $attendance
         );";
 
@@ -647,8 +647,8 @@ class NREvent {
             attendance
         )
         VALUES(
-            $eventId, 
-            $userId,
+            $id, 
+            $artistId,
             $attendance
         );";
 

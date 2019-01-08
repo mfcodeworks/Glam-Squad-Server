@@ -347,6 +347,30 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->put('/events/{id: [0-9]+}/attendance/artist', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+
+        // Update event 
+        $return = NREvent::saveArtistAttendance($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->put('/events/{id: [0-9]+}/attendance/client', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+
+        // Update event 
+        $return = NREvent::saveClientAttendance($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
     $api->post('/events/{id: [0-9]+}/apply', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();
