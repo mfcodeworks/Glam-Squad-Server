@@ -11,6 +11,7 @@ ErrorDocument 403 /api/v1/index.php
     RewriteRule ^src.* /api/v1/index.php [QSA,L]
     RewriteRule ^vendor.* /api/v1/index.php [QSA,L]
     RewriteRule ^bin/deploy.sh$ /api/v1/index.php [QSA,L]
+    RewriteRule ^smush.php$ /public/smush.php [QSA,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

@@ -1,5 +1,4 @@
 <?php
-    //ob_end_clean();
     header('Access-Control-Allow-Origin: *');
     header("Connection: close\r\n");
     header("Content-Encoding: none\r\n");
