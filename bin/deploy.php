@@ -12,8 +12,7 @@
     function verify_payload() {
         // Create sha1 hash from raw request read
         $hash = "sha1=" . hash_hmac('sha1', file_get_contents("php://input"), GIT_SECRET);
-        // Log hashes
-        error_log($hash . "\n" . $_SERVER["HTTP_X_HUB_SIGNATURE"]);
+        
         // Compare hashes and return
         if(hash_equals($_SERVER["HTTP_X_HUB_SIGNATURE"], $hash)) return true;
         return false;
