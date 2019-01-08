@@ -762,7 +762,7 @@ class NREvent {
         if(isset($address)) {
             $sql =
             "UPDATE nr_jobs
-            SET address = \"$address\"
+            SET event_address = \"$address\"
             WHERE id = $id;";
     
             $res = runSQLQuery($sql);
@@ -773,7 +773,7 @@ class NREvent {
         if(isset($datetime)) {
             $sql =
             "UPDATE nr_jobs
-            SET datetime = \"$datetime\"
+            SET event_datetime = \"$datetime\"
             WHERE id = $id;";
     
             $res = runSQLQuery($sql);
