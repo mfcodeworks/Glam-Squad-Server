@@ -857,8 +857,8 @@ class NREvent {
             rating
         )
         VALUES(
-            $eventId,
-            $userId,
+            $id,
+            $clientId,
             $artistId,
             $rating
         );";
@@ -877,9 +877,9 @@ class NREvent {
             rating
         )
         VALUES(
-            $userId,
+            $id,
+            $clientId,
             $artistId,
-            $eventId,
             $rating
         );";
 
