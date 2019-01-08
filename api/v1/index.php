@@ -29,21 +29,22 @@
     // HMAC check for queries 
     $api->add(function ($request, $response, $next) {
         // Get HMAC sent with request
-        $hmac = $request->getHeader("NR_HASH");
+        //$hmac = $request->getHeader("NR_HASH");
 
         // Calculate HMAC of message with API key
         $hash = hash_hmac('sha512', $request->getBody(), API_SECRET);
 
         // If HMAC is correct proceed
-        if($hash === $hmac) {
+        // FIXME: Reanble check for production
+        //if(hash_equals($hash, $hmac)) {
             return $next($request, $response)
                 ->withHeader("NR-Hash", $hash);
         // If HMAC incorrect return 401 Unauthorized
-        } else {
+        /*} else {
             return $response->withStatus(401)
                 ->withHeader("NR-Hash", $hash)
                 ->write("No Authorization Header");
-        }
+        }*/
     });
 
     /**
