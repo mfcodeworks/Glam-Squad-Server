@@ -350,6 +350,12 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->get('/events/packages', function($request, $response, $args) {
+        // Get event packages
+        $return = NREvent::getPackages();        
+        
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
 
     // Run API
     $api->run();
