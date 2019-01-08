@@ -123,7 +123,7 @@
         $form["id"] = $args["id"];
         $form["type"] = "client";
 
-        // Save Artist Location
+        // Save client FCM topic
         $return = (new NRFCM)->registerTopic($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -132,13 +132,13 @@
         // Set fcm fetch type
         $args["type"] = "client";
 
-        // Get artist by ID
+        // Get client FCM topic
         $return = (new NRFCM)->getTopics($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->get('/clients/{id: [0-9]+}/events', function($request, $response, $args) {
-        // Get artist by ID
+        // Get client events
         $return = (new NREvent)->get($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -244,7 +244,7 @@
         // Merge form and URL arguments
         $form["id"] = $args["id"];
 
-        // Save Artist Location
+        // Save Artist Stripe payment ID
         $return = (new NRArtist)->saveStripeInfo($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -256,7 +256,7 @@
         // Merge form and URL arguments
         $form["id"] = $args["id"];
 
-        // Save Artist Location
+        // Save Artist FCM token
         $return = (new NRFCM)->registerToken($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -269,7 +269,7 @@
         $form["id"] = $args["id"];
         $form["type"] = "artist";
 
-        // Save Artist Location
+        // Save artist FCM topic
         $return = (new NRFCM)->registerTopic($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -278,7 +278,7 @@
         // Set fcm fetch type
         $args["type"] = "artist";
 
-        // Get artist by ID
+        // Get artist FCM topic
         $return = (new NRFCM)->getTopics($args);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -289,6 +289,12 @@
 
         // Get recently completed unpaid events 
         $return = (new NREvent)->getRecentlyCompletedEvents($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->get('/artists/roles', function($request, $response, $args) {
+        // Get artist roles
+        $return = NRArtist::getRoles();
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
@@ -330,7 +336,7 @@
         // Merge form and URL arguments
         $form["id"] = $args["id"];
 
-        // Update event 
+        // Set event artist rating
         $return = NREvent::artistRating($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -342,7 +348,7 @@
         // Merge form and URL arguments
         $form["id"] = $args["id"];
 
-        // Update event 
+        // Set event client rating
         $return = NREvent::clientRating($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -354,7 +360,7 @@
         // Merge form and URL arguments
         $form["id"] = $args["id"];
 
-        // Update event 
+        // Save event artist attendance
         $return = NREvent::saveArtistAttendance($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -366,7 +372,7 @@
         // Merge form and URL arguments
         $form["id"] = $args["id"];
 
-        // Update event 
+        // Save event client attendance
         $return = NREvent::saveClientAttendance($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);

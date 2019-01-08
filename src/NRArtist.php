@@ -226,7 +226,8 @@ EOD;
     public static function getRoles() {
         $sql = 
         "SELECT id, role_name as name
-            FROM nr_job_roles;";
+            FROM nr_job_roles
+            ORDER BY id ASC;";
 
         return runSQLQuery($sql);
     }
