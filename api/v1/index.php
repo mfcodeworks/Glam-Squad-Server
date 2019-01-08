@@ -428,6 +428,14 @@
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
 
+    /**
+     * DEFAULT: Default Route
+     */
+    $api->any('/', function($request, $response, $args) {
+        return $response->write("No parameters given")
+            ->withStatus(400);
+    });
+
     // Run API
     $api->run();
 ?>
