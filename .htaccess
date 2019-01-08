@@ -5,7 +5,15 @@ ErrorDocument 403 /api/v1/index.php
 # Redirect all requests to v1 API
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    RewriteRule ^config.* /api/v1/index.php [QSA,L]
+    RewriteRule ^resources.* /api/v1/index.php [QSA,L]
+    RewriteRule ^src.* /api/v1/index.php [QSA,L]
+    RewriteRule ^vendor.* /api/v1/index.php [QSA,L]
+    RewriteRule ^bin/deploy.sh$ /api/v1/index.php [QSA,L]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+
     RewriteRule ^(.*)$ /api/v1/index.php [QSA,L]
 </IfModule>
