@@ -14,9 +14,14 @@
     require_once PROJECT_CONFIG . "config.php";
     require_once PROJECT_INC . "NRResmushIt.php";
 
-    $photos = $_POST;
-
-    foreach($photos as $photo) {
-        new NRResmushIt($photo);
+    if(isset($_POST) && $_POST != null) {
+        $photos = $_POST;
+    
+        foreach($photos as $photo) {
+            new NRResmushIt($photo);
+        }
+    } else {
+        http_response_code(400);
+        echo "Empty Request";
     }
 ?>
