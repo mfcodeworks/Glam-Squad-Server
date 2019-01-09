@@ -29,8 +29,13 @@
 
     // HMAC check for queries 
     $api->add(function ($request, $response, $next) {
+        // Check if preflight and respond 200
+        if($request->isOptions() && strpos($request->getHeader("ACCESS_CONTROL_REQUEST_HEADERS")[0], "nr-hash") > -1) {
+            return $response->withStatus(200);
+        }
+
         // Get HMAC sent with request
-        $hmac = $request->getHeader("NR_HASH");
+        $hmac = $request->getHeader("NR_HASH")[0];
 
         // Calculate HMAC of message with API key
         $hash = hash_hmac('sha512', $request->getBody(), API_SECRET);

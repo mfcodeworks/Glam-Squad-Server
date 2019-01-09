@@ -26,7 +26,7 @@ class NRPackage {
         extract($args);
         
         // Build SQL
-        if($id)
+        if(isset($id))
             $sql = "SELECT id, package_name as name, package_description as description, ROUND(package_price, 2) as price
             FROM nr_packages
             WHERE id = $id;";
