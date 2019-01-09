@@ -2,6 +2,7 @@
 	// Allow all origin and headers
 	header('Access-Control-Allow-Origin: *');
 	header('Access-Control-Allow-Headers: *');
+	header('Access-Control-Allow-Methods: *');
 
 	// Paths
     define('PROJECT_ROOT', dirname(dirname(dirname(__FILE__))));
@@ -29,22 +30,21 @@
     // HMAC check for queries 
     $api->add(function ($request, $response, $next) {
         // Get HMAC sent with request
-        //$hmac = $request->getHeader("NR_HASH");
+        $hmac = $request->getHeader("NR_HASH");
 
         // Calculate HMAC of message with API key
         $hash = hash_hmac('sha512', $request->getBody(), API_SECRET);
 
         // If HMAC is correct proceed
-        // FIXME: Reanble check for production
-        //if(hash_equals($hash, $hmac)) {
+        if(hash_equals($hash, $hmac)) {
             return $next($request, $response)
-                ->withHeader("NR-Hash", $hash);
+                ->withHeader("NR-HASH", $hash);
         // If HMAC incorrect return 401 Unauthorized
-        /*} else {
+        } else {
             return $response->withStatus(401)
-                ->withHeader("NR-Hash", $hash)
+                ->withHeader("NR-HASH", $hash)
                 ->write("No Authorization Header");
-        }*/
+        }
     });
 
     /**
@@ -107,7 +107,7 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
-    $api->delete('/clients/{id: [0-9]+}/payment/{cardId: [0-9]+}', function($request, $response, $args) {
+    $api->delete('/clients/{id: [0-9]+}/payment/{token}', function($request, $response, $args) {
         // Delete Client Payment Info 
         $return = (new NRClient)->deleteCard($args);
 

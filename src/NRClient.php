@@ -197,7 +197,7 @@ class NRClient {
         $sql = 
         "DELETE FROM nr_payment_cards
         WHERE client_id = $id
-        AND card_token LIKE \"$cardId\";
+        AND card_token LIKE \"$token\";
         ";
 
         return runSQLQuery($sql);
