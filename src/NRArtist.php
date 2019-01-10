@@ -283,7 +283,7 @@ EOD;
 
         // Verify password and password hash
         if($this->verifyInput($password, $response["data"][0]["password"]) === true) {
-            $this->get(["userId" => $response["data"][0]["id"]]);
+            $this->get(["id" => $response["data"][0]["id"]]);
             
             $response["data"][0] = $this;
             return $response;
