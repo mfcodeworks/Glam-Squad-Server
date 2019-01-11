@@ -1,19 +1,21 @@
 <?php
 	// Paths
-	define('PROJECT_ROOT', dirname(dirname(__FILE__)));
-	define('PROJECT_INC', PROJECT_ROOT . '/inc/');
+    define('PROJECT_ROOT', dirname(dirname(dirname(__FILE__))));
+    define('PROJECT_CONFIG', PROJECT_ROOT . '/config/');
+	define('PROJECT_INC', PROJECT_ROOT . '/src/');
 	define('PROJECT_LIB', PROJECT_ROOT . '/vendor/');
 
 	// Require classes
-	require_once PROJECT_INC . "config.php";
-	require_once PROJECT_INC . "class-client.php";
-	require_once PROJECT_INC . "class-artist.php";
-	require_once PROJECT_INC . "class-fcm.php";
-	require_once PROJECT_INC . "class-event.php";
-	require_once PROJECT_INC . "class-package.php";
-	require_once PROJECT_INC . "class-db-image.php";
-	require_once PROJECT_INC . "class-degree-distance-finder.php";
-    require_once PROJECT_INC . "mail.php";
+	require_once PROJECT_CONFIG . "config.php";
+	require_once PROJECT_INC . "DegreeDistanceFinder.php";
+	require_once PROJECT_INC . "Mailer.php";
+	require_once PROJECT_INC . "NRArtist.php";
+	require_once PROJECT_INC . "NRClient.php";
+	require_once PROJECT_INC . "NREvent.php";
+	require_once PROJECT_INC . "NRFCM.php";
+	require_once PROJECT_INC . "NRImage.php";
+	require_once PROJECT_INC . "NRPackage.php";
+    require_once PROJECT_LIB . "autoload.php";
     
     // Select events that have already passed which remain unpaid
     $sql = 

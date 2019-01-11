@@ -31,4 +31,8 @@ define("FCM_GROUP_ENDPOINT", "https://fcm.googleapis.com/fcm/notification");
 
 // Availability constants
 define("COUNTRIES", ["SG"]);
+
+// Stripe Constant
+define("STRIPE_SECRET", "sk_test_ccu7Gl8YxOlksae8zncTMTiE");
+define("STRIPE_PAYMENT_ENDPOINT", "https://api.stripe.com/v1/charges");
 ?>
