@@ -43,6 +43,7 @@
 
         $query = runSQLQuery($sql);
 
+        // Email urgent error if card doesn't exist
         if(!isset($query["data"])) {
             $error = print_r($query, true);
             error_log($error);
@@ -72,20 +73,22 @@ EOD;
             continue;
         } 
         
-        $card = $query["data"];
+        // Set card details
+        $card = $query["data"][0];
 
         // Get event client 
-        $client = (new NRClient)->get(["id" => $event->clientId]);
+        $client = (new NRClient)->get(["id" => $event->clientId])["data"][0];
         
         /**
          * API: Stripe PHP SDK
          */
         
+        // Create client charge
         $charge = \Stripe\Charge::create([
             "amount" => $event->price * 100,
             "currency" => "sgd",
             "source" => $card["card_token"],
-            "description" => "Event charge for {$client->username} <{$client->email}>.",
+            "description" => "Event charge for {$client["username"]} <{$client["email"]}>.",
             "transfer_group" => "EVENT-{$event->id}"
         ]);
 
@@ -95,9 +98,10 @@ EOD;
     }
 
     /** 
-     * Select all events without receipts that are 3 days+ in age
+     * Select all events without receipts that are less than 3 days in age to check for attendance completion
      */
     
+    /* TODO: 
     $sql = 
     "SELECT j.id
         FROM nr_jobs as j
@@ -116,4 +120,5 @@ EOD;
         $event = new NREvent();
         $event->getSingle($eventObject["id"]);
     }
+    */
 ?>
