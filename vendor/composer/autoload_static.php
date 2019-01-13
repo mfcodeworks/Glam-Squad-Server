@@ -13,6 +13,7 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
+            'Stripe\\' => 7,
             'Slim\\' => 5,
         ),
         'P' => 
@@ -32,6 +33,10 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
     );
 
     public static $prefixDirsPsr4 = array (
+        'Stripe\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
+        ),
         'Slim\\' => 
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
