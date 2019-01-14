@@ -35,4 +35,6 @@ define("COUNTRIES", ["SG"]);
 // Stripe Constant
 define("STRIPE_SECRET", "sk_test_ccu7Gl8YxOlksae8zncTMTiE");
 define("STRIPE_PAYMENT_ENDPOINT", "https://api.stripe.com/v1/charges");
+// Artist percentage calculation
+define("ARTIST_PERCENTAGE", 0.85);
 ?>

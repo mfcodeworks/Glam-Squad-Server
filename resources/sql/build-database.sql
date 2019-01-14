@@ -133,14 +133,14 @@ CREATE TABLE IF NOT EXISTS nr_jobs(
 CREATE TABLE IF NOT EXISTS nr_job_reminders(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES nr_jobs(id)
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
 );
 
 # Glam Squad Event Reminders (1 (Event))
 CREATE TABLE IF NOT EXISTS nr_job_confirmation_reminders(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES nr_jobs(id)
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
 );
 
 # Glam Squad Client Attendance (1 (Event), 1 (Client), 1 (Attendance))
@@ -149,8 +149,8 @@ CREATE TABLE IF NOT EXISTS nr_job_client_attendance(
     event_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
     attendance BIT NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
-    FOREIGN KEY (client_id) REFERENCES nr_clients(id)
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
+    FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
 );
 
 # Glam Squad Artist Attendance (1 (Event), 1 (Artist), 1 (Attendance))
@@ -159,8 +159,8 @@ CREATE TABLE IF NOT EXISTS nr_job_artist_attendance(
     event_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
     attendance BIT NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
-    FOREIGN KEY (artist_id) REFERENCES nr_artists(id)
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
 # Glam Squad Event Packages (1 (MUA Package); 1 (Event))
@@ -228,6 +228,7 @@ CREATE TABLE IF NOT EXISTS nr_client_receipts(
     event_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
     client_card_id BIGINT NOT NULL,
+    stripe_charge_id VARCHAR(255) NOT NULL,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
     FOREIGN KEY (client_id) REFERENCES nr_clients(id),
     FOREIGN KEY (client_card_id) REFERENCES nr_payment_cards(id)
@@ -240,6 +241,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_payments(
     event_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
     artist_stripe_account VARCHAR(255) NOT NULL,
+    stripe_transfer_id VARCHAR(255) NOT NULL,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id)
 );

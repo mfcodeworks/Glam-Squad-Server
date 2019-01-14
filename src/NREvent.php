@@ -44,7 +44,7 @@ class NREvent {
         $this->address = $address;
         $this->lat = $lat;
         $this->lng = $lng;
-        $this->datetime = date("Y-m-d H:i:s", $datetime);
+        $this->datetime = date("Y-m-d H:i:s", substr($datetime, 0, 10));
         $this->note = $note;
         $this->price = $price;
         $this->clientId = $userId;
@@ -185,8 +185,8 @@ class NREvent {
 
         $res = runSQLQuery($sql);
 
-        if($res['id']) return $res['id'];
-        else throw new Exception($res['error']);
+        if(isset($res['id'])) return $res['id'];
+        else throw new Exception(json_encode($res));
     }
 
     private function savePackageReference($package) {
@@ -203,7 +203,7 @@ class NREvent {
 
         $res = runSQLQuery($sql);
 
-        if($res['response'] !== true) throw new Exception($res['error']);
+        if($res['response'] !== true) throw new Exception(json_encode($res));
 
         $this->packages[] = $package;
 
@@ -215,7 +215,7 @@ class NREvent {
         
         $res = runSQLQuery($sql);
 
-        if($res['response'] !== true) throw new Exception($res['error']);
+        if($res['response'] !== true) throw new Exception(json_encode($res));
 
         foreach($res['data'] as $requirement) {
             (isset( $this->requirements[ $requirement['role_name'] ] )) ? $this->requirements[ $requirement['role_name'] ] += $requirement['role_amount_required'] : $this->requirements[ $requirement['role_name'] ] = $requirement['role_amount_required'];
@@ -242,7 +242,7 @@ class NREvent {
             return;
         }
         else {
-            throw new Exception($res['error']);
+            throw new Exception(json_encode($res));
         }
     }
 
@@ -446,7 +446,7 @@ class NREvent {
             WHERE event_id = {$this->id};";
 
         $res = runSQLQuery($sql);
-        if($res['response'] !== true) throw new Exception($res['error']);
+        if($res['response'] !== true) throw new Exception(json_encode($res));
         if(!isset($res["data"])) return;
 
         foreach($res['data'] as $artistId) {
@@ -460,7 +460,6 @@ class NREvent {
             unset($artist->fcmTopics);
             unset($artist->locations);
             unset($artist->receipts);
-            unset($artist->stripe_account_token);
 
             $this->fulfillment[$artist->role["name"]]++;
             $this->artists[] = $artist;
@@ -505,7 +504,7 @@ class NREvent {
             ];
         }
         else {
-            throw new Exception($res['error']);
+            throw new Exception(json_encode($res));
         }
     }
 
