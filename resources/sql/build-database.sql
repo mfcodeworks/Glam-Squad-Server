@@ -31,6 +31,15 @@ CREATE TABLE IF NOT EXISTS nr_package_roles(
     FOREIGN KEY (role_id) REFERENCES nr_job_roles(id) ON DELETE CASCADE
 );
 
+# Glam Squad Forgot Password Client Keys (String (Unique Key); 2019-01-16 2:43:00 (Expiration time); 1 (User ID))
+CREATE TABLE IF NOT EXISTS nr_client_forgot_password_key(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    unique_key VARCHAR(255) NOT NULL,
+    expiration_date DATETIME NOT NULL,
+    client_id BIGINT NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
+)
+
 # Glam Squad Client Accounts
 CREATE TABLE IF NOT EXISTS  nr_clients(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

@@ -9,10 +9,11 @@ define("DB_USER", "nrglamsquad");
 define("DB_PASS", "school12");
 define("DB_NAME", "nrglamsquad");
 
-// Filepath constants
+// Path constants
 define("MEDIA_PATH", "/srv/nr-glam-squad/media/");
 define("MEDIA_URI", "https://glam-squad-img.nygmarosebeauty.com/");
 define("RESMUSHIT", "http://api.resmush.it/ws.php?img=");
+define("FORGOT_PASSWORD_URI", "https://glam-squad-db.nygmarosebeauty.com/forgot-password");
 
 // Mail constants
 define("SMTP_HOST", "server120.web-hosting.com");

@@ -130,6 +130,95 @@ class NRClient {
         ];
     }
 
+    public function forgotPassword($username) {
+        // Get user info 
+        $sql =
+        "SELECT id, email 
+            FROM nr_clients 
+            WHERE username = \"$username\";";
+
+        $r = runSQLQuery($sql);
+
+        if(isset($r["data"])) {
+            $id = $r["data"][0]["id"];
+            $email = $r["data"][0]["email"];
+        } else {
+            return [
+                "response" => false,
+                "error_code" => 205,
+                "error" => "Incorrect username"
+            ];
+        }
+
+        $key = $this->randomString();
+
+        $sql = 
+        "INSERT INTO nr_client_forgot_password_key(
+            unique_key,
+            expiration_date,
+            client_id
+        )
+        VALUES(
+            \"$key\",
+            NOW() + INTERVAL 12 HOUR,
+            $id
+        );";
+
+        $r = runSQLQuery($sql);
+
+        if($r["response"] !== true) {
+            return [
+                "response" => false,
+                "error_code" => 900,
+                "error" => "Database error occured\n" . json_encode($r)
+            ];
+        }
+        
+        try {
+            $url = FORGOT_PASSWORD_URI . "?key=$key";
+            $mail = new Mailer();
+            $mail->setFrom("it@nygmarosebeauty.com", "NygmaRose");
+            $mail->addAddress($email);
+            $mail->Subject = "Reset Password NygmaRose Glam Squad";
+            $mail->Body = <<<EOD
+                <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <p>
+                            Hi $username,
+                            <br><br>
+                            Please click <a href="$url">here</a> or paste the link below into your browser to reset your password, this link will be valid for the next 12 hours.
+                            <br>
+                            <a href="$url">$url</a>
+                            </br>
+                            <br><br>
+                            Best Regards,
+                            <br>
+                            NygmaRose
+                        </p>
+                    </body>
+                </html>
+EOD;
+            $mail->send();
+        }
+        catch(Exception $e) {
+            error_log($e);
+        }
+
+        return $r;
+    }
+
+    private function randomString($length = 32) {
+        // Create random string with current date salt for uniqueness
+        return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;
+    }
+
     public function validateSession($id, $usernameHash) {
         // Get plaintext username
         $sql = 

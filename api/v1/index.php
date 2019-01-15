@@ -73,6 +73,15 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->post('/clients/forgot-password', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Do forgot password function
+        $return = (new NRClient)->forgotPassword($form["username"]);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
     $api->get('/clients/{id: [0-9]+}', function($request, $response, $args) {
         // Get client from ID
         $return = (new NRClient)->get($args);
