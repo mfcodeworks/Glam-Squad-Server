@@ -39,7 +39,55 @@ class NRClient {
         ";
 
         // Return SQL result
-        return runSQLQuery($sql);
+        $res = runSQLQuery($sql);
+
+        if($res["data"][0]["response"] !== true) {
+            return [
+                "response" => false,
+                "error_code" => 900,
+                "error" => "Database error occured\n" . json_encode($r)
+            ];
+        }
+
+        try {
+            $mail = new Mailer();
+            $mail->setFrom("mua@nygmarosebeauty.com", "NygmaRose");
+            $mail->addAddress($email);
+            $mail->Subject = "NygmaRose Glam Squad Registration";
+            $mail->Body = <<<EOD
+                <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <p>
+                            Hi $username,
+                            <br><br>
+                            Your Glam Squad registration has been successfully received! 
+                            <br>
+                            Welcome to Glam Squad, enjoy getting your face beat and relaxing while your own personal glam squad attend to your every beauty need.
+                            <br>
+                            We look forward to your first booking!
+                            <br>
+                            <br><br>
+                            All the love,
+                            <br>
+                            NygmaRose
+                        </p>
+                    </body>
+                </html>
+EOD;
+            $mail->send();
+        }
+        catch(Exception $e) {
+            error_log($e);
+        }
+
+        return $res;
     }
 
     public function get($args) {
