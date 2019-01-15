@@ -6,6 +6,7 @@ ErrorDocument 403 /api/v1/index.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    RewriteRule ^lost-password.* /public/lost-password.php [QSA,L]
     RewriteRule ^config.* /api/v1/ [QSA,L,R=301]
     RewriteRule ^resources.* /api/v1/ [QSA,L,R=301]
     RewriteRule ^src.* /api/v1/ [QSA,L,R=301]
