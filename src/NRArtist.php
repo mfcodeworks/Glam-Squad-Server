@@ -152,7 +152,7 @@ EOD;
         "INSERT INTO nr_artist_forgot_password_key(
             unique_key,
             expiration_date,
-            client_id
+            artist_id
         )
         VALUES(
             \"$key\",
@@ -260,6 +260,11 @@ EOD;
             "error_code" => 900,
             "error" => "Unknown database error"
         ];
+    }
+
+    private function randomString($length = 32) {
+        // Create random string with current date salt for uniqueness
+        return bin2hex(random_bytes($length));;
     }
 
     private function savePortfolioImage($uri) {

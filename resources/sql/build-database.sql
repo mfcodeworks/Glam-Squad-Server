@@ -51,15 +51,6 @@ CREATE TABLE IF NOT EXISTS nr_client_forgot_password_key(
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
 );
 
-# Glam Squad Forgot Password Artist Keys (String (Unique Key); 2019-01-16 2:43:00 (Expiration time); 1 (User ID))
-CREATE TABLE IF NOT EXISTS nr_artist_forgot_password_key(
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    unique_key VARCHAR(255) NOT NULL UNIQUE,
-    expiration_date DATETIME NOT NULL,
-    artist_id BIGINT NOT NULL,
-    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
-);
-
 # Glam Squad Artist Accounts
 # FIXME: Removed UNIQUE from stripe_account_token for testing purposes
 CREATE TABLE IF NOT EXISTS nr_artists(
@@ -78,6 +69,15 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     probation BIT,
     locked BIT,
     FOREIGN KEY (role_id) REFERENCES nr_job_roles(id) ON DELETE CASCADE
+);
+
+# Glam Squad Forgot Password Artist Keys (String (Unique Key); 2019-01-16 2:43:00 (Expiration time); 1 (User ID))
+CREATE TABLE IF NOT EXISTS nr_artist_forgot_password_key(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    unique_key VARCHAR(255) NOT NULL UNIQUE,
+    expiration_date DATETIME NOT NULL,
+    artist_id BIGINT NOT NULL,
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
 # Artist Locations
