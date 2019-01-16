@@ -139,6 +139,58 @@ EOD;
         else return $response;
     }
 
+    public function forgotPasswordUpdate($args) {
+        extract($args);
+        
+        // Double check key validity
+        $sql =
+        "SELECT client_id, expiration_date
+            FROM nr_client_forgot_password_key
+            WHERE unique_key = \"$key\";";
+    
+        $r = runSQLQuery($sql);
+    
+        // Return data or false if not found
+        if(!isset($r["data"])) {
+            return [
+                "response" => false,
+                "error_code" => 205,
+                "error" => "Invalid key"
+            ];
+        }
+
+        // Hash password
+        $password = $this->hashInput($password);
+
+        // Update user password
+        $sql = 
+        "UPDATE nr_clients
+        SET password = \"$password\"
+        WHERE id = $id;";
+
+        $response = runSQLQuery($sql);
+
+        if($response["response"] !== true) return [
+            "response" => false,
+            "error_code" => 900,
+            "error" => "Unknown database error"
+        ];
+        
+        // Remove key validity
+        $sql =
+        "DELETE FROM nr_client_forgot_password_key
+            WHERE unique_key = \"$key\"";
+
+        // Check all requests successful
+        if(runSQLQuery($sql)["response"] === true) return $response;
+
+        else return [
+            "response" => false,
+            "error_code" => 900,
+            "error" => "Unknown database error"
+        ];
+    }
+
     public function authenticate($username, $password) {
         // Get user ID & Password hash
         $sql = 
@@ -222,7 +274,7 @@ EOD;
         }
         
         try {
-            $url = FORGOT_PASSWORD_URI . "?key=$key";
+            $url = FORGOT_PASSWORD_URI . "?key=$key&type=client";
             $mail = new Mailer();
             $mail->setFrom("it@nygmarosebeauty.com", "NygmaRose");
             $mail->addAddress($email);
@@ -263,7 +315,7 @@ EOD;
 
     private function randomString($length = 32) {
         // Create random string with current date salt for uniqueness
-        return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;
+        return bin2hex(random_bytes($length));;
     }
 
     public function validateSession($id, $usernameHash) {

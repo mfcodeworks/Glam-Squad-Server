@@ -34,6 +34,17 @@
             return $response->withStatus(200);
         }
 
+        /**
+         * Skip HMAC for same origin requests
+         * 
+         * Same origin requests 
+         *  - lost-password.php does key checking before sending server data
+         */
+        if($request->getHeader("ORIGIN")[0] === "https://glam-squad-db.nygmarosebeauty.com") {
+            return $next($request, $response)
+                ->withHeader("NR-HASH", $hash);
+        }
+
         // Get HMAC sent with request
         $hmac = $request->getHeader("NR_HASH")[0];
 
@@ -167,6 +178,15 @@
 
         // Get recently completed unpaid events 
         $return = (new NREvent)->getRecentlyCompletedEvents($args);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->put('/clients/{id: [0-9]+}/forgot-password', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Do forgot password function
+        $return = (new NRClient)->forgotPasswordUpdate($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
