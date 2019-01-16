@@ -68,11 +68,10 @@ class NRClient {
                             Hi $username,
                             <br><br>
                             Your Glam Squad registration has been successfully received! 
-                            <br>
+                            <br><br>
                             Welcome to Glam Squad, enjoy getting your face beat and relaxing while your own personal glam squad attend to your every beauty need.
                             <br>
                             We look forward to your first booking!
-                            <br>
                             <br><br>
                             All the love,
                             <br>
