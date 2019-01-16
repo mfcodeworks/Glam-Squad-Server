@@ -41,7 +41,7 @@ class NRClient {
         // Return SQL result
         $res = runSQLQuery($sql);
 
-        if($res["data"][0]["response"] !== true) {
+        if($res["response"] !== true) {
             return [
                 "response" => false,
                 "error_code" => 900,
