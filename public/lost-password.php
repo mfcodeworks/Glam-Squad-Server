@@ -104,7 +104,7 @@
                         <input type='password' name='password' class='form-control input-dark' id='new-password'>
                     </div>
                     <div class='text-center list-group-item clr-dark'>
-                        <button type='submit' id="btn-new-password" class='btn clr-primary btn-social' data-role="none" data-key="<?php echo $data["key"]; ?>" data-id="<?php echo $data["client_id"]; ?>"><i class='fas fa-lock'></i> Submit</button>
+                        <button type='submit' id="btn-new-password" class='btn clr-primary btn-social' data-role="none" data-key="<?php echo $data["key"]; ?>" data-id="<?php echo $data["client_id"]; ?>" data-type="<?php echo $data["type"]; ?>"><i class='fas fa-lock'></i> Submit</button>
                     </div>
                 </form>
             </div>

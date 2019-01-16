@@ -212,6 +212,15 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->post('/artists/forgot-password', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Do forgot password function
+        $return = (new NRArtist)->forgotPassword($form["username"]);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
     $api->get('/artists/{id: [0-9]+}', function($request, $response, $args) {
         // Get artist by ID
         $return = (new NRArtist)->get($args);
@@ -327,6 +336,15 @@
     $api->get('/artists/roles', function($request, $response, $args) {
         // Get artist roles
         $return = NRArtist::getRoles();
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->put('/artists/{id: [0-9]+}/forgot-password', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Do forgot password function
+        $return = (new NRArtist)->forgotPasswordUpdate($form);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });

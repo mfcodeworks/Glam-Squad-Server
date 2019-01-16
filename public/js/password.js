@@ -19,8 +19,10 @@ $(document).ready(function() {
             password: $("#new-password").val()
         }
 
+        var type = $("#btn-new-password").data("type");
+
         // Send new data
-        apiSend("PUT", `https://glam-squad-db.nygmarosebeauty.com/api/v1/clients/${form.id}/forgot-password`, form)
+        apiSend("PUT", `https://glam-squad-db.nygmarosebeauty.com/api/v1/${type}s/${form.id}/forgot-password`, form)
             .then(function(r) {
                 // End loader
                 endLoader();

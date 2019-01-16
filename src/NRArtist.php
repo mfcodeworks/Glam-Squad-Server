@@ -125,6 +125,142 @@ EOD;
         // Return SQL result
         return $res;
     }
+    
+    public function forgotPassword($username) {
+        // Get user info 
+        $sql =
+        "SELECT id, email 
+            FROM nr_artists 
+            WHERE username = \"$username\";";
+
+        $r = runSQLQuery($sql);
+
+        if(isset($r["data"])) {
+            $id = $r["data"][0]["id"];
+            $email = $r["data"][0]["email"];
+        } else {
+            return [
+                "response" => false,
+                "error_code" => 205,
+                "error" => "Incorrect username"
+            ];
+        }
+
+        $key = $this->randomString();
+
+        $sql = 
+        "INSERT INTO nr_artist_forgot_password_key(
+            unique_key,
+            expiration_date,
+            client_id
+        )
+        VALUES(
+            \"$key\",
+            NOW() + INTERVAL 12 HOUR,
+            $id
+        );";
+
+        $r = runSQLQuery($sql);
+
+        if($r["response"] !== true) {
+            return [
+                "response" => false,
+                "error_code" => 900,
+                "error" => "Database error occured\n" . json_encode($r)
+            ];
+        }
+        
+        try {
+            $url = FORGOT_PASSWORD_URI . "?key=$key&type=artist";
+            $mail = new Mailer();
+            $mail->setFrom("it@nygmarosebeauty.com", "NygmaRose");
+            $mail->addAddress($email);
+            $mail->Subject = "Reset Password NygmaRose Glam Squad";
+            $mail->Body = <<<EOD
+                <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <p>
+                            Hi $username,
+                            <br><br>
+                            Please click <a href="$url">here</a> or paste the link below into your browser to reset your password, this link will be valid for the next 12 hours.
+                            <br>
+                            <a href="$url">$url</a>
+                            </br>
+                            <br><br>
+                            Best Regards,
+                            <br>
+                            NygmaRose
+                        </p>
+                    </body>
+                </html>
+EOD;
+            $mail->send();
+        }
+        catch(Exception $e) {
+            error_log($e);
+        }
+
+        return $r;
+    }
+
+    public function forgotPasswordUpdate($args) {
+        extract($args);
+        
+        // Double check key validity
+        $sql =
+        "SELECT artist_id, expiration_date
+            FROM nr_artist_forgot_password_key
+            WHERE unique_key = \"$key\";";
+    
+        $r = runSQLQuery($sql);
+    
+        // Return data or false if not found
+        if(!isset($r["data"])) {
+            return [
+                "response" => false,
+                "error_code" => 205,
+                "error" => "Invalid key"
+            ];
+        }
+
+        // Hash password
+        $password = $this->hashInput($password);
+
+        // Update user password
+        $sql = 
+        "UPDATE nr_artists
+            SET password = \"$password\"
+            WHERE id = $id;";
+
+        $response = runSQLQuery($sql);
+
+        if($response["response"] !== true) return [
+            "response" => false,
+            "error_code" => 900,
+            "error" => "Unknown database error"
+        ];
+        
+        // Remove key validity
+        $sql =
+        "DELETE FROM nr_artist_forgot_password_key
+            WHERE unique_key = \"$key\"";
+
+        // Check all requests successful
+        if(runSQLQuery($sql)["response"] === true) return $response;
+
+        else return [
+            "response" => false,
+            "error_code" => 900,
+            "error" => "Unknown database error"
+        ];
+    }
 
     private function savePortfolioImage($uri) {
         $sql = "INSERT INTO nr_artist_portfolios(photo, artist_id)
