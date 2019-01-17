@@ -60,6 +60,20 @@ class NRArtist {
 
         $res = runSQLQuery($sql);
 
+        if(!isset($res["id"])) {
+            if($res["error_code"] === 1062) return [
+                "response" => false,
+                "error_code" => 400,
+                "error" => "Username or email already exists",
+            ];
+            else return [
+                "response" => false,
+                "error_code" => 500,
+                "error" => "Unable to save new artist",
+                "query" => $res
+            ];
+        } 
+
         $this->id = $res["id"];
 
         if (isset($portfolio)) {
