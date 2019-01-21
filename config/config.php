@@ -41,7 +41,7 @@ define("STRIPE_PAYMENT_ENDPOINT", "https://api.stripe.com/v1/charges");
 define("ARTIST_PERCENTAGE", 0.85);
 
 // API: Facebook Constants
-define("FACEBOOK_APP_ID", "2288922571142545");
-define("FACEBOOK_APP_SECRET", "4cb69f8b3f59af76b0b021175deb0b68");
+define("FACEBOOK_APP_ID", "808819612792596");
+define("FACEBOOK_APP_SECRET", "696d305cbda1a2fa1be85e1e9b5a4b79");
 define("FACEBOOK_GRAPH", "v3.2");
 ?>
