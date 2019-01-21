@@ -75,6 +75,27 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->post('/clients/auth/{type: [a-z]+}', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Register new client with social media
+        switch($args["type"]) {
+            case "facebook":
+                $return = (new NRClient)->registerFacebook($form);
+                break;
+            
+            case "twitter":
+                $return = (new NRClient)->registerTwitter($form);
+                break;
+
+            case "google":
+                $return = (new NRClient)->registerGoogle($form);
+                break;
+        }
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
     $api->post('/clients/authenticate', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();

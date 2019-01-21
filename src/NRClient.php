@@ -89,6 +89,67 @@ EOD;
         return $res;
     }
 
+    public function registerFacebook($args) {
+        extract($args);
+
+        $fb = new Facebook\Facebook([
+            "app_id" => FACEBOOK_APP_ID,
+            "app_secret" => FACEBOOK_APP_SECRET,
+            "default_graph_version" => FACEBOOK_GRAPH
+        ]);
+
+        try {
+            // Get FB User
+            $response = $fb->get('/me?fields=id,name,email', $accessToken);
+            $user = $response->getGraphUser();
+
+            // Compare info
+            if($email !== $user["email"] || $username !== str_replace(" ", "", $user["name"])) {
+                return[
+                    "response" => false,
+                    "error" => "Invalid access token",
+                    "error_code" => 205
+                ];
+            }
+        } catch(Facebook\Exceptions\FacebookResponseException $e) {
+            return[
+                "response" => false,
+                "error" => $e->getMessage(),
+                "error_code" => 1
+            ];
+        } catch(Facebook\Exceptions\FacebookSDKException $e) {
+            return[
+                "response" => false,
+                "error" => $e->getMessage(),
+                "error_code" => 1
+            ];
+        }
+
+        $sql = 
+        "SELECT *
+            FROM nr_clients
+            WHERE email = \"$email\";";
+
+        $query = runSQLQuery($sql);
+
+        if(isset($query["data"])) {
+            // Remove password hash and return successful result
+            unset($query["data"][0]["password"]);
+
+            // Save hashed username for session verification
+            $query["data"][0]["usernameHash"] = $this->hashInput($username);
+            return $query;
+        } else {
+            // Register user with random password
+            $password = $this->randomString();
+            $register = $this->register($username, $email, $password);
+
+            // Check registration success
+            if($register["response"] == true) return $this->authenticate($username, $password);
+            else return $register;
+        }
+    }
+
     public function get($args) {
         // Get args
         extract($args);
