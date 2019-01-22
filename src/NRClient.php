@@ -89,6 +89,62 @@ EOD;
         return $res;
     }
 
+    public function registerTwitter($args) {
+        extract($args);
+
+        $settings = [
+            "oauth_access_token" => TWITTER_OAUTH_KEY,
+            "oauth_access_token_secret" => TWITTER_OAUTH_SECRET,
+            "consumer_key" => TWITTER_KEY,
+            "consumer_secret" => TWITTER_SECRET
+        ];
+
+        $url = TWITTER_ENDPOINT . "users/show.json";
+        $fields = "?user_id=$userId&screen_name=$userName";
+        $method = "GET";
+
+        $twitter = new TwitterAPIExchange($settings);
+        $response = $twitter->setGetfield($fields)
+            ->buildOauth($url, $method)
+            ->performRequest();
+
+        $response = json_decode($response, true);
+        
+        if($userName !== $response["screen_name"] || $userId !== $response["id"]) {
+            return[
+                "response" => false,
+                "error" => "Invalid access token",
+                "error_code" => 205
+            ];
+        }
+        
+        $sql = 
+        "SELECT *
+            FROM nr_clients
+            WHERE username = \"$userName\";";
+
+        $query = runSQLQuery($sql);
+
+        if(isset($query["data"])) {
+            // Remove password hash and return successful result
+            unset($query["data"][0]["password"]);
+
+            // Save hashed username for session verification
+            $query["data"][0]["usernameHash"] = $this->hashInput($userName);
+            return $query;
+        } else {
+            // Register user with random password
+            $password = $this->randomString();
+            // FIXME: Get email permissions
+            $email = "faketestemail@email.com";
+            $register = $this->register($userName, $email, $password);
+
+            // Check registration success
+            if($register["response"] == true) return $this->authenticate($userName, $password);
+            else return $register;
+        }
+    }
+
     public function registerFacebook($args) {
         extract($args);
 

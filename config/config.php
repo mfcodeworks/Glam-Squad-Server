@@ -44,4 +44,11 @@ define("ARTIST_PERCENTAGE", 0.85);
 define("FACEBOOK_APP_ID", "808819612792596");
 define("FACEBOOK_APP_SECRET", "696d305cbda1a2fa1be85e1e9b5a4b79");
 define("FACEBOOK_GRAPH", "v3.2");
+
+// API: Twitter Constants 
+define("TWITTER_ENDPOINT", "https://api.twitter.com/1.1/");
+define("TWITTER_KEY", "tX0ckYm7Viea90cHKOZjZdwsI");
+define("TWITTER_SECRET", "n2GKkqZEPbviDQIVnyXESxei3U8l9YPy4Vf34LXVhb6gqyCzvs");
+define("TWITTER_OAUTH_KEY", "4888236412-vd0dxjLqJlQvae62vly60N86F6wGot7bIYMsrx6");
+define("TWITTER_OAUTH_SECRET", "nGBU6vfYCARVOUEd4rvmKILiac9tS59zgZwX2iuOeTtt8");
 ?>
