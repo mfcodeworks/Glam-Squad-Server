@@ -51,4 +51,7 @@ define("TWITTER_KEY", "tX0ckYm7Viea90cHKOZjZdwsI");
 define("TWITTER_SECRET", "n2GKkqZEPbviDQIVnyXESxei3U8l9YPy4Vf34LXVhb6gqyCzvs");
 define("TWITTER_OAUTH_KEY", "4888236412-vd0dxjLqJlQvae62vly60N86F6wGot7bIYMsrx6");
 define("TWITTER_OAUTH_SECRET", "nGBU6vfYCARVOUEd4rvmKILiac9tS59zgZwX2iuOeTtt8");
+
+// API: Google Constants
+define("GOOGLE_APP_ID", "427808297057-g8ganbj0pcpqcr7b07l0ip7po8n8bqqb.apps.googleusercontent.com");
 ?>

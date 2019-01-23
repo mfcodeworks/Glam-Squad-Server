@@ -89,6 +89,52 @@ EOD;
         return $res;
     }
 
+    public function registerGoogle($args) {
+        error_log(print_r($args, true));
+        extract($args);
+
+        $client = new Google_Client(['client_id' => GOOGLE_APP_ID]);
+        $payload = $client->verifyIdToken($idToken);
+        if(!$payload) {
+            return[
+                "response" => false,
+                "error" => "Invalid access token",
+                "error_code" => 205
+            ];
+        }
+
+        error_log(print_r($payload, true));
+
+        $userName = str_replace(" ", "", $payload["name"]);
+        $email = $payload["email"];
+        
+        $sql = 
+        "SELECT *
+            FROM nr_clients
+            WHERE email = \"$email\";";
+
+        $query = runSQLQuery($sql);
+
+        if(isset($query["data"])) {
+            // Remove password hash and return successful result
+            unset($query["data"][0]["password"]);
+
+            // Save hashed username for session verification
+            $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
+            return $query;
+        } else {
+            // Register user with random password
+            $password = $this->randomString();
+            // FIXME: Get email permissions
+            $email = "faketestemail@email.com";
+            $register = $this->register($userName, $email, $password);
+
+            // Check registration success
+            if($register["response"] == true) return $this->authenticate($userName, $password);
+            else return $register;
+        }
+    }
+
     public function registerTwitter($args) {
         extract($args);
 
@@ -130,7 +176,7 @@ EOD;
             unset($query["data"][0]["password"]);
 
             // Save hashed username for session verification
-            $query["data"][0]["usernameHash"] = $this->hashInput($userName);
+            $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
@@ -193,7 +239,7 @@ EOD;
             unset($query["data"][0]["password"]);
 
             // Save hashed username for session verification
-            $query["data"][0]["usernameHash"] = $this->hashInput($username);
+            $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
