@@ -18,7 +18,8 @@ class NRImage {
     public $image_data;
 
     public function __construct() {
-
+        // If media directory doesn't exist, create it
+        if (!is_dir(MEDIA_PATH)) mkdir(MEDIA_PATH, 0775, true);
     }
 
     public function getData($blob) {
@@ -26,7 +27,7 @@ class NRImage {
         if($blob === "" || $blob === null) return false;
 
         // Get mime
-        $this->mime = explode(";",$blob)[0];
+        $this->mime = explode(";", $blob)[0];
 
         // Get type from image/png or image/jpeg
         $this->type = explode("/", $this->mime)[1];
@@ -35,11 +36,11 @@ class NRImage {
         if(!in_array($this->type, ['jpg', 'jpeg', 'png', 'gif'])) throw new Exception("Invalid image type: {$this->type}.");
 
         // Get data and decode
-        $this->blob = explode(",",explode(";",$blob)[1])[1];
+        $this->blob = explode(",", explode(";",$blob)[1])[1];
         $this->data = base64_decode($this->blob);
 
         // Create random filename
-        $this->filepath = MEDIA_PATH . $this->randomString() . "." . $this->type;
+        $this->filepath = MEDIA_PATH . "{$this->randomString()}.{$this->type}";
 
         // Put file contents
         if(file_put_contents($this->filepath, $this->data) !== false) {
@@ -48,7 +49,35 @@ class NRImage {
             return true;
         }
 
+        // Throw file put error
         throw new Exception("Couldn't save blob to file: {$this->filepath}.");
+    }
+
+    public function getURI($uri) {
+        // Seperate URI at dot (last dot is always filetype if file)
+        $uriArray = explode(".", $uri);
+        $final = count($uriArray);
+        $this->type = $uriArray[$final];
+
+        // Create random filename
+        $this->filepath = MEDIA_PATH . "{$this->randomString()}.{$this->type}";
+
+        // Get data
+        $this->data = file_get_contents(urlencode($uri));
+
+        if(!$this->data) {
+            // Throw file read error
+            throw new Exception("Couldn't read URI: {$uri}.");
+        }
+        
+        // Put file contents
+        if(file_put_contents($this->filepath, $this->data) !== false) {
+            // Create public path
+            $this->publicpath = str_replace(MEDIA_PATH, MEDIA_URI, $this->filepath);
+            return true;
+        }
+
+        throw new Exception("Couldn't save data to file: {$this->filepath}.");
     }
 
     public static function optimizeImage($filepaths) {
