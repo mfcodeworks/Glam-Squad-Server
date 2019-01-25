@@ -82,7 +82,7 @@ class NRImage {
 
     public static function optimizeImage($filepaths) {
         // Do image optimization
-        $ch = curl_init("https://glam-squad-db.nygmarosebeauty.com/smush.php");
+        $ch = curl_init("https://glam-squad-db.nygmarosebeauty.com/public/smush.php");
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $filepaths);
         curl_setopt($ch, CURLOPT_TIMEOUT, 1); 

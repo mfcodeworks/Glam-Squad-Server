@@ -1083,16 +1083,16 @@
         },
         {
             "name": "slim/slim",
-            "version": "3.11.0",
+            "version": "3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slimphp/Slim.git",
-                "reference": "d378e70431e78ee92ee32ddde61ecc72edf5dc0a"
+                "reference": "f4947cc900b6e51cbfda58b9f1247bca2f76f9f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim/zipball/d378e70431e78ee92ee32ddde61ecc72edf5dc0a",
-                "reference": "d378e70431e78ee92ee32ddde61ecc72edf5dc0a",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/f4947cc900b6e51cbfda58b9f1247bca2f76f9f0",
+                "reference": "f4947cc900b6e51cbfda58b9f1247bca2f76f9f0",
                 "shasum": ""
             },
             "require": {
@@ -1150,20 +1150,20 @@
                 "micro",
                 "router"
             ],
-            "time": "2018-09-16T10:54:21+00:00"
+            "time": "2019-01-15T13:21:25+00:00"
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v6.28.0",
+            "version": "v6.29.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "e15127f0f56a0bf2d4ef454df75ea08265e9b2c7"
+                "reference": "b21d9a4a7198f99e2ad0915fa2389bca6717c219"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/e15127f0f56a0bf2d4ef454df75ea08265e9b2c7",
-                "reference": "e15127f0f56a0bf2d4ef454df75ea08265e9b2c7",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/b21d9a4a7198f99e2ad0915fa2389bca6717c219",
+                "reference": "b21d9a4a7198f99e2ad0915fa2389bca6717c219",
                 "shasum": ""
             },
             "require": {
@@ -1175,7 +1175,8 @@
             "require-dev": {
                 "php-coveralls/php-coveralls": "1.*",
                 "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "~2.0"
+                "squizlabs/php_codesniffer": "~2.0",
+                "symfony/process": "~2.8"
             },
             "type": "library",
             "extra": {
@@ -1205,7 +1206,7 @@
                 "payment processing",
                 "stripe"
             ],
-            "time": "2019-01-03T18:40:20+00:00"
+            "time": "2019-01-23T23:51:39+00:00"
         }
     ],
     "packages-dev": [],

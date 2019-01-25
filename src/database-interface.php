@@ -54,7 +54,7 @@
     // Open database connection
     function connectToDB() {
         // Connect to DB
-        return new mysqli(
+        return new \MySQLi(
             DB_SERVER,
             DB_USER,
             DB_PASS,

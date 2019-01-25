@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+    web:
+        build:
+            context: ./docker
+        image: nygmarose/glamsquad:latest
+        deploy:
+            replicas: 5
+            resources:
+                limits:
+                    cpus: "0.15"
+                    memory: 128M
+                reservations:
+                    cpus: "0.05"
+                    memory: 28M
+            restart_policy:
+                condition: on-failure
+                delay: 10s
+                max_attempts: 3
+                window: 60s
+        ports:
+            - 80:80
+            - 443:443
+        networks:
+            - webnet
+        volumes:
+            - ../:/var/www/html
+            - ./docker/media:/srv/nr-glam-squad/media
+
+networks: 
+    webnet:

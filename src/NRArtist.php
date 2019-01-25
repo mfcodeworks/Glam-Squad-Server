@@ -304,6 +304,14 @@ EOD;
             WHERE a.id = $id;";
 
         $response = runSQLQuery($sql);
+        if(!$response["data"][0])
+            return [
+                "response" => false,
+                "error" => "User doesn't exist",
+                "error_code" => 400,
+                "enddata" => $response
+            ];
+
         extract($response['data'][0]);
 
         // Save properties

@@ -45,7 +45,7 @@ class NRClient {
             return [
                 "response" => false,
                 "error_code" => 900,
-                "error" => "Database error occured\n" . json_encode($r)
+                "error" => "Database error occured\n" . json_encode($res)
             ];
         }
 

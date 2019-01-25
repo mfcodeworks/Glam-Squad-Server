@@ -4,6 +4,9 @@
 # Author: MF Softworks <mf@nygmarosebeauty.com>
 #
 
+# DEBUG: Remove DB and start fresh
+DROP DATABASE nrglamsquad;
+
 CREATE SCHEMA IF NOT EXISTS nrglamsquad;
 USE nrglamsquad;
 

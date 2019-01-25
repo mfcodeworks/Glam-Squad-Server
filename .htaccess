@@ -11,8 +11,10 @@ ErrorDocument 403 /api/v1/index.php
     RewriteRule ^resources.* /api/v1/ [QSA,L,R=301]
     RewriteRule ^src.* /api/v1/ [QSA,L,R=301]
     RewriteRule ^vendor.* /api/v1/ [QSA,L,R=301]
+    RewriteRule ^tests.* /api/v1/ [QSA,L,R=301]
     RewriteRule ^bin/deploy.sh$ /api/v1/ [QSA,L,R=301]
     RewriteRule ^smush.* /public/smush.php [QSA,L]
+    RewriteRule ^images/([a-zA-Z0-9\.\-\_]+) /bin/docker/media/$1 [QSA,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

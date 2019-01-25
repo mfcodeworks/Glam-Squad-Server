@@ -29,11 +29,6 @@
 
     // HMAC check for queries 
     $api->add(function ($request, $response, $next) {
-        // Check if preflight and respond 200
-        if($request->isOptions() && strpos($request->getHeader("ACCESS_CONTROL_REQUEST_HEADERS")[0], "nr-hash") > -1) {
-            return $response->withStatus(200);
-        }
-
         /**
          * Skip HMAC for same origin requests
          * 
@@ -41,8 +36,17 @@
          *  - lost-password.php does key checking before sending server data
          */
         if($request->getHeader("ORIGIN") != null && $request->getHeader("ORIGIN")[0] === "https://glam-squad-db.nygmarosebeauty.com") {
-            return $next($request, $response)
-                ->withHeader("NR-HASH", $hash);
+            return $next($request, $response);
+        }
+
+        // Check if preflight and respond 200
+        if($request->isOptions() && strpos($request->getHeader("ACCESS_CONTROL_REQUEST_HEADERS")[0], "nr-hash") > -1) {
+            return $response->withStatus(200);
+
+        // If not preflight, check NR-Hash present
+        } else if($request->getHeader("NR-HASH") == null) {
+            return $response->withStatus(401)
+                ->write("No Authorization Header");
         }
 
         // Get HMAC sent with request
@@ -55,6 +59,7 @@
         if(hash_equals($hash, $hmac)) {
             return $next($request, $response)
                 ->withHeader("NR-HASH", $hash);
+                
         // If HMAC incorrect return 401 Unauthorized
         } else {
             return $response->withStatus(401)

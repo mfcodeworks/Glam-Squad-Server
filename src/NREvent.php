@@ -59,7 +59,8 @@ class NREvent {
             return [
                 "response" => false,
                 "error_code" => 107,
-                "error" => $e
+                "error" => "Failed saving client card",
+                "exception" => $e
             ];
         }
 
@@ -70,7 +71,8 @@ class NREvent {
             return [
                 "response" => false,
                 "error_code" => 107,
-                "error" => $e
+                "error" => "Failed saving event data",
+                "exception" => $e
             ];
         }
 
@@ -83,7 +85,8 @@ class NREvent {
                 return [
                     "response" => false,
                     "error_code" => 107,
-                    "error" => $e
+                    "error" => "Failed saving event packages",
+                    "exception" => $e
                 ];
             }
         }
@@ -114,7 +117,8 @@ class NREvent {
                     return [
                         "response" => false,
                         "error_code" => 107,
-                        "error" => "Failed saving attached images"
+                        "error" => "Failed saving attached images",
+                        "exception" => $e
                     ];
                 }
             }
