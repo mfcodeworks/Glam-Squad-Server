@@ -274,21 +274,23 @@ class NREvent {
         // Get event
         $sql =
         "SELECT id            
-        FROM nr_jobs
-        WHERE client_id = $id
-        ORDER BY event_datetime DESC;";
+            FROM nr_jobs
+            WHERE client_id = $id
+            ORDER BY event_datetime DESC;";
 
         $res = runSQLQuery($sql);
 
-        if($res["response"] !== true) {
+        if($res["response"] !== true || !$res["data"]) {
             return $res;
         }
         
-        $eventIds = $res["data"];
-        foreach($eventIds as $eventId) {
+        $eventList = $res["data"];
+        foreach($eventList as $event) {
+            /* DEBUG: Condensed to single line 
             $event = new NREvent();
             $event->getSingle($eventId['id']);
-            $events[] = $event;
+            $events[] = $event; */
+            $events[] = (new NREvent)->getSingle($event["id"]);
         }
 
         return [
