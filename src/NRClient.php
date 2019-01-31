@@ -107,6 +107,7 @@ EOD;
 
         $userName = str_replace(" ", "", $payload["name"]);
         $email = $payload["email"];
+        $profilePicture = $payload["picture"];
         
         $sql = 
         "SELECT *
@@ -119,6 +120,12 @@ EOD;
             // Remove password hash and return successful result
             unset($query["data"][0]["password"]);
 
+            // Check if profile picture exists or needs updating 
+            if(!$query["data"][0]["profile_photo"] || $query["data"][0]["profile_photo"] === null) {
+                $this->saveProfilePic($query["data"][0]["id"], $profilePicture);
+                $query["data"][0]["profile_photo"] = $profilePicture;
+            }
+
             // Save hashed username for session verification
             $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
@@ -128,7 +135,11 @@ EOD;
             $register = $this->register($userName, $email, $password);
 
             // Check registration success
-            if($register["response"] == true) return $this->authenticate($userName, $password);
+            if($register["response"] == true) {
+                $user = $this->authenticate($userName, $password);
+                $this->saveProfilePic($user["data"][0]["id"], $profilePicture);
+                $user["data"][0]["profile_photo"] = $profilePicture;
+            }
             else return $register;
         }
     }
@@ -248,6 +259,14 @@ EOD;
             if($register["response"] == true) return $this->authenticate($username, $password);
             else return $register;
         }
+    }
+
+    public function saveProfilePic($id, $url) {
+        $sql = "UPDATE nr_clients
+            SET profile_photo = \"$url\"
+            WHERE id = $id;";
+
+        return runSQLQuery($sql);
     }
 
     public function get($args) {
