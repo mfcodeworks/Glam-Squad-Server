@@ -125,8 +125,6 @@ EOD;
         } else {
             // Register user with random password
             $password = $this->randomString();
-            // FIXME: Get email permissions
-            $email = "faketestemail@email.com";
             $register = $this->register($userName, $email, $password);
 
             // Check registration success
