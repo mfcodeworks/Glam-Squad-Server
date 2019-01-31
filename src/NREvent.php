@@ -411,11 +411,9 @@ class NREvent {
 
         $this->ratings["artists"] = [];
 
-        if(!isset($res["data"])) return;
-
-        foreach($res["data"] as $rating) {
-            $this->ratings["artists"][ $rating["artist_id"] ][] = $rating["rating"];
-        }
+        if(isset($res["data"]))
+            foreach($res["data"] as $rating) 
+                $this->ratings["artists"][ $rating["artist_id"] ][] = $rating["rating"];
 
         // Get client ratings
         $sql =
@@ -427,11 +425,9 @@ class NREvent {
 
         $this->ratings["clients"] = [];
 
-        if(!isset($res["data"])) return;
-
-        foreach($res["data"] as $rating) {
-            $this->ratings["clients"][ $rating["client_id"] ][] = $rating["rating"];
-        }
+        if(isset($res["data"]))
+            foreach($res["data"] as $rating)
+                $this->ratings["clients"][ $rating["client_id"] ][] = $rating["rating"];
     }
 
     private function getHours() {
