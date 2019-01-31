@@ -211,8 +211,10 @@ EOD;
 
         try {
             // Get FB User
-            $response = $fb->get('/me?fields=id,name,email', $accessToken);
+            $response = $fb->get('/me?fields=id,name,email,picture', $accessToken);
             $user = $response->getGraphUser();
+
+            $profilePicture = $user["picture"]["url"];
 
             // Compare info
             if($email !== $user["email"] || $username !== str_replace(" ", "", $user["name"])) {
@@ -247,6 +249,12 @@ EOD;
             // Remove password hash and return successful result
             unset($query["data"][0]["password"]);
 
+            // Check if profile picture exists or needs updating 
+            if(!$query["data"][0]["profile_photo"] || $query["data"][0]["profile_photo"] === null) {
+                $this->saveProfilePic($query["data"][0]["id"], $profilePicture);
+                $query["data"][0]["profile_photo"] = $profilePicture;
+            }
+
             // Save hashed username for session verification
             $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
@@ -256,7 +264,11 @@ EOD;
             $register = $this->register($username, $email, $password);
 
             // Check registration success
-            if($register["response"] == true) return $this->authenticate($username, $password);
+            if($register["response"] == true) {
+                $user = $this->authenticate($userName, $password);
+                $this->saveProfilePic($user["data"][0]["id"], $profilePicture);
+                $user["data"][0]["profile_photo"] = $profilePicture;
+            }
             else return $register;
         }
     }
