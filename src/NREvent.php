@@ -816,7 +816,7 @@ class NREvent {
                         "priority" => 'high',
                         "data" => [
                             "title" => "New Artist",
-                            "message" => "Artist {$artist->username} has accepted the booking at {$event->address}",
+                            "message" => "{$artist->role['name']} {$artist->username} has accepted the booking at {$event->address}",
                             'content-available'  => '1',
                             "image" => 'logo'
                         ]
