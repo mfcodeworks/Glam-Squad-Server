@@ -671,7 +671,7 @@ class NREvent {
                 for($i = 0; $i < $count; $i++) {
                     // Check if attendance already sent 
                     $sql = 
-                    "SELECT * FROM nr_job_artist_attendance 
+                    "SELECT * FROM nr_job_client_attendance 
                         WHERE event_id = {$data["data"][$i]["id"]} 
                         AND client_id = $id;";
                         
@@ -693,7 +693,7 @@ class NREvent {
                 return $data;
 
             case "artist":
-                // Get recently completed, unpaid jobs for artist where the artist hasn't confirmed the event
+                // Get recently completed, unpaid jobs for artist
                 $sql = 
                 "SELECT j.id 
                     FROM nr_jobs as j 
@@ -713,7 +713,7 @@ class NREvent {
                 for($i = 0; $i < $count; $i++) {
                     // Check if attendance already sent 
                     $sql = 
-                    "SELECT * FROM nr_job_client_attendance 
+                    "SELECT * FROM nr_job_artist_attendance 
                         WHERE event_id = {$data["data"][$i]["id"]} 
                         AND artist_id = $id;";
 
