@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS nr_client_fcm_topics(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fcm_topic VARCHAR(255) NOT NULL,
     client_id BIGINT NOT NULL,
+    UNIQUE(fcm_topic, client_id),
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
 );
 
@@ -114,6 +115,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_fcm_topics(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     fcm_topic VARCHAR(255) NOT NULL,
     artist_id BIGINT NOT NULL,
+    UNIQUE(fcm_topic, artist_id),
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 

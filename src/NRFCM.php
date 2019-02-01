@@ -174,50 +174,18 @@ class NRFCM {
 
         switch($type) {
             case "client":
-                $sql = 
-                "SELECT *
-                FROM nr_client_fcm_topics
-                WHERE fcm_topic LIKE \"$topic\"
-                AND client_id = $id;";
-        
-                if(isset(runSQLQuery($sql)["data"][0]["id"])) {
-                    return [
-                        "response" => false,
-                        "error_code" => 107,
-                        "error" => "Topic already exists for user"
-                    ];
-                }
-        
                 // Build SQL
                 $sql = 
                 "INSERT INTO nr_client_fcm_topics(fcm_topic, client_id)
-                VALUES(\"$topic\", $id);
-                ";
-        
+                    VALUES(\"$topic\", $id);";
                 return runSQLQuery($sql);
                 break;
                 
             case "artist":
-                $sql = 
-                "SELECT *
-                FROM nr_artist_fcm_topics
-                WHERE fcm_topic LIKE \"$topic\"
-                AND artist_id = $id;";
-        
-                if(isset(runSQLQuery($sql)["data"][0]["id"])) {
-                    return [
-                        "response" => false,
-                        "error_code" => 107,
-                        "error" => "Topic already exists for user"
-                    ];
-                }
-        
                 // Build SQL
                 $sql = 
                 "INSERT INTO nr_artist_fcm_topics(fcm_topic, artist_id)
-                VALUES(\"$topic\", $id);
-                ";
-        
+                    VALUES(\"$topic\", $id);";
                 return runSQLQuery($sql);
                 break;
         }
@@ -230,22 +198,19 @@ class NRFCM {
         switch($type) {
             case "client":
                 // Build SQL
-                $sql = "
-                SELECT *
-                FROM nr_client_fcm_topics
-                WHERE client_id = $id;
-                ";
-
+                $sql = 
+                "SELECT *
+                    FROM nr_client_fcm_topics
+                    WHERE client_id = $id;";
                 return runSQLQuery($sql);
                 break;
+
             case "artist":
                 // Build SQL
-                $sql = "
-                SELECT *
-                FROM nr_artist_fcm_topics
-                WHERE artist_id = $id;
-                ";
-
+                $sql = 
+                "SELECT *
+                    FROM nr_artist_fcm_topics
+                    WHERE artist_id = $id;";
                 return runSQLQuery($sql);
                 break;
         }
