@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     instagram VARCHAR(255),
     rating TINYINT,
     stripe_account_token VARCHAR(255), 
-    fcm_token VARCHAR(255) NOT NULL UNIQUE,
+    fcm_token VARCHAR(255) UNIQUE,
     role_id BIGINT,
     probation BIT,
     locked BIT,

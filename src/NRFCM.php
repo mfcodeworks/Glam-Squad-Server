@@ -25,8 +25,6 @@ class NRFCM {
     public function send($payload, $endpoint) {
         $data = json_encode($payload, JSON_PRETTY_PRINT);
 
-        error_log($data);
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $endpoint);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -127,22 +125,10 @@ class NRFCM {
 
             $sql = 
             "SELECT fcm_token
-                FROM nr_artist_fcm_tokens
-                WHERE artist_id = {$artist->id};";
+                FROM nr_artists
+                WHERE id = {$artist->id};";
 
-            $tokenData = runSQLQuery($sql);
-
-            foreach($tokenData["data"] as $tokenObj) {
-                $tokens[] = $tokenObj["fcm_token"];
-            }
-
-            $notificationGroup = [
-                "operation" => "create",
-                "notification_key_name" => preg_replace("/[^A-Za-z0-9\-\_]/","-",$this->randomString(14)),
-                "registration_ids" => $tokens
-            ];
-            
-            $group = json_decode($this->send($notificationGroup, FCM_GROUP_ENDPOINT), true)["notification_key"];
+            $group = runSQLQuery($sql)["data"][0]["fcm_token"];
 
             $notif = [
                 "to" => $group,
@@ -154,6 +140,8 @@ class NRFCM {
                     "image" => 'logo'
                 ]
             ];
+
+            error_log(print_r($notif, true));
 
             $fcmResponses[] = $this->send($notif, FCM_NOTIFICATION_ENDPOINT);
         }
