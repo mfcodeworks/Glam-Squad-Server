@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS  nr_clients(
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     stripe_customer_id VARCHAR(255) UNIQUE,
-    fcm_token VARCHAR(255) NOT NULL UNIQUE,
+    fcm_token VARCHAR(255) UNIQUE,
     rating TINYINT
 );
 

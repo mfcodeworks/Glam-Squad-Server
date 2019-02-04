@@ -1,8 +1,8 @@
 <?php
 	// Allow all origin and headers
 	header('Access-Control-Allow-Origin: *');
-	header('Access-Control-Allow-Headers: *');
-	header('Access-Control-Allow-Methods: *');
+	header('Access-Control-Allow-Headers: content-type,nr-hash,origin,referrer,user-agent,*');
+	header('Access-Control-Allow-Methods: GET,POST,OPTIONS,PUT,DELETE');
 
 	// Paths
     define('PROJECT_ROOT', dirname(dirname(dirname(__FILE__))));

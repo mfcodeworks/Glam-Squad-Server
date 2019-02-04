@@ -39,6 +39,17 @@ class NRFCM {
         return curl_exec($ch);
     }
 
+    public function get($url) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        return curl_exec($ch);
+    }
+
     public function sendEventNotification($event) {
         // Log event
         error_log(json_encode($event, JSON_PRETTY_PRINT));
@@ -162,11 +173,37 @@ class NRFCM {
     public function registerToken($args) {
         extract($args);
 
+        $group = [
+            "operation" => "create",
+            "notification_key_name" => "{$type}-{$id}",
+            "registration_ids" => [$fcm_token]
+        ];
+            
+        $response = json_decode($this->send($group, FCM_GROUP_ENDPOINT), true);
+
+        if(isset($response["notification_key"])) {
+            $notification_token = $response["notification_key"];
+        } else {
+            $groupUri = FCM_GROUP_ENDPOINT . "?notification_key_name={$type}-{$id}";
+            $groupId = json_decode($this->get($groupUri), true)["notification_key"];
+
+            $group = [
+                "operation" => "add",
+                "notification_key" => $groupId,
+                "notification_key_name" => "{$type}-{$id}",
+                "registration_ids" => [$fcm_token]
+            ];
+
+            $notification_token = json_decode($this->send($group, FCM_GROUP_ENDPOINT), true)["notification_key"];
+        }
+
+        error_log(print_r($group, true));
+
         switch($type) {
             case "artist":
                 $sql = 
                 "UPDATE nr_artists
-                    SET fcm_token = $fcm_token
+                    SET fcm_token = \"$notification_token\"
                     WHERE id = $id;";
         
                 return runSQLQuery($sql);
@@ -175,7 +212,7 @@ class NRFCM {
             case "client":
                 $sql = 
                 "UPDATE nr_clients
-                    SET fcm_token = $fcm_token
+                    SET fcm_token = \"$notification_token\"
                     WHERE id = $id;";
         
                 return runSQLQuery($sql);

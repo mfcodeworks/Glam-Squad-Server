@@ -265,7 +265,7 @@ EOD;
 
             // Check registration success
             if($register["response"] == true) {
-                $user = $this->authenticate($userName, $password);
+                $user = $this->authenticate($username, $password);
                 $this->saveProfilePic($user["data"][0]["id"], $profilePicture);
                 $user["data"][0]["profile_photo"] = $profilePicture;
             }
