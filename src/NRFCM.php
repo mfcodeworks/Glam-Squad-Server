@@ -162,11 +162,25 @@ class NRFCM {
     public function registerToken($args) {
         extract($args);
 
-        $sql = 
-        "INSERT INTO nr_artist_fcm_tokens(fcm_token, artist_id)
-        VALUES(\"$token\", $id);";
+        switch($type) {
+            case "artist":
+                $sql = 
+                "UPDATE nr_artists
+                    SET fcm_token = $fcm_token
+                    WHERE id = $id;";
+        
+                return runSQLQuery($sql);
+                break;
 
-        return runSQLQuery($sql);
+            case "client":
+                $sql = 
+                "UPDATE nr_clients
+                    SET fcm_token = $fcm_token
+                    WHERE id = $id;";
+        
+                return runSQLQuery($sql);
+                break;
+        }
     }
 
     public function registerTopic($args) {

@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS  nr_clients(
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     stripe_customer_id VARCHAR(255) UNIQUE,
+    fcm_token VARCHAR(255) NOT NULL UNIQUE,
     rating TINYINT
 );
 
@@ -68,6 +69,7 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     instagram VARCHAR(255),
     rating TINYINT,
     stripe_account_token VARCHAR(255), 
+    fcm_token VARCHAR(255) NOT NULL UNIQUE,
     role_id BIGINT,
     probation BIT,
     locked BIT,
@@ -116,14 +118,6 @@ CREATE TABLE IF NOT EXISTS nr_artist_fcm_topics(
     fcm_topic VARCHAR(255) NOT NULL,
     artist_id BIGINT NOT NULL,
     UNIQUE(fcm_topic, artist_id),
-    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
-);
-
-# Artist FCM Token
-CREATE TABLE IF NOT EXISTS nr_artist_fcm_tokens(
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    fcm_token VARCHAR(255) NOT NULL UNIQUE,
-    artist_id BIGINT NOT NULL,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 

@@ -186,6 +186,19 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->put('/clients/{id: [0-9]+}/fcm/token', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge form and URL arguments
+        $form["id"] = $args["id"];
+        $form["type"] = "client";
+
+        // Save Artist FCM token
+        $return = (new NRFCM)->registerToken($form);
+
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
     $api->get('/clients/{id: [0-9]+}/events', function($request, $response, $args) {
         // Get client events
         $return = (new NREvent)->get($args);
@@ -322,6 +335,7 @@
 
         // Merge form and URL arguments
         $form["id"] = $args["id"];
+        $form["type"] = "artist";
 
         // Save Artist FCM token
         $return = (new NRFCM)->registerToken($form);
