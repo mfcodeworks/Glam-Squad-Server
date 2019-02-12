@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'phpseclib\\' => array($vendorDir . '/phpseclib/phpseclib/phpseclib'),
+    'Twilio\\' => array($vendorDir . '/twilio/sdk/Twilio'),
     'Stripe\\' => array($vendorDir . '/stripe/stripe-php/lib'),
     'Slim\\' => array($vendorDir . '/slim/slim/Slim'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),

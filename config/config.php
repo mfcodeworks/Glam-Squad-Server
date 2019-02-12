@@ -54,4 +54,15 @@ define("TWITTER_OAUTH_SECRET", "nGBU6vfYCARVOUEd4rvmKILiac9tS59zgZwX2iuOeTtt8");
 
 // API: Google Constants
 define("GOOGLE_APP_ID", "427808297057-g8ganbj0pcpqcr7b07l0ip7po8n8bqqb.apps.googleusercontent.com");
+
+// API: Twilio Constants
+// LIVE ID
+define("TWILIO_SID", "AC23a43087c0fb1f0e162fc9798ac15660");
+// Chat API Key
+define("TWILIO_API_KEY", "SKe49b0d8023b0794710948328017029db");
+define("TWILIO_API_SECRET", "LkQpO1r2IiIYt9atyaODEeM45YKA8PMf");
+// Chat Notification Key
+define("TWILIO_NOTIFICATION_SID", "CRc7257c39cca267e38e5a6d559a180097");
+// Chat Service
+define("TWILIO_SERVICE_DEV_SID", "IS50f456227cd942459b35d2cdfc439224");
 ?>

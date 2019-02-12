@@ -21,6 +21,10 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         array (
             'phpseclib\\' => 10,
         ),
+        'T' => 
+        array (
+            'Twilio\\' => 7,
+        ),
         'S' => 
         array (
             'Stripe\\' => 7,
@@ -61,6 +65,10 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         'phpseclib\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
+        ),
+        'Twilio\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/twilio/sdk/Twilio',
         ),
         'Stripe\\' => 
         array (

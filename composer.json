@@ -5,6 +5,7 @@
         "stripe/stripe-php": "^6.28",
         "facebook/graph-sdk": "^5.7",
         "j7mbo/twitter-api-php": "^1.0",
-        "google/apiclient": "^2.0"
+        "google/apiclient": "^2.0",
+        "twilio/sdk": "^5.28"
     }
 }
