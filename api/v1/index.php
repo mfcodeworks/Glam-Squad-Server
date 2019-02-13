@@ -14,6 +14,7 @@
 	require_once PROJECT_CONFIG . "config.php";
 	require_once PROJECT_INC . "DegreeDistanceFinder.php";
 	require_once PROJECT_INC . "Mailer.php";
+	require_once PROJECT_INC . "NRChat.php";
 	require_once PROJECT_INC . "NRArtist.php";
 	require_once PROJECT_INC . "NRClient.php";
 	require_once PROJECT_INC . "NREvent.php";
@@ -67,6 +68,8 @@
                 ->write("No Authorization Header");
         }
     });
+
+    // TODO: Authorization check for authorized user and actions
 
     /**
      * CLIENT: Client Functions
@@ -516,6 +519,16 @@
     $api->delete('/packages/{id: [0-9]+}', function($request, $response, $args) {
         // Delete package 
         $return = (new NRPackage)->delete($args);
+        
+        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+
+    /**
+     * CHAT: Chat Functions
+     */
+    $api->get('/chat/{type: [a-z]+}/{username}/token', function($request, $response, $args) {
+        // Get API Token
+        $return = (new NRChat)->token($args);      
         
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });

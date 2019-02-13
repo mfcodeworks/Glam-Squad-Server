@@ -31,6 +31,7 @@ class NRArtist {
     public $fcmTokens = [];
     public $bookings = [];
     public $receipts;
+    public $twilio_sid;
 
     // functions
     public function __construct() {
@@ -55,8 +56,7 @@ class NRArtist {
         // FIXME: Fix locked to initially = 1 (true)
         $sql = 
         "INSERT INTO nr_artists(username, email, password, bio, instagram, facebook, twitter, role_id, locked, probation)
-        VALUES(\"$username\", \"$email\", \"$password\", \"$bio\", \"$instagram\", \"$facebook\", \"$twitter\", $role, 0, 0);
-        ";
+            VALUES(\"$username\", \"$email\", \"$password\", \"$bio\", \"$instagram\", \"$facebook\", \"$twitter\", $role, 0, 0);";
 
         $res = runSQLQuery($sql);
 
@@ -75,6 +75,22 @@ class NRArtist {
         } 
 
         $this->id = $res["id"];
+
+        try {
+            // Register user with Twilio
+            $twilioUser = (new NRChat)->register($this->id, $username, "artist");
+
+            // Check Twilio SID and save
+            if($twilioUser->sid) {
+                $sql = "UPDATE nr_artists
+                    SET twilio_sid = \"{$twilioUser->sid}\"
+                    WHERE id = {$this->id}";
+                runSQLQuery($sql);
+            }
+        }
+        catch(Exception $e) {
+            error_log($e);
+        }
 
         if (isset($portfolio)) {
             $filepaths = [];
@@ -298,7 +314,7 @@ EOD;
 
         // Build SQL
         $sql = 
-        "SELECT a.id, a.username, a.profile_photo, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token
+        "SELECT a.id, a.username, a.profile_photo, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid
             FROM nr_artists as a
             LEFT JOIN nr_job_roles as r ON r.id = a.role_id
             WHERE a.id = $id;";
@@ -329,6 +345,7 @@ EOD;
         $this->probation = $probation;
         $this->locked = $locked;
         $this->stripe_account_token = $stripe_account_token;
+        $this->twilio_sid = $twilio_sid;
 
         if($this->locked) {
             return [
@@ -398,6 +415,7 @@ EOD;
     public function update($args) {
         extract($args);
 
+        // TODO: Update twilio username
         switch(trim($password)) {
             case "":
                 $sql = 
@@ -498,7 +516,7 @@ EOD;
 
         $sql = 
         "INSERT INTO nr_artist_locations(loc_name, loc_lat, loc_lng, artist_id)
-        VALUES(\"$name\", $lat, $lng, $id);";
+            VALUES(\"$name\", $lat, $lng, $id);";
 
         return runSQLQuery($sql);
     }
@@ -508,8 +526,8 @@ EOD;
 
         $sql =
         "DELETE FROM nr_artist_locations
-        WHERE artist_id = $id
-        AND id = $loc_id;";
+            WHERE artist_id = $id
+            AND id = $loc_id;";
 
         return runSQLQuery($sql);
     }

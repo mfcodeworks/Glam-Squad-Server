@@ -43,7 +43,8 @@ CREATE TABLE IF NOT EXISTS  nr_clients(
     password VARCHAR(255) NOT NULL,
     stripe_customer_id VARCHAR(255) UNIQUE,
     fcm_token VARCHAR(255) UNIQUE,
-    rating TINYINT
+    rating TINYINT,
+    twilio_sid VARCHAR(255) UNIQUE
 );
 
 # Glam Squad Forgot Password Client Keys (String (Unique Key); 2019-01-16 2:43:00 (Expiration time); 1 (User ID))
@@ -73,6 +74,7 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     role_id BIGINT,
     probation BIT,
     locked BIT,
+    twilio_sid VARCHAR(255) UNIQUE,
     FOREIGN KEY (role_id) REFERENCES nr_job_roles(id) ON DELETE CASCADE
 );
 

@@ -9,14 +9,61 @@
  */
 
 use Twilio\Rest\Client;
+use Twilio\Jwt\AccessToken;
+use Twilio\Jwt\Grants\ChatGrant;
+use Twilio\Jwt\Grants\SyncGrant;
 
 require_once "database-interface.php";
 
 class NRChat {
-    private $client;
+    private $twilio;
 
     public function __construct() {
-        $this->client = new Client(TWILIO_API_KEY, TWILIO_API_SECRET, TWILIO_SID);
+        // Create Twilio Client
+        $this->twilio = new Client(TWILIO_SID, TWILIO_TOKEN);
+    }
+
+    public function register($id, $username, $type) {
+        // Get user data
+        ($type === "client") ? $userData = (new NRClient)->get(["id" => $id])["data"][0] : $userData = (new NRArtist)->get(["id" => $id]);
+
+        // Create new Twilio user
+        $user = $this->twilio
+            ->chat
+            ->v2
+            ->services(TWILIO_SERVICE_DEV_SID)
+            ->users
+            // Set identity type-username e.g. client-nygmarose
+            ->create(
+                "$type-$username",
+                [
+                    "friendlyName" => $username,
+                    "attributes" => json_encode($userData, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES)
+                ]
+            );
+
+        return $user;
+    }
+
+    public static function token($args) {
+        // Extract form (requires username field)
+        extract($args);
+
+        // Create new Chat API Token
+        $token = new AccessToken(TWILIO_SID, TWILIO_API_KEY, TWILIO_API_SECRET, 57600, "$type-$username");
+
+        // Add Chat Grant
+        $chatGrant = new ChatGrant();
+        $chatGrant->setServiceSid(TWILIO_SERVICE_DEV_SID);
+        $token->addGrant($chatGrant);
+
+        // Add Sync Grant
+        $syncGrant = new SyncGrant();
+        $syncGrant->setServiceSid('default');
+        $token->addGrant($syncGrant);
+
+        // Return JSON Web Token serialized token
+        return $token->toJWT();
     }
 }
 

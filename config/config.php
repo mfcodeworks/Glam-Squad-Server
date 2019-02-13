@@ -58,6 +58,7 @@ define("GOOGLE_APP_ID", "427808297057-g8ganbj0pcpqcr7b07l0ip7po8n8bqqb.apps.goog
 // API: Twilio Constants
 // LIVE ID
 define("TWILIO_SID", "AC23a43087c0fb1f0e162fc9798ac15660");
+define("TWILIO_TOKEN", "ec6bf3d37e528997dde65b1deaa5d1de");
 // Chat API Key
 define("TWILIO_API_KEY", "SKe49b0d8023b0794710948328017029db");
 define("TWILIO_API_SECRET", "LkQpO1r2IiIYt9atyaODEeM45YKA8PMf");

@@ -22,6 +22,7 @@ class NRClient {
     public $fcmTopics = [];
     public $cards = [];
     public $receipts;
+    public $twilio_sid;
 
     // functions
     public function __construct() {
@@ -35,8 +36,7 @@ class NRClient {
         // Build SQL
         $sql = 
         "INSERT INTO nr_clients(username, email, password)
-        VALUES(\"$username\", \"$email\", \"$password\");
-        ";
+            VALUES(\"$username\", \"$email\", \"$password\");";
 
         // Return SQL result
         $res = runSQLQuery($sql);
@@ -84,6 +84,19 @@ EOD;
         }
         catch(Exception $e) {
             error_log($e);
+        }
+
+        if($res["id"] && $res["id"] > 0) {
+            // Register user with Twilio
+            $twilioUser = (new NRChat)->register($res["id"], $username, "client");
+
+            // Check Twilio SID and save
+            if($twilioUser->sid) {
+                $sql = "UPDATE nr_clients
+                    SET twilio_sid = \"{$twilioUser->sid}\"
+                    WHERE id = {$res["id"]}";
+                runSQLQuery($sql);
+            }
         }
 
         return $res;
@@ -288,8 +301,8 @@ EOD;
         // Build SQL
         $sql = 
         "SELECT * 
-        FROM nr_clients
-        WHERE id = $id;";
+            FROM nr_clients
+            WHERE id = $id;";
 
         $response = runSQLQuery($sql);
 
