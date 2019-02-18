@@ -303,9 +303,13 @@ class NREvent {
     public function cancel($args) {
         extract($args);
 
+        $artist = (new NRArtist())->get(["id" => $userId]);
+
         $sql = "DELETE FROM nr_artist_jobs
             WHERE artist_id = $userId
             AND event_id = $id;";
+
+        $chat = (new NRChat())->removeFromChannel($artist->username, "artist", "event-$id");
 
         return runSQLQuery($sql);
     }
@@ -825,6 +829,9 @@ class NREvent {
                     $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
                 }
 
+                // Add artist to event chat
+                $chat = (new NRChat())->addToChannel($artist->username, "artist", "event-{$event->id}");
+
                 // Return SQL response
                 return $res;
             }
@@ -884,8 +891,10 @@ class NREvent {
 
         $sql = 
         "DELETE from nr_jobs
-        WHERE id = $eventId
-        AND client_id = $id;";
+            WHERE id = $eventId
+            AND client_id = $id;";
+
+        $chat = (new NRChat())->deleteChannel("event-$eventId");
 
         return runSQLQuery($sql);
     }

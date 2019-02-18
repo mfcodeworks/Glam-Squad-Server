@@ -415,7 +415,8 @@ EOD;
     public function update($args) {
         extract($args);
 
-        // TODO: Update twilio username
+        $artist = $this->get(["id" => $id]);
+
         switch(trim($password)) {
             case "":
                 $sql = 
@@ -438,7 +439,18 @@ EOD;
                 $response = runSQLQuery($sql);
                 break;
         }
-        if($response["response"] === true) return $this->get(["id" => $id]);
+        if($response["response"] === true) {
+            $artist = $this->get(["id" => $id]);
+
+            // Update twilio username
+            (new NRChat())->updateUser($artist->twilio_sid, [
+                "friendlyName" => $username,
+                "identity" => "client-$username",
+                "attributes" => json_encode($artist, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES)
+            ]);
+
+            return $artist;
+        }
         else return $response;
     }
 

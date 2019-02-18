@@ -45,6 +45,44 @@ class NRChat {
         return $user;
     }
 
+    public function updateUser($twilio_sid, $update) {
+        return $this->twilio
+            ->chat 
+            ->v2
+            ->services(TWILIO_SERVICE_DEV_SID)
+            ->users($twilio_sid)
+            ->update($update);
+    }
+
+    public function deleteChannel($channel) {
+        return $this->twilio
+            ->chat
+            ->v2
+            ->services(TWILIO_SERVICE_DEV_SID)
+            ->channels($channel)
+            ->delete();
+    }
+
+    public function addToChannel($user, $type, $channel) {
+        return $this->twilio
+            ->chat 
+            ->v2
+            ->services(TWILIO_SERVICE_DEV_SID)
+            ->channels($channel)
+            ->members
+            ->create("$type-$user");
+    }
+
+    public function removeFromChannel($user, $type, $channel) {
+        return $this->twilio
+            ->chat 
+            ->v2
+            ->services(TWILIO_SERVICE_DEV_SID)
+            ->channels($channel)
+            ->members("$type-$user")
+            ->delete();
+    }
+
     public static function token($args) {
         // Extract form (requires username field)
         extract($args);
