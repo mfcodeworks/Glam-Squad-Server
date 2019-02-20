@@ -12,6 +12,7 @@ use Twilio\Rest\Client;
 use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\ChatGrant;
 use Twilio\Jwt\Grants\SyncGrant;
+use Twilio\Jwt\Grants\IpMessagingGrant;
 
 require_once "database-interface.php";
 
@@ -93,6 +94,7 @@ class NRChat {
         // Add Chat Grant
         $chatGrant = new ChatGrant();
         $chatGrant->setServiceSid(TWILIO_SERVICE_DEV_SID);
+        $chatGrant->setPushCredentialSid(TWILIO_NOTIFICATION_SID);
         $token->addGrant($chatGrant);
 
         // Add Sync Grant
