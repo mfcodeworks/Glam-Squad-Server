@@ -9,6 +9,9 @@ define("DB_USER", "nrglamsquad");
 define("DB_PASS", "school12");
 define("DB_NAME", "nrglamsquad");
 
+// Server constants
+define("SERVER_URL", "https://nygmarosebeauty.com");
+
 // Path constants
 define("MEDIA_PATH", "/srv/nr-glam-squad/media/");
 define("MEDIA_URI", "https://glam-squad-db.nygmarosebeauty.com/images/");

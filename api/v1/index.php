@@ -36,7 +36,7 @@
          * Same origin requests 
          *  - lost-password.php does key checking before sending server data
          */
-        if($request->getHeader("ORIGIN") != null && $request->getHeader("ORIGIN")[0] === "https://glam-squad-db.nygmarosebeauty.com") {
+        if($request->getHeader("ORIGIN") != null && $request->getHeader("ORIGIN")[0] === SERVER_URL) {
             return $next($request, $response);
         }
 
