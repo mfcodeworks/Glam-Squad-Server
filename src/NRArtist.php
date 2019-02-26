@@ -118,10 +118,6 @@ class NRArtist {
                     ];
                 }
             }
-
-            if(count($filepaths) > 0) {
-                NRImage::optimizeImage($filepaths);
-            }
         }
 
         try {
