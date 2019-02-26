@@ -24,13 +24,13 @@ class NRResmushIt {
         // get/put optimized file
         $newFile = file_get_contents($optimized->dest);
 
-        if($newFile) {
-            file_put_contents($filepath, $newFile);
-            error_log("Optimized file $filepath with Resmush.it API.");
-            return true;
+        if(!$newFile) {
+            error_log("Error:\nFilepath: $filepath.\nFile URI: $fileURI.\nError saving file after optimizarion.");
+            return false;
         }
 
-        return false;
+        file_put_contents($filepath, $newFile);
+        error_log("Optimized file $filepath with Resmush.it API.");
     }
 }
 

@@ -16,6 +16,7 @@ class NRImage {
     public $type;
     public $mime;
     public $image_data;
+    public $subdir;
 
     public function __construct() {
         // If media directory doesn't exist, create it
@@ -26,11 +27,14 @@ class NRImage {
         // Skip empty blobs
         if($blob === "" || $blob === null) return false;
 
-        // Get mime
-        $this->mime = explode(";", $blob)[0];
+        // Get mime section
+        $mime = explode(";", $blob)[0];
 
         // Get type from image/png or image/jpeg
-        $this->type = explode("/", $this->mime)[1];
+        $this->type = explode("/", $mime)[1];
+
+        // Get proper mime
+        $this->getMime();
 
         // Validate file type
         if(!in_array($this->type, ['jpg', 'jpeg', 'png', 'gif'])) throw new Exception("Invalid image type: {$this->type}.");
@@ -74,10 +78,25 @@ class NRImage {
         if(file_put_contents($this->filepath, $this->data) !== false) {
             // Create public path
             $this->publicpath = str_replace(MEDIA_PATH, MEDIA_URI, $this->filepath);
+            $this->getMime();
             return true;
         }
 
         throw new Exception("Couldn't save data to file: {$this->filepath}.");
+    }
+
+    public function uploadToSpaces() {
+        $space = new NRSpaces();
+
+        if(!$this->mime) {
+            $this->getMime();
+        }
+
+        try {
+            $space->upload($this->filepath, "public", $this->subdir, $this->mime);
+        } catch(Exception $e) {
+            error_log($e);
+        }
     }
 
     public static function optimizeImage($filepaths) {
@@ -99,6 +118,24 @@ class NRImage {
     private function randomString($length = 32) {
         // Create random string with current date salt for uniqueness
         return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;
+    }
+
+    private function getMime() {
+        $types = [
+            'png' => 'image/png',
+            'jpe' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'jpg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'bmp' => 'image/bmp',
+            'ico' => 'image/vnd.microsoft.icon',
+            'tiff' => 'image/tiff',
+            'tif' => 'image/tiff',
+            'svg' => 'image/svg+xml',
+            'svgz' => 'image/svg+xml'
+        ];
+
+        $this->mime = $types[$this->type];
     }
 }
 

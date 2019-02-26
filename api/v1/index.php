@@ -12,6 +12,7 @@
 
 	// Require classes
 	require_once PROJECT_CONFIG . "config.php";
+    require_once PROJECT_LIB . "autoload.php";
 	require_once PROJECT_INC . "DegreeDistanceFinder.php";
 	require_once PROJECT_INC . "Mailer.php";
 	require_once PROJECT_INC . "NRChat.php";
@@ -20,8 +21,8 @@
 	require_once PROJECT_INC . "NREvent.php";
 	require_once PROJECT_INC . "NRFCM.php";
 	require_once PROJECT_INC . "NRImage.php";
+	require_once PROJECT_INC . "NRSpaces.php";
 	require_once PROJECT_INC . "NRPackage.php";
-    require_once PROJECT_LIB . "autoload.php";
     
 	/**
 	 * API: Slim 3 RESTful API implementation

@@ -11,9 +11,12 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
+        '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         'c65d09b6820da036953a371c8c73a9b1' => __DIR__ . '/..' . '/facebook/graph-sdk/src/Facebook/polyfills.php',
+        '83de50569bffc80aba37a89ed243f260' => __DIR__ . '/..' . '/sociallydev/spaces-api/spaces.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -42,6 +45,10 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         array (
             'Monolog\\' => 8,
         ),
+        'J' => 
+        array (
+            'JmesPath\\' => 9,
+        ),
         'I' => 
         array (
             'Interop\\Container\\' => 18,
@@ -58,6 +65,10 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
             'Firebase\\JWT\\' => 13,
             'FastRoute\\' => 10,
             'Facebook\\' => 9,
+        ),
+        'A' => 
+        array (
+            'Aws\\' => 4,
         ),
     );
 
@@ -102,6 +113,10 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'JmesPath\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
+        ),
         'Interop\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
@@ -133,6 +148,10 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         'Facebook\\' => 
         array (
             0 => __DIR__ . '/..' . '/facebook/graph-sdk/src/Facebook',
+        ),
+        'Aws\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aws/aws-sdk-php/src',
         ),
     );
 

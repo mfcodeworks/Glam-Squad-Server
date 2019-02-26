@@ -69,4 +69,10 @@ define("TWILIO_API_SECRET", "LkQpO1r2IiIYt9atyaODEeM45YKA8PMf");
 define("TWILIO_NOTIFICATION_SID", "CR9d66d4e138611b01d337ed7eed3372d1");
 // Chat Service
 define("TWILIO_SERVICE_DEV_SID", "IS50f456227cd942459b35d2cdfc439224");
+
+// API: DigitalOcean Spaces
+define("SPACES_KEY", "IAMTTSH47DMAROYB7DHF");
+define("SPACES_SECRET", "3MYGq5NGkybmSYJO97TXJVpzw1MyAXhypBMEiQ2w0fE");
+define("SPACES_NAME", "glamsquad");
+define("SPACES_REGION", "sgp1");
 ?>

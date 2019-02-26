@@ -75,6 +75,8 @@ class NRArtist {
         } 
 
         $this->id = $res["id"];
+        $this->username = $username;
+        $this->email  = $email;
 
         try {
             // Register user with Twilio
@@ -92,14 +94,19 @@ class NRArtist {
             error_log($e);
         }
 
-        if (isset($portfolio)) {
+        if(isset($portfolio)) {
             $filepaths = [];
 
             foreach ($portfolio as $artistPhoto) {
                 try {
                     // Create photo object
                     $photo = new NRImage();
+                    $photo->subdir = "GlamSquad/artist/{$this->username}/portfolio/";
                     $photo->getData($artistPhoto);
+                    // DEBUG:
+                    error_log(json_encode($photo, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                    $spaces_path = $photo->uploadToSpaces();
+                    error_log(json_encode($spaces_path, JSON_PRETTY_PRINT));
                     $filepaths[] = $photo->filepath;
                     $this->savePortfolioImage($photo->publicpath);
                 }

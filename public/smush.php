@@ -16,7 +16,7 @@
 
     error_log(print_r($_POST, true));
 
-    if(!isset($_POST) || $_POST != null) {
+    if(isset($_POST) || $_POST != null) {
         $photos = $_POST;
     
         foreach($photos as $photo) {
