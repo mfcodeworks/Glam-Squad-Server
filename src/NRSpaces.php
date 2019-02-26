@@ -36,9 +36,11 @@ class NRSpaces {
 
         // Upload file with filepath, privacy of file, spaces subdir
         try {
-            return $this->space->UploadFile($path, $privacy, $subdir, $mime);
+            $this->space->UploadFile($path, $privacy, $subdir, $mime);
+            return $subdir;
         } catch (Exception $e) {
             error_log(json_encode($e, JSON_PRETTY_PRINT));
+            throw $e;
         }
     }
 

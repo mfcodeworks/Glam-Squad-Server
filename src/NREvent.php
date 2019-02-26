@@ -9,7 +9,6 @@
  */
 
 require_once "database-interface.php";
-require_once "NRResmushIt.php";
 
 class NREvent {
     // properties
@@ -103,9 +102,10 @@ class NREvent {
                 try {
                     // Create photo object
                     $photo = new NRImage();
+                    $photo->subdir = "GlamSquad/event/{$this->id}/images/";
                     $photo->getData($eventPhoto);
-                    $filepaths[] = $photo->filepath;
-                    $this->saveImageReference($photo->publicpath);
+                    $spaces_path = $photo->uploadToSpaces();
+                    $this->saveImageReference(SPACES_CDN . $spaces_path);
                 }
                 catch(Exception $e) {
                     $this->delete(
@@ -121,10 +121,6 @@ class NREvent {
                         "exception" => $e
                     ];
                 }
-            }
-
-            if(count($filepaths) > 0) {
-                NRImage::optimizeImage($filepaths);
             }
         }
 

@@ -75,4 +75,6 @@ define("SPACES_KEY", "IAMTTSH47DMAROYB7DHF");
 define("SPACES_SECRET", "3MYGq5NGkybmSYJO97TXJVpzw1MyAXhypBMEiQ2w0fE");
 define("SPACES_NAME", "glamsquad");
 define("SPACES_REGION", "sgp1");
+define("SPACES_ENDPOINT", "https://glamsquad.sgp1.digitaloceanspaces.com/");
+define("SPACES_CDN", "https://glamsquad.sgp1.cdn.digitaloceanspaces.com/");
 ?>

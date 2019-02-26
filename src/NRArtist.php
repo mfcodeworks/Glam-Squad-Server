@@ -103,12 +103,8 @@ class NRArtist {
                     $photo = new NRImage();
                     $photo->subdir = "GlamSquad/artist/{$this->username}/portfolio/";
                     $photo->getData($artistPhoto);
-                    // DEBUG:
-                    error_log(json_encode($photo, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                     $spaces_path = $photo->uploadToSpaces();
-                    error_log(json_encode($spaces_path, JSON_PRETTY_PRINT));
-                    $filepaths[] = $photo->filepath;
-                    $this->savePortfolioImage($photo->publicpath);
+                    $this->savePortfolioImage(SPACES_CDN . $spaces_path);
                 }
                 catch(Exception $e) {
                     return [

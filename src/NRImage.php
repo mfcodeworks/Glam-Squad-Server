@@ -93,9 +93,10 @@ class NRImage {
         }
 
         try {
-            $space->upload($this->filepath, "public", $this->subdir, $this->mime);
+            return $space->upload($this->filepath, "public", $this->subdir, $this->mime);
         } catch(Exception $e) {
             error_log($e);
+            throw $e;
         }
     }
 
