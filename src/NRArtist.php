@@ -95,8 +95,6 @@ class NRArtist {
         }
 
         if(isset($portfolio)) {
-            $filepaths = [];
-
             foreach ($portfolio as $artistPhoto) {
                 try {
                     // Create photo object
@@ -387,7 +385,7 @@ EOD;
         $sql = 
         "SELECT id, loc_name as name, loc_lat as lat, loc_lng as lng
         FROM nr_artist_locations
-        WHERE artist_id = $id;";
+        WHERE artist_id = {$id};";
 
         $res = runSQLQuery($sql);
 
