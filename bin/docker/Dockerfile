@@ -2,10 +2,7 @@ FROM nygmarose/glamsquad
 
 RUN docker-php-ext-install mysqli gettext hash json mbstring opcache session \
     && pecl install redis \
-    && pecl install gearman \
-    && docker-php-ext-enable redis gearman
-
-RUN apt install gearman gearman-tools
+    && docker-php-ext-enable redis
 
 RUN a2enmod rewrite
 RUN a2enmod gearman

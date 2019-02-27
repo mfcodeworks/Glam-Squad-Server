@@ -39,6 +39,7 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
+            'PhpAmqpLib\\' => 11,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
         'M' => 
@@ -51,7 +52,9 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         ),
         'I' => 
         array (
+            'Interop\\Queue\\' => 14,
             'Interop\\Container\\' => 18,
+            'Interop\\Amqp\\' => 13,
         ),
         'G' => 
         array (
@@ -65,6 +68,11 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
             'Firebase\\JWT\\' => 13,
             'FastRoute\\' => 10,
             'Facebook\\' => 9,
+        ),
+        'E' => 
+        array (
+            'Enqueue\\AmqpTools\\' => 18,
+            'Enqueue\\AmqpLib\\' => 16,
         ),
         'A' => 
         array (
@@ -105,6 +113,10 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
+        'PhpAmqpLib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-amqplib/php-amqplib/PhpAmqpLib',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
@@ -117,9 +129,17 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         array (
             0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
         ),
+        'Interop\\Queue\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/queue-interop/queue-interop/src',
+        ),
         'Interop\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
+        ),
+        'Interop\\Amqp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/queue-interop/amqp-interop/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -148,6 +168,14 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         'Facebook\\' => 
         array (
             0 => __DIR__ . '/..' . '/facebook/graph-sdk/src/Facebook',
+        ),
+        'Enqueue\\AmqpTools\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/enqueue/amqp-tools',
+        ),
+        'Enqueue\\AmqpLib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/enqueue/amqp-lib',
         ),
         'Aws\\' => 
         array (

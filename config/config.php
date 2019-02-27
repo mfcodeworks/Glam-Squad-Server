@@ -10,12 +10,11 @@ define("DB_PASS", "school12");
 define("DB_NAME", "nrglamsquad");
 
 // Server constants
-define("SERVER_URL", "https://nygmarosebeauty.com");
+define("SERVER_URL", "https://glam-squad-db.nygmarosebeauty.com");
 
 // Path constants
 define("MEDIA_PATH", "/srv/nr-glam-squad/media/");
 define("MEDIA_URI", "https://glam-squad-db.nygmarosebeauty.com/images/");
-define("RESMUSHIT", "http://api.resmush.it/ws.php?img=");
 define("FORGOT_PASSWORD_URI", "https://glam-squad-db.nygmarosebeauty.com/forgot-password");
 
 // Mail constants
@@ -26,6 +25,16 @@ define("SMTP_PORT", 587);
 
 // Distance constants
 define("JOB_DISTANCE", 30);
+
+// Enqueue Options 
+define("ENQUEUE_OPTIONS", [
+    "host" => "127.0.0.1",
+    "port" => 5672,
+    "vhost" => "/",
+    "login" => "guest",
+    "password" => "guest",
+    "persisted" => false,
+]);
 
 // API: FCM Data
 define("FCM_KEY", "AIzaSyAwxC-XPBcbfQxVzmHzwPNQCWCuM-TiAoc");
