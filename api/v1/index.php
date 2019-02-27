@@ -23,11 +23,6 @@
 	require_once PROJECT_INC . "NRImage.php";
 	require_once PROJECT_INC . "NRSpaces.php";
     require_once PROJECT_INC . "NRPackage.php";
-    require_once PROJECT_INC . "Queue.php";
-
-    // DEBUG: Testing queue's
-    $queue = new Queue;
-    
     
 	/**
 	 * API: Slim 3 RESTful API implementation

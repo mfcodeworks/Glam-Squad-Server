@@ -10,6 +10,9 @@
 
 require_once "database-interface.php";
 
+use Enqueue\AmqpLib\AmqpConnectionFactory;
+use Enqueue\AmqpLib\AmqpContext;
+
 class NRClient {
     // properties
     public $id;
@@ -50,12 +53,42 @@ class NRClient {
         }
 
         try {
-            $mail = new Mailer();
-            $mail->setFrom("mua@nygmarosebeauty.com", "NygmaRose");
-            $mail->addAddress($email);
-            $mail->Subject = "NygmaRose Glam Squad Registration";
-            $mail->Body = <<<EOD
-                <html>
+            $this->sendWelcomeEmail($email, $username);
+        }
+        catch(Exception $e) {
+            error_log($e);
+        }
+
+        if($res["id"] && $res["id"] > 0) {
+            // Register user with Twilio
+            $twilioUser = (new NRChat)->register($res["id"], $username, "client");
+
+            // Check Twilio SID and save
+            if($twilioUser->sid) {
+                $sql = "UPDATE nr_clients
+                    SET twilio_sid = \"{$twilioUser->sid}\"
+                    WHERE id = {$res["id"]}";
+                runSQLQuery($sql);
+            }
+        }
+
+        return $res;
+    }
+
+    function sendWelcomeEmail($email, $username) {
+        // Create context and queue
+        $context = (new AmqpConnectionFactory(ENQUEUE_OPTIONS))->createContext();
+        $queue = $context->createQueue('send_email');
+        $context->declareQueue($queue);
+
+        // Create message
+        $args = [
+            "email" => $email,
+            "from" => "mua@nygmarosebeauty.com",
+            "from_name" => "NygmaRose",
+            "subject" => "NygmaRose Glam Squad Registration",
+            "body" => 
+                "<html>
                     <head>
                         <style>
                             body {
@@ -78,28 +111,12 @@ class NRClient {
                             NygmaRose
                         </p>
                     </body>
-                </html>
-EOD;
-            $mail->send();
-        }
-        catch(Exception $e) {
-            error_log($e);
-        }
+                </html>"
+        ];
+        $message = $context->createMessage(json_encode($args));
 
-        if($res["id"] && $res["id"] > 0) {
-            // Register user with Twilio
-            $twilioUser = (new NRChat)->register($res["id"], $username, "client");
-
-            // Check Twilio SID and save
-            if($twilioUser->sid) {
-                $sql = "UPDATE nr_clients
-                    SET twilio_sid = \"{$twilioUser->sid}\"
-                    WHERE id = {$res["id"]}";
-                runSQLQuery($sql);
-            }
-        }
-
-        return $res;
+        // Send message for queue
+        $context->createProducer()->send($queue, $message);
     }
 
     public function registerGoogle($args) {
