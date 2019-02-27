@@ -6,11 +6,11 @@ services:
             context: ./docker
         image: nygmarose/glamsquad:latest
         deploy:
-            replicas: 5
+            replicas: 3
             resources:
                 limits:
-                    cpus: "0.15"
-                    memory: 128M
+                    cpus: "0.17"
+                    memory: 664M
                 reservations:
                     cpus: "0.05"
                     memory: 28M
@@ -27,6 +27,27 @@ services:
         volumes:
             - ../:/var/www/html
             - ./docker/media:/srv/nr-glam-squad/media
+
+    rabbit:
+        image: rabbitmq:3
+        deploy:
+            replicas: 1
+            resources:
+                limits:
+                    cpus: "0.17"
+                    memory: 664M
+                reservations:
+                    cpus: "0.05"
+                    memory: 28M
+            restart_policy:
+                condition: on-failure
+                delay: 10s
+                max_attempts: 3
+                window: 60s
+        ports:
+            - 5672:5672
+        networks:
+            - webnet
 
 networks: 
     webnet:

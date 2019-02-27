@@ -28,7 +28,7 @@ define("JOB_DISTANCE", 30);
 
 // Enqueue Options 
 define("ENQUEUE_OPTIONS", [
-    "host" => "127.0.0.1",
+    "host" => "glamsquad_rabbit",
     "port" => 5672,
     "vhost" => "/",
     "login" => "guest",
