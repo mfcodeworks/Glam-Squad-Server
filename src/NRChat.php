@@ -84,6 +84,18 @@ class NRChat {
             ->delete();
     }
 
+    public function deleteAllUsers() {
+        $users = $this->twilio
+            ->chat
+            ->v2
+            ->services(TWILIO_SERVICE_DEV_SID)
+            ->users
+            ->read();
+        foreach($users as $user) {
+            $user->delete();
+        }
+    }
+
     public static function token($args) {
         // Extract form (requires username field)
         extract($args);
