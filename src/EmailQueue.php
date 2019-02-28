@@ -47,6 +47,9 @@ function emailQueue(){
         $message = $consumer->receive($timeout = 10);
 
         if($message) {
+            // DEBUG: Measure exec time
+            $time_start = microtime(true); 
+
             // Extract args
             $args = json_decode($message->getBody(), true);
             extract($args);
@@ -61,6 +64,11 @@ function emailQueue(){
             
             // Acknowledge
             $consumer->acknowledge($message);
+
+            // DEBUG: Measure exec time
+            $time_end = microtime(true);
+            $execution_time = ($time_end - $time_start);
+            error_log("Email Queue Execution Time: $execution_time s");
         }
     }
 }

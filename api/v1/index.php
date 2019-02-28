@@ -37,40 +37,44 @@
          * Same origin requests 
          *  - lost-password.php does key checking before sending server data
          */
-        if($request->getHeader("ORIGIN") != null && $request->getHeader("ORIGIN")[0] === SERVER_URL) {
-            return $next($request, $response);
-        }
+        // DEBUG: Measure exec time
+        $time_start = microtime(true); 
 
+        if($request->getHeader("ORIGIN") && $request->getHeader("ORIGIN")[0] === SERVER_URL)
+            return $next($request, $response);
         // Check if preflight and respond 200
         if($request->isOptions() && strpos($request->getHeader("ACCESS_CONTROL_REQUEST_HEADERS")[0], "nr-hash") > -1) {
             return $response->withStatus(200);
-
         // If not preflight, check NR-Hash present
-        } else if($request->getHeader("NR-HASH") == null) {
+        } else if(!$request->getHeader("NR-HASH")) {
             return $response->withStatus(401)
                 ->write("No Authorization Header");
         }
 
-        // Get HMAC sent with request
+        // Get HMAC sent with request & Calculate HMAC of message with API key
         $hmac = $request->getHeader("NR_HASH")[0];
-
-        // Calculate HMAC of message with API key
         $hash = hash_hmac('sha512', $request->getBody(), API_SECRET);
 
-        // If HMAC is correct proceed
-        if(hash_equals($hash, $hmac)) {
-            return $next($request, $response)
-                ->withHeader("NR-HASH", $hash);
-                
+        // TODO: Authorization check for authorized user and actions
+
         // If HMAC incorrect return 401 Unauthorized
-        } else {
+        if(!hash_equals($hash, $hmac)) {
             return $response->withStatus(401)
                 ->withHeader("NR-HASH", $hash)
                 ->write("No Authorization Header");
         }
-    });
 
-    // TODO: Authorization check for authorized user and actions
+        // If HMAC is correct proceed
+        $response = $next($request, $response);
+            
+        // DEBUG: Measure exec time
+        $time_end = microtime(true);
+        $execution_time = ($time_end - $time_start);
+        error_log("API Execution Time: $execution_time s");
+
+        return $response
+            ->withHeader("NR-HASH", $hash);
+    });
 
     /**
      * CLIENT: Client Functions
