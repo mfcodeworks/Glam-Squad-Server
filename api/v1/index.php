@@ -37,6 +37,13 @@
          * Same origin requests 
          *  - lost-password.php does key checking before sending server data
          */
+
+        // DEBUG: Test Redis Connection
+        $redis = new Redis();
+        $redis->connect(REDIS_HOST);
+        $redis->set("ping", "pong");
+        error_log("Redis get ping: " . $redis->get("ping"));
+
         // DEBUG: Measure exec time
         $time_start = microtime(true); 
 
