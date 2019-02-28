@@ -20,7 +20,7 @@ class Mailer extends PHPMailer {
         $this->Password = SMTP_PASS;
         $this->isHTML(true);
         $this->CharSet = "UTF-8";
-        $this->SMTPDebug = 1;
+        $this->SMTPDebug = 0;
         $this->Debugoutput = function($str, $level) {
             error_log("Mailer Debug (Level: $level) \n\n $str");
         };

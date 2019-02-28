@@ -9,6 +9,9 @@
 
 require_once "database-interface.php";
 
+use Enqueue\AmqpLib\AmqpConnectionFactory;
+use Enqueue\AmqpLib\AmqpContext;
+
 class NRSpaces {
     // properties
     public $space;
