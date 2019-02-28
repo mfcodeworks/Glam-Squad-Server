@@ -123,9 +123,6 @@ class NRArtist {
         catch(Exception $e) {
             error_log($e);
         }
-
-        // DEBUG: Log when finished 
-        error_log("Registration done");
         // Return SQL result
         return $res;
     }

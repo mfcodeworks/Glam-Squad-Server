@@ -88,12 +88,10 @@ class NRImage {
     public function uploadToSpaces() {
         $space = new NRSpaces();
 
-        if(!$this->mime) {
-            $this->getMime();
-        }
+        if(!$this->mime) $this->getMime();
 
         try {
-            return $space->upload($this->filepath, "public", $this->subdir, $this->mime);
+            return $space->queueUpload($this->filepath, "public", $this->subdir, $this->mime);
         } catch(Exception $e) {
             error_log($e);
             throw $e;
