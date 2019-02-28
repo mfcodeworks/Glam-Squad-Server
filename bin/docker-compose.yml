@@ -28,8 +28,36 @@ services:
             - ../:/var/www/html
             - ./docker/media:/srv/nr-glam-squad/media
 
+    tasker:
+        build:
+            context: ./docker/tasker
+        image: bin_tasker:latest
+        hostname: tasker
+        deploy:
+            replicas: 1
+            resources:
+                limits:
+                    cpus: "0.15"
+                    memory: 128M
+                reservations:
+                    cpus: "0.05"
+                    memory: 28M
+            restart_policy:
+                condition: on-failure
+                delay: 10s
+                max_attempts: 3
+                window: 60s
+        #ports:
+        #    - 80:80
+        #    - 443:443
+        networks:
+            - webnet
+        volumes:
+            - ../:/var/www/html
+
     rabbit:
         image: rabbitmq:3
+        hostname: rabbit
         deploy:
             replicas: 1
             resources:
