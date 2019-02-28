@@ -33,9 +33,9 @@ use Enqueue\AmqpLib\AmqpContext;
 /**
  * Inititate queue
  */
-emailQueue();
+spacesUploadQueue();
     
-function emailQueue(){
+function spacesUploadQueue(){
     // Create consumer
     $context = (new AmqpConnectionFactory(ENQUEUE_OPTIONS))->createContext();
     $queue = $context->createQueue('spaces_upload');
