@@ -11,6 +11,8 @@ define("DB_NAME", "nrglamsquad");
 
 // Redis
 define("REDIS_HOST", "redis");
+// Set Redis timeout of 43,200 seconds (12 hours)
+define("REDIS_TIMEOUT", 43200);
 
 // Server
 define("SERVER_URL", "https://glam-squad-db.nygmarosebeauty.com");

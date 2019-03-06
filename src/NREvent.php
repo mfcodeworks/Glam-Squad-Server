@@ -282,10 +282,6 @@ class NREvent {
         
         $eventList = $res["data"];
         foreach($eventList as $event) {
-            /* DEBUG: Condensed to single line 
-            $event = new NREvent();
-            $event->getSingle($eventId['id']);
-            $events[] = $event; */
             $events[] = (new NREvent)->getSingle($event["id"]);
         }
 

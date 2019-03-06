@@ -331,8 +331,6 @@ class NRClient {
                 "UPDATE nr_clients
                 SET username = \"$username\", email = \"$email\"
                 WHERE id = $id;";
-
-                $response = runSQLQuery($sql);
                 break;
 
             default:
@@ -343,10 +341,9 @@ class NRClient {
                 "UPDATE nr_clients
                 SET username = \"$username\", email = \"$email\", password = \"$password\"
                 WHERE id = $id;";
-
-                $response = runSQLQuery($sql);
                 break;
         }
+        $response = runSQLQuery($sql);
         if($response["response"] === true) return $this->get(["id" => $id]);
         else return $response;
     }

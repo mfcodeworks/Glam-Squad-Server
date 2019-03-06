@@ -428,8 +428,6 @@ EOD;
                 "UPDATE nr_artists
                 SET username = \"$username\", email = \"$email\"
                 WHERE id = $id;";
-
-                $response = runSQLQuery($sql);
                 break;
 
             default:
@@ -440,19 +438,21 @@ EOD;
                 "UPDATE nr_artists
                 SET username = \"$username\", email = \"$email\", password = \"$password\"
                 WHERE id = $id;";
-
-                $response = runSQLQuery($sql);
                 break;
         }
+        $response = runSQLQuery($sql);
+
         if($response["response"] === true) {
             $artist = $this->get(["id" => $id]);
 
             // Update twilio username
-            (new NRChat())->updateUser($artist->twilio_sid, [
-                "friendlyName" => $username,
-                "identity" => "client-$username",
-                "attributes" => json_encode($artist, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES)
-            ]);
+            if(TWILIO_ENABLED) {
+                (new NRChat())->updateUser($artist->twilio_sid, [
+                    "friendlyName" => $username,
+                    "identity" => "artist-$username",
+                    "attributes" => json_encode($artist, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES)
+                ]);
+            }
 
             return $artist;
         }
