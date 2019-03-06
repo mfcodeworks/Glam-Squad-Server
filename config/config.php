@@ -60,7 +60,7 @@ define("FACEBOOK_APP_ID", "808819612792596");
 define("FACEBOOK_APP_SECRET", "696d305cbda1a2fa1be85e1e9b5a4b79");
 define("FACEBOOK_GRAPH", "v3.2");
 
-// API: Twitter 
+// API: Twitter
 define("TWITTER_ENDPOINT", "https://api.twitter.com/1.1/");
 define("TWITTER_KEY", "tX0ckYm7Viea90cHKOZjZdwsI");
 define("TWITTER_SECRET", "n2GKkqZEPbviDQIVnyXESxei3U8l9YPy4Vf34LXVhb6gqyCzvs");

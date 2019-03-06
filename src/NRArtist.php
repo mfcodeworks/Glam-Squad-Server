@@ -82,18 +82,8 @@ class NRArtist {
         $this->email  = $email;
 
         try {
-            if(TWILIO_ENABLED) {
-                // Register user with Twilio
-                $twilioUser = (new NRChat)->register($this->id, $username, "artist");
-    
-                // Check Twilio SID and save
-                if($twilioUser->sid) {
-                    $sql = "UPDATE nr_artists
-                        SET twilio_sid = \"{$twilioUser->sid}\"
-                        WHERE id = {$this->id}";
-                    runSQLQuery($sql);
-                }
-            }
+            // Register user with Twilio
+            if(TWILIO_ENABLED && $this->id > 0) $twilioUser = (new NRChat)->queueRegister($this->id, $username, "artist");
         }
         catch(Exception $e) {
             error_log($e);

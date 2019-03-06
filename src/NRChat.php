@@ -13,6 +13,8 @@ use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\ChatGrant;
 use Twilio\Jwt\Grants\SyncGrant;
 use Twilio\Jwt\Grants\IpMessagingGrant;
+use Enqueue\AmqpLib\AmqpConnectionFactory;
+use Enqueue\AmqpLib\AmqpContext;
 
 require_once "database-interface.php";
 
@@ -22,6 +24,24 @@ class NRChat {
     public function __construct() {
         // Create Twilio Client
         $this->twilio = new Client(TWILIO_SID, TWILIO_TOKEN);
+    }
+
+    static public function queueRegister($id, $username, $type) {
+        // Create context and queue
+        $context = (new AmqpConnectionFactory(ENQUEUE_OPTIONS))->createContext();
+        $queue = $context->createQueue('twilio_register');
+        
+        // Create message
+        $context->declareQueue($queue);
+        $args = [
+            "id" => $id,
+            "username" => $username,
+            "type" => $type
+        ];
+        $message = $context->createMessage(json_encode($args));
+
+        // Send message for queue
+        $context->createProducer()->send($queue, $message);
     }
 
     public function register($id, $username, $type) {

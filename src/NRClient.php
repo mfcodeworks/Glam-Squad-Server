@@ -59,18 +59,8 @@ class NRClient {
             error_log($e);
         }
 
-        if(TWILIO_ENABLED && $res["id"] > 0) {
-            // Register user with Twilio
-            $twilioUser = (new NRChat)->register($res["id"], $username, "client");
-
-            // Check Twilio SID and save
-            if($twilioUser->sid) {
-                $sql = "UPDATE nr_clients
-                    SET twilio_sid = \"{$twilioUser->sid}\"
-                    WHERE id = {$res["id"]}";
-                runSQLQuery($sql);
-            }
-        }
+        // Register user with Twilio
+        if(TWILIO_ENABLED && $res["id"] > 0) $twilioUser = (new NRChat)->register($res["id"], $username, "client");
 
         return $res;
     }
