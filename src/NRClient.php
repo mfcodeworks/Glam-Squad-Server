@@ -59,7 +59,7 @@ class NRClient {
             error_log($e);
         }
 
-        if($res["id"] && $res["id"] > 0) {
+        if(TWILIO_ENABLED && $res["id"] > 0) {
             // Register user with Twilio
             $twilioUser = (new NRChat)->register($res["id"], $username, "client");
 

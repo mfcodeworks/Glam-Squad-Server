@@ -82,15 +82,17 @@ class NRArtist {
         $this->email  = $email;
 
         try {
-            // Register user with Twilio
-            $twilioUser = (new NRChat)->register($this->id, $username, "artist");
-
-            // Check Twilio SID and save
-            if($twilioUser->sid) {
-                $sql = "UPDATE nr_artists
-                    SET twilio_sid = \"{$twilioUser->sid}\"
-                    WHERE id = {$this->id}";
-                runSQLQuery($sql);
+            if(TWILIO_ENABLED) {
+                // Register user with Twilio
+                $twilioUser = (new NRChat)->register($this->id, $username, "artist");
+    
+                // Check Twilio SID and save
+                if($twilioUser->sid) {
+                    $sql = "UPDATE nr_artists
+                        SET twilio_sid = \"{$twilioUser->sid}\"
+                        WHERE id = {$this->id}";
+                    runSQLQuery($sql);
+                }
             }
         }
         catch(Exception $e) {

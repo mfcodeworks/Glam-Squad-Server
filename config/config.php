@@ -29,7 +29,7 @@ define("SMTP_PORT", 587);
 // Distance
 define("JOB_DISTANCE", 30);
 
-// Enqueue Options 
+// Enqueue Options
 define("ENQUEUE_OPTIONS", [
     "host" => "rabbit",
     "port" => 5672,
@@ -71,6 +71,7 @@ define("TWITTER_OAUTH_SECRET", "nGBU6vfYCARVOUEd4rvmKILiac9tS59zgZwX2iuOeTtt8");
 define("GOOGLE_APP_ID", "427808297057-g8ganbj0pcpqcr7b07l0ip7po8n8bqqb.apps.googleusercontent.com");
 
 // API: Twilio
+define("TWILIO_ENABLED", true);
 // LIVE ID
 define("TWILIO_SID", "AC23a43087c0fb1f0e162fc9798ac15660");
 define("TWILIO_TOKEN", "ec6bf3d37e528997dde65b1deaa5d1de");
