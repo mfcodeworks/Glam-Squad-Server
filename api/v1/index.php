@@ -41,28 +41,31 @@
         // DEBUG: Measure exec time
         $time_start = microtime(true); 
 
-        if($request->getHeader("ORIGIN") && $request->getHeader("ORIGIN")[0] === SERVER_URL)
-            return $next($request, $response);
-        // Check if preflight and respond 200
-        if($request->isOptions() && strpos($request->getHeader("ACCESS_CONTROL_REQUEST_HEADERS")[0], "nr-hash") > -1) {
-            return $response->withStatus(200);
-        // If not preflight, check NR-Hash present
-        } else if(!$request->getHeader("NR-HASH")) {
-            return $response->withStatus(401)
-                ->write("No Authorization Header");
-        }
-
-        // Get HMAC sent with request & Calculate HMAC of message with API key
-        $hmac = $request->getHeader("NR_HASH")[0];
-        $hash = hash_hmac('sha512', $request->getBody(), API_SECRET);
-
-        // TODO: Authorization check for authorized user and actions
-
-        // If HMAC incorrect return 401 Unauthorized
-        if(!hash_equals($hash, $hmac)) {
-            return $response->withStatus(401)
-                ->withHeader("NR-HASH", $hash)
-                ->write("No Authorization Header");
+        // If HMAC enabled check
+        if(HMAC_ENABLED) {
+            if($request->getHeader("ORIGIN") && $request->getHeader("ORIGIN")[0] === SERVER_URL)
+                return $next($request, $response);
+            // Check if preflight and respond 200
+            if($request->isOptions() && strpos($request->getHeader("ACCESS_CONTROL_REQUEST_HEADERS")[0], "nr-hash") > -1) {
+                return $response->withStatus(200);
+            // If not preflight, check NR-Hash present
+            } else if(!$request->getHeader("NR-HASH")) {
+                return $response->withStatus(401)
+                    ->write("No Authorization Header");
+            }
+    
+            // Get HMAC sent with request & Calculate HMAC of message with API key
+            $hmac = $request->getHeader("NR_HASH")[0];
+            $hash = hash_hmac('sha512', $request->getBody(), API_SECRET);
+    
+            // TODO: Authorization check for authorized user and actions
+    
+            // If HMAC incorrect return 401 Unauthorized
+            if(!hash_equals($hash, $hmac)) {
+                return $response->withStatus(401)
+                    ->withHeader("NR-HASH", $hash)
+                    ->write("No Authorization Header");
+            }
         }
 
         // If HMAC is correct proceed

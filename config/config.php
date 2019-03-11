@@ -1,6 +1,7 @@
 <?php
 // API: HMAC shared secrets
 define("API_SECRET", '1GSqDjCYAXeBLuLLVBx3bXlpC5NKUPqC');
+define("HMAC_ENABLED", true);
 define("GIT_SECRET", "ZKeU8S6FXT4BSt7i0mM8VBdtmVch7t5c");
 
 // MySQL
