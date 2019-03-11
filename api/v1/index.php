@@ -506,6 +506,14 @@
         $redis->connect(REDIS_HOST);
         $redis->delete("artist-{$args["id"]}");
     });
+    $api->delete('/artists/{id: [0-9]+}/portfolio', function($request, $response, $args) {
+        // TODO: Implement artist portfolio delete
+
+        // Clear Artist Cache
+        $redis = new Redis;
+        $redis->connect(REDIS_HOST);
+        $redis->delete("artist-{$args["id"]}");
+    });
     $api->put('/artists/{id: [0-9]+}/payment/id', function($request, $response, $args) {
         // Get PUT form
         $form = $request->getParsedBody();
