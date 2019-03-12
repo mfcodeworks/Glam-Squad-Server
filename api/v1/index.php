@@ -827,11 +827,10 @@
         if($return["data"]) {
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
-            // Shortened TTL to 30 minutes for event notifications
             $redis->set(
                 "artist-{$args["userId"]}-events-new", 
                 json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
-                1800
+                REDIS_TIMEOUT
             );
         }
 

@@ -96,7 +96,6 @@ class NRFCM {
 
         // Loop through IDs to get artist object
         foreach($artistList as $id) {
-
             // Get artist
             $artist = new NRArtist();
             $artist->get([
@@ -122,6 +121,11 @@ class NRFCM {
         // Loop through artists
         for($i = 0; $i < count($artists); $i++) {
             $artist = $artists[$i];
+
+            // Clear Artists Notification Cache
+            $redis = new Redis;
+            $redis->connect(REDIS_HOST);
+            $redis->delete("artist-{$artist->id}-events-new");
 
             $sql = 
             "SELECT fcm_token
