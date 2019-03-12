@@ -32,14 +32,22 @@ class NRClient {
 
     }
 
-    public function register($username, $email, $password) {
+    public function register($args) {
+        extract($args);
+
         // Hash password
         $password = $this->hashInput($password);
 
         // Build SQL
-        $sql = 
-        "INSERT INTO nr_clients(username, email, password)
-            VALUES(\"$username\", \"$email\", \"$password\");";
+        if(isset($profile_photo)) {
+            $sql = 
+            "INSERT INTO nr_clients(username, email, password, profile_photo)
+                VALUES(\"$username\", \"$email\", \"$password\", \"$url\");";
+        } else {
+            $sql = 
+            "INSERT INTO nr_clients(username, email, password, profile_photo)
+                VALUES(\"$username\", \"$email\", \"$password\", \"https://glamsquad.sgp1.cdn.digitaloceanspaces.com/GlamSquad/default/images/profile.svg\");";
+        }
 
         // Return SQL result
         $res = runSQLQuery($sql);
@@ -140,25 +148,23 @@ class NRClient {
             // Remove password hash and return successful result
             unset($query["data"][0]["password"]);
 
-            // Check if profile picture exists or needs updating 
-            if(!$query["data"][0]["profile_photo"] || $query["data"][0]["profile_photo"] === null) {
-                $this->saveProfilePic($query["data"][0]["id"], $profilePicture);
-                $query["data"][0]["profile_photo"] = $profilePicture;
-            }
-
             // Save hashed username for session verification
             $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
             $password = $this->randomString();
-            $register = $this->register($userName, $email, $password);
+            $register = $this->register([
+                "username" => $userName, 
+                "email" => $email, 
+                "password" => $password,
+                "profile_photo" => $profilePicture
+            ]);
 
             // Check registration success
             if($register["response"] == true) {
                 $user = $this->authenticate($userName, $password);
-                $this->saveProfilePic($user["data"][0]["id"], $profilePicture);
-                $user["data"][0]["profile_photo"] = $profilePicture;
+                return $user;
             }
             else return $register;
         }
@@ -184,6 +190,7 @@ class NRClient {
             ->performRequest();
 
         $response = json_decode($response, true);
+        error_log(print_r($response, true));
         
         if($userName !== $response["screen_name"] || $userId !== $response["id"]) {
             return[
@@ -212,7 +219,14 @@ class NRClient {
             $password = $this->randomString();
             // FIXME: Get email permissions
             $email = "faketestemail@email.com";
-            $register = $this->register($userName, $email, $password);
+            $profilePicture = $response["profile_image_url_https"];
+            
+            $register = $this->register([
+                "username" => $userName, 
+                "email" => $email, 
+                "password" => $password,
+                "profile_photo" => $profilePicture
+            ]);
 
             // Check registration success
             if($register["response"] == true) return $this->authenticate($userName, $password);
@@ -269,25 +283,23 @@ class NRClient {
             // Remove password hash and return successful result
             unset($query["data"][0]["password"]);
 
-            // Check if profile picture exists or needs updating 
-            if(!$query["data"][0]["profile_photo"] || $query["data"][0]["profile_photo"] === null) {
-                $this->saveProfilePic($query["data"][0]["id"], $profilePicture);
-                $query["data"][0]["profile_photo"] = $profilePicture;
-            }
-
             // Save hashed username for session verification
             $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
             $password = $this->randomString();
-            $register = $this->register($username, $email, $password);
+            $register = $this->register([
+                "username" => $username, 
+                "email" => $email, 
+                "password" => $password,
+                "profile_photo" => $profilePicture
+            ]);
 
             // Check registration success
             if($register["response"] == true) {
                 $user = $this->authenticate($username, $password);
-                $this->saveProfilePic($user["data"][0]["id"], $profilePicture);
-                $user["data"][0]["profile_photo"] = $profilePicture;
+                return $user;
             }
             else return $register;
         }

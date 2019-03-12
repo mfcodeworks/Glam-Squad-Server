@@ -88,7 +88,7 @@
         $form = $request->getParsedBody();
 
         // Register new client
-        $return = (new NRClient)->register($form["username"], $form["email"], $form["password"]);
+        $return = (new NRClient)->register($form);
 
         // Incase of duplicate ID delete any Redis association
         $redis = new Redis;

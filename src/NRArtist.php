@@ -57,10 +57,16 @@ class NRArtist {
 
         // Build SQL
         // FIXME: Fix locked to initially = 1 (true)
-        $sql = 
-        "INSERT INTO nr_artists(username, email, password, bio, instagram, facebook, twitter, role_id, locked, probation)
-            VALUES(\"$username\", \"$email\", \"$password\", \"$bio\", \"$instagram\", \"$facebook\", \"$twitter\", $role, 0, 0);";
-
+        if(isset($profile_photo)) {
+            $sql = 
+            "INSERT INTO nr_artists(username, email, password, bio, instagram, facebook, twitter, role_id, locked, probation, profile_photo)
+                VALUES(\"$username\", \"$email\", \"$password\", \"$bio\", \"$instagram\", \"$facebook\", \"$twitter\", $role, 0, 0, \"$profile_photo\");";    
+        } else {
+            $sql = 
+            "INSERT INTO nr_artists(username, email, password, bio, instagram, facebook, twitter, role_id, locked, probation, profile_photo)
+                VALUES(\"$username\", \"$email\", \"$password\", \"$bio\", \"$instagram\", \"$facebook\", \"$twitter\", $role, 0, 0, \"https://glamsquad.sgp1.cdn.digitaloceanspaces.com/GlamSquad/default/images/profile.svg\");";
+        }
+        
         $res = runSQLQuery($sql);
 
         if(!isset($res["id"])) {
