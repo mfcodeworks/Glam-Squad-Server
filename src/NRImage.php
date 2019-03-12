@@ -11,7 +11,6 @@ require_once "database-interface.php";
 
 class NRImage {
     public $filepath;
-    public $publicpath;
     public $blob;
     public $type;
     public $mime;
@@ -47,11 +46,7 @@ class NRImage {
         $this->filepath = MEDIA_PATH . "{$this->randomString()}.{$this->type}";
 
         // Put file contents
-        if(file_put_contents($this->filepath, $this->data) !== false) {
-            // Create public path
-            $this->publicpath = str_replace(MEDIA_PATH, MEDIA_URI, $this->filepath);
-            return true;
-        }
+        if(file_put_contents($this->filepath, $this->data) !== false) return true;
 
         // Throw file put error
         throw new Exception("Couldn't save blob to file: {$this->filepath}.");
@@ -71,13 +66,12 @@ class NRImage {
 
         if(!$this->data) {
             // Throw file read error
-            throw new Exception("Couldn't read URI: {$uri}.");
+            throw new Exception("Couldn't read URI: $uri.");
         }
         
         // Put file contents
         if(file_put_contents($this->filepath, $this->data) !== false) {
             // Create public path
-            $this->publicpath = str_replace(MEDIA_PATH, MEDIA_URI, $this->filepath);
             $this->getMime();
             return true;
         }
@@ -96,22 +90,6 @@ class NRImage {
             error_log($e);
             throw $e;
         }
-    }
-
-    public static function optimizeImage($filepaths) {
-        // Do image optimization
-        $ch = curl_init("https://glam-squad-db.nygmarosebeauty.com/public/smush.php");
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $filepaths);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 1); 
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-        curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-        curl_setopt($ch, CURLOPT_DNS_CACHE_TIMEOUT, 10); 
-        curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-        curl_exec($ch);
-        curl_close($ch);
     }
 
     private function randomString($length = 32) {

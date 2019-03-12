@@ -28,6 +28,7 @@ return array(
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
     'Facebook\\' => array($vendorDir . '/facebook/graph-sdk/src/Facebook'),
+    'Enqueue\\Dsn\\' => array($vendorDir . '/enqueue/dsn'),
     'Enqueue\\AmqpTools\\' => array($vendorDir . '/enqueue/amqp-tools'),
     'Enqueue\\AmqpLib\\' => array($vendorDir . '/enqueue/amqp-lib'),
     'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),

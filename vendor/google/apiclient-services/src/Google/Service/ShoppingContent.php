@@ -42,13 +42,13 @@ class Google_Service_ShoppingContent extends Google_Service
   public $datafeedstatuses;
   public $liasettings;
   public $orderinvoices;
-  public $orderpayments;
   public $orderreports;
   public $orderreturns;
   public $orders;
   public $pos;
   public $products;
   public $productstatuses;
+  public $regionalinventory;
   public $shippingsettings;
   
   /**
@@ -61,6 +61,7 @@ class Google_Service_ShoppingContent extends Google_Service
     parent::__construct($client);
     $this->rootUrl = 'https://www.googleapis.com/';
     $this->servicePath = 'content/v2.1/';
+    $this->batchPath = 'batch/content/v2.1';
     $this->version = 'v2.1';
     $this->serviceName = 'content';
 
@@ -676,76 +677,6 @@ class Google_Service_ShoppingContent extends Google_Service
               ),
             ),'createrefundinvoice' => array(
               'path' => '{merchantId}/orderinvoices/{orderId}/createRefundInvoice',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'merchantId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'orderId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),
-          )
-        )
-    );
-    $this->orderpayments = new Google_Service_ShoppingContent_Resource_Orderpayments(
-        $this,
-        $this->serviceName,
-        'orderpayments',
-        array(
-          'methods' => array(
-            'notifyauthapproved' => array(
-              'path' => '{merchantId}/orderpayments/{orderId}/notifyAuthApproved',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'merchantId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'orderId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'notifyauthdeclined' => array(
-              'path' => '{merchantId}/orderpayments/{orderId}/notifyAuthDeclined',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'merchantId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'orderId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'notifycharge' => array(
-              'path' => '{merchantId}/orderpayments/{orderId}/notifyCharge',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'merchantId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'orderId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'notifyrefund' => array(
-              'path' => '{merchantId}/orderpayments/{orderId}/notifyRefund',
               'httpMethod' => 'POST',
               'parameters' => array(
                 'merchantId' => array(
@@ -1442,6 +1373,35 @@ class Google_Service_ShoppingContent extends Google_Service
                 'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->regionalinventory = new Google_Service_ShoppingContent_Resource_Regionalinventory(
+        $this,
+        $this->serviceName,
+        'regionalinventory',
+        array(
+          'methods' => array(
+            'custombatch' => array(
+              'path' => 'regionalinventory/batch',
+              'httpMethod' => 'POST',
+              'parameters' => array(),
+            ),'insert' => array(
+              'path' => '{merchantId}/products/{productId}/regionalinventory',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'merchantId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'productId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
                 ),
               ),
             ),

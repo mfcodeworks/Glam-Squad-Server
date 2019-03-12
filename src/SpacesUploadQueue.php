@@ -52,12 +52,13 @@ function spacesUploadQueue(){
 
             // Extract args
             $args = json_decode($message->getBody(), true);
+            error_log(print_r($args, true));
             extract($args);
     
             // Upload file
             try {
                 $spaces = new NRSpaces();
-                $spaces->upload($path, $privacy, $subdir, $mime);
+                error_log($spaces->upload($path, $privacy, $subdir, $mime));
             
                 // Acknowledge
                 $consumer->acknowledge($message);

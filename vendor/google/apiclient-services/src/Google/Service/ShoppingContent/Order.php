@@ -32,8 +32,10 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
   protected $lineItemsDataType = 'array';
   public $merchantId;
   public $merchantOrderId;
-  protected $netAmountType = 'Google_Service_ShoppingContent_Price';
-  protected $netAmountDataType = '';
+  protected $netPriceAmountType = 'Google_Service_ShoppingContent_Price';
+  protected $netPriceAmountDataType = '';
+  protected $netTaxAmountType = 'Google_Service_ShoppingContent_Price';
+  protected $netTaxAmountDataType = '';
   public $paymentStatus;
   public $placedDate;
   protected $promotionsType = 'Google_Service_ShoppingContent_OrderPromotion';
@@ -46,8 +48,8 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
   protected $shippingCostDataType = '';
   protected $shippingCostTaxType = 'Google_Service_ShoppingContent_Price';
   protected $shippingCostTaxDataType = '';
-  public $shippingOption;
   public $status;
+  public $taxCollector;
 
   public function setAcknowledged($acknowledged)
   {
@@ -156,16 +158,30 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
   /**
    * @param Google_Service_ShoppingContent_Price
    */
-  public function setNetAmount(Google_Service_ShoppingContent_Price $netAmount)
+  public function setNetPriceAmount(Google_Service_ShoppingContent_Price $netPriceAmount)
   {
-    $this->netAmount = $netAmount;
+    $this->netPriceAmount = $netPriceAmount;
   }
   /**
    * @return Google_Service_ShoppingContent_Price
    */
-  public function getNetAmount()
+  public function getNetPriceAmount()
   {
-    return $this->netAmount;
+    return $this->netPriceAmount;
+  }
+  /**
+   * @param Google_Service_ShoppingContent_Price
+   */
+  public function setNetTaxAmount(Google_Service_ShoppingContent_Price $netTaxAmount)
+  {
+    $this->netTaxAmount = $netTaxAmount;
+  }
+  /**
+   * @return Google_Service_ShoppingContent_Price
+   */
+  public function getNetTaxAmount()
+  {
+    return $this->netTaxAmount;
   }
   public function setPaymentStatus($paymentStatus)
   {
@@ -253,14 +269,6 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
   {
     return $this->shippingCostTax;
   }
-  public function setShippingOption($shippingOption)
-  {
-    $this->shippingOption = $shippingOption;
-  }
-  public function getShippingOption()
-  {
-    return $this->shippingOption;
-  }
   public function setStatus($status)
   {
     $this->status = $status;
@@ -268,5 +276,13 @@ class Google_Service_ShoppingContent_Order extends Google_Collection
   public function getStatus()
   {
     return $this->status;
+  }
+  public function setTaxCollector($taxCollector)
+  {
+    $this->taxCollector = $taxCollector;
+  }
+  public function getTaxCollector()
+  {
+    return $this->taxCollector;
   }
 }

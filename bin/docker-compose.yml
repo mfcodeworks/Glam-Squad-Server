@@ -43,6 +43,7 @@ services:
             - webnet
         volumes:
             - ../:/var/www/html
+            - ./docker/media:/srv/nr-glam-squad/media
     redis:
         image: redis:latest
         hostname: redis

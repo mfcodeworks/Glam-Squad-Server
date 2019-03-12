@@ -38,6 +38,7 @@ class Google_Service_Container extends Google_Service
   public $projects_locations;
   public $projects_locations_clusters;
   public $projects_locations_clusters_nodePools;
+  public $projects_locations_clusters_well_known;
   public $projects_locations_operations;
   public $projects_zones;
   public $projects_zones_clusters;
@@ -54,6 +55,7 @@ class Google_Service_Container extends Google_Service
     parent::__construct($client);
     $this->rootUrl = 'https://container.googleapis.com/';
     $this->servicePath = '';
+    $this->batchPath = 'batch';
     $this->version = 'v1';
     $this->serviceName = 'container';
 
@@ -153,6 +155,16 @@ class Google_Service_Container extends Google_Service
                 'clusterId' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+              ),
+            ),'getJwks' => array(
+              'path' => 'v1/{+parent}/jwks',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
                 ),
               ),
             ),'list' => array(
@@ -441,6 +453,26 @@ class Google_Service_Container extends Google_Service
           )
         )
     );
+    $this->projects_locations_clusters_well_known = new Google_Service_Container_Resource_ProjectsLocationsClustersWellKnown(
+        $this,
+        $this->serviceName,
+        'well_known',
+        array(
+          'methods' => array(
+            'getOpenid-configuration' => array(
+              'path' => 'v1/{+parent}/.well-known/openid-configuration',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),
+          )
+        )
+    );
     $this->projects_locations_operations = new Google_Service_Container_Resource_ProjectsLocationsOperations(
         $this,
         $this->serviceName,
@@ -466,15 +498,15 @@ class Google_Service_Container extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
+                'operationId' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
                 'projectId' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
                 'zone' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'operationId' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),

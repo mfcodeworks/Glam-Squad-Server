@@ -96,14 +96,13 @@ class NREvent {
 
         // Save images
         if (isset($photos)) {
-            $filepaths = [];
-
             foreach ($photos as $eventPhoto) {
                 try {
                     // Create photo object
                     $photo = new NRImage();
                     $photo->subdir = "GlamSquad/event/{$this->id}/images/";
-                    $photo->getData($eventPhoto);
+                    error_log($photo->getData($eventPhoto));
+                    error_log("Submitting to Spaces");
                     $spaces_path = $photo->uploadToSpaces();
                     $this->saveImageReference(SPACES_CDN . $spaces_path);
                 }

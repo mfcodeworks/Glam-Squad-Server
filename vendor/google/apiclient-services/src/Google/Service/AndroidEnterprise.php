@@ -61,6 +61,7 @@ class Google_Service_AndroidEnterprise extends Google_Service
     parent::__construct($client);
     $this->rootUrl = 'https://www.googleapis.com/';
     $this->servicePath = 'androidenterprise/v1/';
+    $this->batchPath = 'batch/androidenterprise/v1';
     $this->version = 'v1';
     $this->serviceName = 'androidenterprise';
 
@@ -256,16 +257,6 @@ class Google_Service_AndroidEnterprise extends Google_Service
               ),
             ),'get' => array(
               'path' => 'enterprises/{enterpriseId}',
-              'httpMethod' => 'GET',
-              'parameters' => array(
-                'enterpriseId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'getAndroidDevicePolicyConfig' => array(
-              'path' => 'enterprises/{enterpriseId}/androidDevicePolicyConfig',
               'httpMethod' => 'GET',
               'parameters' => array(
                 'enterpriseId' => array(

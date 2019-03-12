@@ -23,7 +23,7 @@
  *
  * <p>
  * For more information about this service, see the API
- * <a href="https://cloud.google.com/compute/docs/oslogin/rest/" target="_blank">Documentation</a>
+ * <a href="https://cloud.google.com/compute/docs/oslogin/" target="_blank">Documentation</a>
  * </p>
  *
  * @author Google, Inc.
@@ -51,6 +51,7 @@ class Google_Service_CloudOSLogin extends Google_Service
     parent::__construct($client);
     $this->rootUrl = 'https://oslogin.googleapis.com/';
     $this->servicePath = '';
+    $this->batchPath = 'batch';
     $this->version = 'v1';
     $this->serviceName = 'oslogin';
 

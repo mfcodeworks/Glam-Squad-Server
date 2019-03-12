@@ -71,6 +71,7 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         ),
         'E' => 
         array (
+            'Enqueue\\Dsn\\' => 12,
             'Enqueue\\AmqpTools\\' => 18,
             'Enqueue\\AmqpLib\\' => 16,
         ),
@@ -168,6 +169,10 @@ class ComposerStaticInit86c6397de0e1b5a3cc8cc576457ce87d
         'Facebook\\' => 
         array (
             0 => __DIR__ . '/..' . '/facebook/graph-sdk/src/Facebook',
+        ),
+        'Enqueue\\Dsn\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/enqueue/dsn',
         ),
         'Enqueue\\AmqpTools\\' => 
         array (

@@ -142,8 +142,8 @@ class Google_Service_Dialogflow_Resource_ProjectsAgentEntityTypes extends Google
   /**
    * Updates the specified entity type. (entityTypes.patch)
    *
-   * @param string $name Required for all methods except `create` (`create`
-   * populates the name automatically. The unique identifier of the entity type.
+   * @param string $name The unique identifier of the entity type. Required for
+   * EntityTypes.UpdateEntityType and EntityTypes.BatchUpdateEntityTypes methods.
    * Format: `projects//agent/entityTypes/`.
    * @param Google_Service_Dialogflow_GoogleCloudDialogflowV2EntityType $postBody
    * @param array $optParams Optional parameters.

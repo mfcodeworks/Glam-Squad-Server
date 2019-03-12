@@ -123,6 +123,22 @@ class Google_Service_Container_Resource_ProjectsLocationsClusters extends Google
     return $this->call('get', array($params), "Google_Service_Container_Cluster");
   }
   /**
+   * GetJSONWebKeys gets the public component of the cluster signing keys in JSON
+   * Web Key format. This API is not yet intended for general use, and is not
+   * available for all clusters. (clusters.getJwks)
+   *
+   * @param string $parent The cluster (project, location, cluster id) to get keys
+   * for. Specified in the format 'projects/locations/clusters'.
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Container_GetJSONWebKeysResponse
+   */
+  public function getJwks($parent, $optParams = array())
+  {
+    $params = array('parent' => $parent);
+    $params = array_merge($params, $optParams);
+    return $this->call('getJwks', array($params), "Google_Service_Container_GetJSONWebKeysResponse");
+  }
+  /**
    * Lists all clusters owned by a project in either the specified zone or all
    * zones. (clusters.listProjectsLocationsClusters)
    *

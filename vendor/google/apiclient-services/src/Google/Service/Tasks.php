@@ -19,7 +19,7 @@
  * Service definition for Tasks (v1).
  *
  * <p>
- * Lets you manage your tasks and task lists.</p>
+ * Manages your tasks and task lists.</p>
  *
  * <p>
  * For more information about this service, see the API
@@ -50,6 +50,7 @@ class Google_Service_Tasks extends Google_Service
     parent::__construct($client);
     $this->rootUrl = 'https://www.googleapis.com/';
     $this->servicePath = 'tasks/v1/';
+    $this->batchPath = 'batch/tasks/v1';
     $this->version = 'v1';
     $this->serviceName = 'tasks';
 
