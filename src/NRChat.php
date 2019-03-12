@@ -116,6 +116,18 @@ class NRChat {
         }
     }
 
+    public function deleteAllChannels() {
+        $channels = $this->twilio
+            ->chat
+            ->v2
+            ->services(TWILIO_SERVICE_DEV_SID)
+            ->channels
+            ->read();
+        foreach($channels as $channel) {
+            $channel->delete();
+        }
+    }
+
     public static function token($args) {
         // Extract form (requires username field)
         extract($args);

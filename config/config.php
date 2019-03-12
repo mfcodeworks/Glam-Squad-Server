@@ -5,9 +5,9 @@ define("HMAC_ENABLED", true);
 define("GIT_SECRET", "ZKeU8S6FXT4BSt7i0mM8VBdtmVch7t5c");
 
 // MySQL
-define("DB_SERVER", "glamsquad.czcoidkwv3pf.us-east-2.rds.amazonaws.com");
+define("DB_SERVER", "10.130.105.226");
 define("DB_USER", "nrglamsquad");
-define("DB_PASS", "school12");
+define("DB_PASS", "Sch@@l12");
 define("DB_NAME", "nrglamsquad");
 
 // Redis
@@ -20,7 +20,6 @@ define("SERVER_URL", "https://glam-squad-db.nygmarosebeauty.com");
 
 // Path
 define("MEDIA_PATH", "/srv/nr-glam-squad/media/");
-define("MEDIA_URI", "https://glam-squad-db.nygmarosebeauty.com/images/");
 define("FORGOT_PASSWORD_URI", "https://glam-squad-db.nygmarosebeauty.com/forgot-password");
 
 // Mail

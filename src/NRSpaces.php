@@ -64,7 +64,7 @@ class NRSpaces {
     public function upload($path, $privacy = "public", $subdir = "GlamSquad/", $mime = "application/octet-stream") {
         // Upload file with filepath, privacy of file, spaces subdir
         try {
-            $this->space->UploadFile($path, $privacy, $subdir, $mime);
+            return $this->space->UploadFile($path, $privacy, $subdir, $mime);
         } catch (Exception $e) {
             error_log(json_encode($e, JSON_PRETTY_PRINT));
             throw $e;

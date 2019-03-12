@@ -58,7 +58,7 @@ function spacesUploadQueue(){
             // Upload file
             try {
                 $spaces = new NRSpaces();
-                error_log($spaces->upload($path, $privacy, $subdir, $mime));
+                $spaces->upload($path, $privacy, $subdir, $mime);
             
                 // Acknowledge
                 $consumer->acknowledge($message);
