@@ -614,15 +614,12 @@ EOD;
 
     private function hashInput($password) {
         // Hash password with Argon2 (PHP7.2+)
-        return password_hash($password, PASSWORD_ARGON2I, ["memory_cost" => 2048, "time_cost" => 4, "threads" => 2]);
+        return password_hash($password, PASSWORD_ARGON2I, ARGON_CONFIG);
     }
 
     private function verifyInput($password, $password_hash) {
         // Verify password against password hash
-        if(password_verify($password, $password_hash)) {
-            return true;
-        } 
-        return false;
+        return password_verify($password, $password_hash);
     }
 }
 

@@ -4,6 +4,13 @@ define("API_SECRET", '1GSqDjCYAXeBLuLLVBx3bXlpC5NKUPqC');
 define("HMAC_ENABLED", true);
 define("GIT_SECRET", "ZKeU8S6FXT4BSt7i0mM8VBdtmVch7t5c");
 
+// Argon2 Password Hashing Config
+define("ARGON_CONFIG", [
+    "memory_cost" => 4096, 
+    "time_cost" => 20,
+    "threads" => 2
+]);
+
 // MySQL
 define("DB_SERVER", "10.130.105.226");
 define("DB_USER", "nrglamsquad");
