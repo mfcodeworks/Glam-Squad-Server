@@ -52,7 +52,6 @@ function spacesUploadQueue(){
 
             // Extract args
             $args = json_decode($message->getBody(), true);
-            error_log(print_r($args, true));
             extract($args);
     
             // Upload file

@@ -81,6 +81,10 @@ class NREvent {
                 if($package === 3) $this->saveEventHours();
             }
             catch(Exception $e) {
+                $this->delete([
+                    "eventId" => $this->id,
+                    "id" => $this->clientId
+                ]);
                 return [
                     "response" => false,
                     "error_code" => 107,
@@ -107,12 +111,10 @@ class NREvent {
                     $this->saveImageReference(SPACES_CDN . $spaces_path);
                 }
                 catch(Exception $e) {
-                    $this->delete(
-                        [
-                            "jobId" => $this->id,
-                            "userId" => $this->clientId
-                        ]
-                    );
+                    $this->delete([
+                        "eventId" => $this->id,
+                        "id" => $this->clientId
+                    ]);
                     return [
                         "response" => false,
                         "error_code" => 107,
@@ -127,12 +129,10 @@ class NREvent {
         $notification = $fcm->sendEventNotification($this);
 
         if($notification["response"] === false) {
-            $this->delete(
-                [
-                    "jobId" => $this->id,
-                    "userId" => $this->clientId
-                ]
-            );
+            $this->delete([
+                "eventId" => $this->id,
+                "id" => $this->clientId
+            ]);
             return $notification;
         }
 
