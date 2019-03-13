@@ -59,6 +59,7 @@ function spacesUploadQueue(){
             try {
                 $spaces = new NRSpaces();
                 $spaces->upload($path, $privacy, $subdir, $mime);
+                unlink($path);
             
                 // Acknowledge
                 $consumer->acknowledge($message);
