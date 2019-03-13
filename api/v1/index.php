@@ -68,6 +68,9 @@
             }
         }
 
+        // Get Authorization header
+        $auth = $request->getHeader("NR_AUTH")[0];
+
         // If HMAC is correct proceed
         $response = $next($request, $response);
             
@@ -77,7 +80,8 @@
         error_log("API Execution Time: $execution_time s");
 
         return $response
-            ->withHeader("NR-HASH", $hash);
+            ->withHeader("NR-HASH", $hash)
+            ->withHeader("NR-AUTH", $auth);
     });
 
     /**
