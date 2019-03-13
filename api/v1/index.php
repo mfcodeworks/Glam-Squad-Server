@@ -193,7 +193,7 @@
         $form = $request->getParsedBody();
 
         // Validate Client Session 
-        $return = (new NRClient)->validateSession($args["id"], $form["usernameHash"]);
+        $return = (new NRClient)->validateSession($args["id"], $form["key"]);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
@@ -437,7 +437,7 @@
         $form = $request->getParsedBody();
 
         // Validate Artist Session 
-        $return = (new NRArtist)->validateSession($args["id"], $form["usernameHash"]);
+        $return = (new NRArtist)->validateSession($args["id"], $form["key"]);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });

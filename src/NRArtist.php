@@ -16,6 +16,7 @@ class NRArtist {
     // properties
     public $id;
     public $username;
+    public $key;
     public $email;
     private $password;
     public $profile_photo;
@@ -344,7 +345,7 @@ EOD;
         // Save properties
         $this->id = $id;
         $this->username = $username;
-        $this->usernameHash = $this->hashInput($username);
+        $this->key = $this->hashInput($username);
         $this->profile_photo = $profile_photo;
         $this->email = $email;
         $this->bio = $bio;
@@ -501,11 +502,11 @@ EOD;
         ];
     }
 
-    public function validateSession($id, $usernameHash) {
+    public function validateSession($id, $key) {
         $this->get(["id" => $id]);
 
         // If the ID exists 
-        if(isset($this->id) && $this->verifyInput($this->username, $usernameHash)) {
+        if(isset($this->id) && $this->verifyInput($this->username, $key)) {
             return [
                 "response" => true,
                 "error" => null,

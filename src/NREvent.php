@@ -451,7 +451,7 @@ class NREvent {
             $artist->get(["id" => $artistId['artist_id']]);
 
             // Remove irrelevant information
-            unset($artist->usernameHash);
+            unset($artist->key);
             unset($artist->bookings);
             unset($artist->fcmTokens);
             unset($artist->fcmTopics);

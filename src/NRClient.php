@@ -149,7 +149,7 @@ class NRClient {
             unset($query["data"][0]["password"]);
 
             // Save hashed username for session verification
-            $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
+            $query["data"][0]["key"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
@@ -212,7 +212,7 @@ class NRClient {
             unset($query["data"][0]["password"]);
 
             // Save hashed username for session verification
-            $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
+            $query["data"][0]["key"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
@@ -284,7 +284,7 @@ class NRClient {
             unset($query["data"][0]["password"]);
 
             // Save hashed username for session verification
-            $query["data"][0]["usernameHash"] = $this->hashInput($query["data"][0]["username"]);
+            $query["data"][0]["key"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
@@ -327,7 +327,7 @@ class NRClient {
 
         // FIXME: Fix giving username hash for all get requests
         // Save hashed username for session verification
-        $response["data"][0]["usernameHash"] = $this->hashInput($response["data"][0]["username"]);
+        $response["data"][0]["key"] = $this->hashInput($response["data"][0]["username"]);
 
         unset($response["data"][0]["password"]);
 
@@ -386,7 +386,7 @@ class NRClient {
             unset($response["data"][0]["password"]);
 
             // Save hashed username for session verification
-            $response["data"][0]["usernameHash"] = $this->hashInput($username);
+            $response["data"][0]["key"] = $this->hashInput($username);
             return $response;
         }
 
@@ -539,13 +539,12 @@ EOD;
         return bin2hex(random_bytes($length));;
     }
 
-    public function validateSession($id, $usernameHash) {
+    public function validateSession($id, $key) {
         // Get plaintext username
         $sql = 
         "SELECT username
-        FROM nr_clients
-        WHERE id = $id;
-        ";
+            FROM nr_clients
+            WHERE id = $id;";
 
         // Save response
         $r = runSQLQuery($sql);
@@ -557,9 +556,7 @@ EOD;
             $username = $r["data"][0]["username"];
 
             // Verify password against hash
-            if($this->verifyInput($username,$usernameHash)) {
-                return true;
-            }
+            return $this->verifyInput($username,$key);
         }
 
         // If ID doesn't exist or username hash is wrong return false
