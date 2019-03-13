@@ -16,7 +16,6 @@ class NRArtist {
     // properties
     public $id;
     public $username;
-    public $key;
     public $email;
     private $password;
     public $profile_photo;
@@ -54,7 +53,7 @@ class NRArtist {
         }
 
         // Hash password
-        $password = $this->hashInput($password);
+        $password = NRAuth::hashInput($password);
 
         // Build SQL
         // FIXME: Fix locked to initially = 1 (true)
@@ -273,7 +272,7 @@ EOD;
         }
 
         // Hash password
-        $password = $this->hashInput($password);
+        $password = NRAuth::hashInput($password);
 
         // Update user password
         $sql = 
@@ -345,7 +344,6 @@ EOD;
         // Save properties
         $this->id = $id;
         $this->username = $username;
-        $this->key = $this->hashInput($username);
         $this->profile_photo = $profile_photo;
         $this->email = $email;
         $this->bio = $bio;
@@ -427,7 +425,9 @@ EOD;
     public function update($args) {
         extract($args);
 
-        $artist = $this->get(["id" => $id]);
+        if(!isset($password)) $password = "";
+
+        $this->get(["id" => $id]);
 
         switch(trim($password)) {
             case "":
@@ -439,7 +439,7 @@ EOD;
 
             default:
                 // Hash password
-                $password = $this->hashInput($password);
+                $password = NRAuth::hashInput($password);
 
                 $sql = 
                 "UPDATE nr_artists
@@ -448,20 +448,21 @@ EOD;
                 break;
         }
         $response = runSQLQuery($sql);
+        error_log(print_r($response, true));
 
-        if($response["response"] === true) {
-            $artist = $this->get(["id" => $id]);
+        if($response["response"] == true) {
+            $this->get(["id" => $id]);
 
             // Update twilio username
             if(TWILIO_ENABLED) {
-                (new NRChat())->updateUser($artist->twilio_sid, [
+                (new NRChat())->updateUser($this->twilio_sid, [
                     "friendlyName" => $username,
                     "identity" => "artist-$username",
-                    "attributes" => json_encode($artist, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES)
+                    "attributes" => json_encode($this, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES)
                 ]);
             }
 
-            return $artist;
+            return $this;
         }
         else return $response;
     }
@@ -487,9 +488,9 @@ EOD;
         }
 
         // Verify password and password hash
-        if($this->verifyInput($password, $response["data"][0]["password"]) === true) {
+        if(NRAuth::verifyInput($password, $response["data"][0]["password"]) == true) {
+            // Get Artist information
             $this->get(["id" => $response["data"][0]["id"]]);
-            
             $response["data"][0] = $this;
             return $response;
         }
@@ -505,12 +506,12 @@ EOD;
     public function validateSession($id, $key) {
         $this->get(["id" => $id]);
 
-        // If the ID exists 
-        if(isset($this->id) && $this->verifyInput($this->username, $key)) {
+        // If the ID exists
+        if(isset($this->id) && NRAuth::verifyUserKey($key, $this->username, $this->password)) {
             return [
                 "response" => true,
                 "error" => null,
-                "data" => $this,
+                "data" => [$this],
                 "valid" => true
             ];
         }
@@ -554,6 +555,10 @@ EOD;
             AND id = $loc_id;";
 
         return runSQLQuery($sql);
+    }
+
+    public function getPassword() {
+        return $this->password;
     }
 
     private function hashInput($password) {

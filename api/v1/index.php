@@ -13,6 +13,7 @@
 	// Require classes
 	require_once PROJECT_CONFIG . "config.php";
     require_once PROJECT_LIB . "autoload.php";
+    require_once PROJECT_INC . "NRAuth.php";
 	require_once PROJECT_INC . "DegreeDistanceFinder.php";
 	require_once PROJECT_INC . "Mailer.php";
 	require_once PROJECT_INC . "NRChat.php";
@@ -66,10 +67,13 @@
                     ->withHeader("NR-HASH", $hash)
                     ->write("No Authorization Header");
             }
+        } else {
+            $hash = null;
         }
 
         // Get Authorization header
-        $auth = $request->getHeader("NR_AUTH")[0];
+        if($request->getHeader("NR_AUTH")) $auth = $request->getHeader("NR_AUTH")[0];
+        else $auth = null;
 
         // If HMAC is correct proceed
         $response = $next($request, $response);
@@ -125,6 +129,15 @@
         $redis->connect(REDIS_HOST);
         $redis->delete("client-{$return["id"]}");
 
+        // Set user key and remove password
+        if($return["data"]) {
+            $return["data"][0]["key"] = NRAuth::userAuthKey(
+                $return["data"][0]["username"],
+                $return["data"][0]["password"]
+            );
+            unset($return["data"][0]["password"]);
+        }
+
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->post('/clients/authenticate', function($request, $response, $args) {
@@ -133,6 +146,15 @@
 
         // Authenticate client
         $return = (new NRClient)->authenticate($form["username"], $form["password"]);
+
+        // Set user key and remove password
+        if($return["data"]) {
+            $return["data"][0]["key"] = NRAuth::userAuthKey(
+                $return["data"][0]["username"],
+                $return["data"][0]["password"]
+            );
+            unset($return["data"][0]["password"]);
+        }
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
@@ -158,8 +180,11 @@
         // Get client from ID
         $return = (new NRClient)->get($args);
 
-        // Cache client data
         if($return["data"]) {
+            // Remove password field
+            unset($return["data"][0]["password"]);
+
+            // Cache client data
             $redis->set(
                 "client-{$return["data"][0]["id"]}", 
                 json_encode($return["data"][0], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
@@ -179,8 +204,11 @@
         // Update Client Info 
         $return = (new NRClient)->update($form);
 
-        // Cache client data
         if($return["data"]) {
+            // Remove password field
+            unset($return["data"][0]["password"]);
+
+            // Cache client data
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
             $redis->set(
@@ -377,6 +405,14 @@
 
         // Authenticate artist
         $return = (new NRArtist)->authenticate($form["username"], $form["password"]);
+        
+        // Set user key and remove password
+        if($return["data"]) {
+            $return["data"][0]->key = NRAuth::userAuthKey(
+                $return["data"][0]->username,
+                $return["data"][0]->getPassword()
+            );
+        }
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
@@ -432,7 +468,14 @@
                 json_encode($return, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                 REDIS_TIMEOUT
             );
+
+            // Set user key and remove password
+            $return->key = NRAuth::userAuthKey(
+                $return->username,
+                $return->getPassword()
+            );
         }
+        
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
@@ -442,6 +485,14 @@
 
         // Validate Artist Session 
         $return = (new NRArtist)->validateSession($args["id"], $form["key"]);
+        
+        // Set user key and remove password
+        if($return["data"]) {
+            $return["data"][0]->key = NRAuth::userAuthKey(
+                $return["data"][0]->username,
+                $return["data"][0]->getPassword()
+            );
+        }
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
@@ -658,6 +709,9 @@
      * EVENT: Event Functions
      */
     $api->post('/events', function($request, $response, $args) {
+        // Get Authorization header
+        $auth = $request->getHeader("NR_AUTH")[0];
+
         // Get POST form
         $form = $request->getParsedBody();
 

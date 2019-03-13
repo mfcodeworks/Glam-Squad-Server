@@ -36,7 +36,7 @@ class NRClient {
         extract($args);
 
         // Hash password
-        $password = $this->hashInput($password);
+        $password = NRAuth::hashInput($password);
 
         // Build SQL
         if(isset($profile_photo)) {
@@ -145,11 +145,6 @@ class NRClient {
         $query = runSQLQuery($sql);
 
         if(isset($query["data"])) {
-            // Remove password hash and return successful result
-            unset($query["data"][0]["password"]);
-
-            // Save hashed username for session verification
-            $query["data"][0]["key"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
@@ -208,11 +203,6 @@ class NRClient {
         $query = runSQLQuery($sql);
 
         if(isset($query["data"])) {
-            // Remove password hash and return successful result
-            unset($query["data"][0]["password"]);
-
-            // Save hashed username for session verification
-            $query["data"][0]["key"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
@@ -280,11 +270,6 @@ class NRClient {
         $query = runSQLQuery($sql);
 
         if(isset($query["data"])) {
-            // Remove password hash and return successful result
-            unset($query["data"][0]["password"]);
-
-            // Save hashed username for session verification
-            $query["data"][0]["key"] = $this->hashInput($query["data"][0]["username"]);
             return $query;
         } else {
             // Register user with random password
@@ -325,12 +310,6 @@ class NRClient {
 
         $response = runSQLQuery($sql);
 
-        // FIXME: Fix giving username hash for all get requests
-        // Save hashed username for session verification
-        $response["data"][0]["key"] = $this->hashInput($response["data"][0]["username"]);
-
-        unset($response["data"][0]["password"]);
-
         return $response;
     }
 
@@ -347,7 +326,7 @@ class NRClient {
 
             default:
                 // Hash password
-                $password = $this->hashInput($password);
+                $password = NRAuth::hashInput($password);
 
                 $sql = 
                 "UPDATE nr_clients
@@ -381,12 +360,7 @@ class NRClient {
         }
 
         // Verify password and password hash
-        if($this->verifyInput($password, $response["data"][0]["password"]) == true) {
-            // Remove password hash and return successful result
-            unset($response["data"][0]["password"]);
-
-            // Save hashed username for session verification
-            $response["data"][0]["key"] = $this->hashInput($username);
+        if(NRAuth::verifyInput($password, $response["data"][0]["password"]) == true) {
             return $response;
         }
 
@@ -503,7 +477,7 @@ EOD;
         }
 
         // Hash password
-        $password = $this->hashInput($password);
+        $password = NRAuth::hashInput($password);
 
         // Update user password
         $sql = 
@@ -540,23 +514,11 @@ EOD;
     }
 
     public function validateSession($id, $key) {
-        // Get plaintext username
-        $sql = 
-        "SELECT username
-            FROM nr_clients
-            WHERE id = $id;";
-
-        // Save response
-        $r = runSQLQuery($sql);
+        $client = $this->get(["id" => $id]);
 
         // If the ID exists 
-        if(isset($r["data"])) {
-
-            // plaintext username of ID
-            $username = $r["data"][0]["username"];
-
-            // Verify password against hash
-            return $this->verifyInput($username,$key);
+        if(isset($client["id"])) {
+            return NRAuth::verifyUserKey($key, $client["data"][0]["username"], $client["data"][0]["password"]);
         }
 
         // If ID doesn't exist or username hash is wrong return false
