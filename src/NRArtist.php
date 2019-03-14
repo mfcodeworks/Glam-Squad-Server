@@ -325,7 +325,7 @@ EOD;
 
         // Build SQL
         $sql = 
-        "SELECT a.id, a.username, a.profile_photo, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid
+        "SELECT a.id, a.username, a.password, a.profile_photo, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid
             FROM nr_artists as a
             LEFT JOIN nr_job_roles as r ON r.id = a.role_id
             WHERE a.id = $id;";
@@ -344,6 +344,7 @@ EOD;
         // Save properties
         $this->id = $id;
         $this->username = $username;
+        $this->password = $password;
         $this->profile_photo = $profile_photo;
         $this->email = $email;
         $this->bio = $bio;

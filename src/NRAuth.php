@@ -9,16 +9,16 @@
 
 class NRAuth {
     // Authorize user from user key
-    public static function authorizeUser($key, $id, $type) {
+    public static function authorizeUser($key, $id, $type = "client") {
         switch($type) {
             case "client":
                 $client = (new NRClient)->get(["id" => $id]);
-                return self::verifyUserKey($key, $client["data"][0]["username"], );
+                return self::verifyUserKey($key, $client["data"][0]["username"], $client["data"][0]["password"]);
                 break;
 
             case "artist":
                 $artist = (new NRArtist)->get(["id" => $id]);
-                return self::verifyUserKey($key, $artist->username, );
+                return self::verifyUserKey($key, $artist->username, $artist->getPassword());
                 break;
         }
     }

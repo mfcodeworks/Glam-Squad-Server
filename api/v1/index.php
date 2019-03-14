@@ -32,23 +32,24 @@
 
     // HMAC check for queries 
     $api->add(function ($request, $response, $next) {
-        /**
-         * Skip HMAC for same origin requests
-         * 
-         * Same origin requests 
-         *  - lost-password.php does key checking before sending server data
-         */
-
         // DEBUG: Measure exec time
         $time_start = microtime(true); 
 
         // If HMAC enabled check
         if(HMAC_ENABLED) {
+            /**
+             * Skip HMAC for same origin requests
+             * 
+             * Same origin requests 
+             *  - lost-password.php does key checking before sending server data
+             */
             if($request->getHeader("ORIGIN") && $request->getHeader("ORIGIN")[0] === SERVER_URL)
                 return $next($request, $response);
+
             // Check if preflight and respond 200
             if($request->isOptions() && strpos($request->getHeader("ACCESS_CONTROL_REQUEST_HEADERS")[0], "nr-hash") > -1) {
                 return $response->withStatus(200);
+
             // If not preflight, check NR-Hash present
             } else if(!$request->getHeader("NR-HASH")) {
                 return $response->withStatus(401)
@@ -67,6 +68,7 @@
                     ->withHeader("NR-HASH", $hash)
                     ->write("No Authorization Header");
             }
+        // Nullify hash if HMAC disabled
         } else {
             $hash = null;
         }
@@ -408,9 +410,10 @@
         
         // Set user key and remove password
         if($return["data"]) {
+            $password = $return["data"][0]->getPassword();
             $return["data"][0]->key = NRAuth::userAuthKey(
                 $return["data"][0]->username,
-                $return["data"][0]->getPassword()
+                $password
             );
         }
 
@@ -709,23 +712,27 @@
      * EVENT: Event Functions
      */
     $api->post('/events', function($request, $response, $args) {
-        // Get Authorization header
-        $auth = $request->getHeader("NR_AUTH")[0];
-
         // Get POST form
         $form = $request->getParsedBody();
+        error_log(print_r($form, true));
 
-        // Create new event 
-        $return = (new NREvent)->save($form);
-
-        if($return["id"]) {
-            // Clear cache
-            $redis = new Redis;
-            $redis->connect(REDIS_HOST);
-            $redis->delete("event-{$return["id"]}");
+        // Get Authorization
+        if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["userId"])) {
+            // Create new event 
+            $return = (new NREvent)->save($form);
+    
+            if($return["id"]) {
+                // Clear cache
+                $redis = new Redis;
+                $redis->connect(REDIS_HOST);
+                $redis->delete("event-{$return["id"]}");
+            }
+    
+            return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        } else {
+            return $response->withStatus(401)
+                ->write("Unauthorization Request");
         }
-
-        return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->get('/events/{id: [0-9]+}', function($request, $response, $args) {
         // Get Event from Redis
