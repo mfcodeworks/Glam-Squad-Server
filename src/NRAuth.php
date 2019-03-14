@@ -25,13 +25,11 @@ class NRAuth {
 
     // Create user auth key from username hash with password hash salt
     public static function userAuthKey($username, $passwordHash) {
-        error_log("Making User Key: $passwordHash.$username");
         return self::hashInput($passwordHash.$username);
     }
 
     // Verify user auth key
     public static function verifyUserKey($key, $username, $passwordHash) {
-        error_log("Verifying User Key: $passwordHash.$username");
         return self::verifyInput($passwordHash.$username, $key);
     }
     
