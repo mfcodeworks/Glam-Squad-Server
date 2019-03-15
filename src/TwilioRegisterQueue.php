@@ -59,7 +59,7 @@ function twilioQueue(){
             $twilioUser = (new NRChat)->register($id, $username, $type);
             // Check Twilio SID and save
             if($twilioUser->sid) {
-                $sql = "UPDATE nr_{$type}
+                $sql = "UPDATE nr_{$type}s
                     SET twilio_sid = \"{$twilioUser->sid}\"
                     WHERE id = {$id}";
                 runSQLQuery($sql);
