@@ -35,7 +35,7 @@ use Enqueue\AmqpLib\AmqpContext;
  * Inititate queue
  */
 twilioQueue();
-    
+
 function twilioQueue(){
     // Create consumer
     $context = (new AmqpConnectionFactory(ENQUEUE_OPTIONS))->createContext();
@@ -49,22 +49,26 @@ function twilioQueue(){
 
         if($message) {
             // DEBUG: Measure exec time
-            $time_start = microtime(true); 
+            $time_start = microtime(true);
 
             // Extract args
             $args = json_decode($message->getBody(), true);
             extract($args);
-    
+
             // Register user with Twilio
-            $twilioUser = (new NRChat)->register($id, $username, $type);
-            // Check Twilio SID and save
-            if($twilioUser->sid) {
-                $sql = "UPDATE nr_{$type}s
-                    SET twilio_sid = \"{$twilioUser->sid}\"
-                    WHERE id = {$id}";
-                runSQLQuery($sql);
+            try {
+                $twilioUser = (new NRChat)->register($id, $username, $type);
+                // Check Twilio SID and save
+                if($twilioUser->sid) {
+                    $sql = "UPDATE nr_{$type}s
+                        SET twilio_sid = \"{$twilioUser->sid}\"
+                        WHERE id = {$id}";
+                    runSQLQuery($sql);
+                }
+            } catch (Exception $e) {
+                error_log($e);
             }
-            
+
             // Acknowledge
             $consumer->acknowledge($message);
 
