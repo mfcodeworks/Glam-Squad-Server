@@ -90,7 +90,7 @@ class NRFCM {
                 "error" => "Unfortunately at the moment there's no artists available within your area."
             ];
         }
-        
+
         // Save artists to a variable
         $artistList = $res["data"];
 
@@ -127,7 +127,7 @@ class NRFCM {
             $redis->connect(REDIS_HOST);
             $redis->delete("artist-{$artist->id}-events-new");
 
-            $sql = 
+            $sql =
             "SELECT fcm_token
                 FROM nr_artists
                 WHERE id = {$artist->id};";
@@ -170,7 +170,7 @@ class NRFCM {
             "notification_key_name" => "{$type}-{$id}",
             "registration_ids" => [$fcm_token]
         ];
-            
+
         $response = json_decode($this->send($group, FCM_GROUP_ENDPOINT), true);
 
         if(isset($response["notification_key"])) {
@@ -186,27 +186,36 @@ class NRFCM {
                 "registration_ids" => [$fcm_token]
             ];
 
-            $notification_token = json_decode($this->send($group, FCM_GROUP_ENDPOINT), true)["notification_key"];
+            $operation = json_decode($this->send($group, FCM_GROUP_ENDPOINT), true);
+            if(isset($operation["error"])) {
+                error_log($operation["error"]."\n\n".print_r($group, true));
+                return[
+                    "response" => false,
+                    "error" => $operation["error"],
+                    "data" => $group
+                ];
+            }
+            $notification_token = $operation["notification_key"];
         }
 
         error_log(print_r($group, true));
 
         switch($type) {
             case "artist":
-                $sql = 
+                $sql =
                 "UPDATE nr_artists
                     SET fcm_token = \"$notification_token\"
                     WHERE id = $id;";
-        
+
                 return runSQLQuery($sql);
                 break;
 
             case "client":
-                $sql = 
+                $sql =
                 "UPDATE nr_clients
                     SET fcm_token = \"$notification_token\"
                     WHERE id = $id;";
-        
+
                 return runSQLQuery($sql);
                 break;
         }
@@ -218,15 +227,15 @@ class NRFCM {
         switch($type) {
             case "client":
                 // Build SQL
-                $sql = 
+                $sql =
                 "INSERT INTO nr_client_fcm_topics(fcm_topic, client_id)
                     VALUES(\"$topic\", $id);";
                 return runSQLQuery($sql);
                 break;
-                
+
             case "artist":
                 // Build SQL
-                $sql = 
+                $sql =
                 "INSERT INTO nr_artist_fcm_topics(fcm_topic, artist_id)
                     VALUES(\"$topic\", $id);";
                 return runSQLQuery($sql);
@@ -241,7 +250,7 @@ class NRFCM {
         switch($type) {
             case "client":
                 // Build SQL
-                $sql = 
+                $sql =
                 "SELECT *
                     FROM nr_client_fcm_topics
                     WHERE client_id = $id;";
@@ -250,7 +259,7 @@ class NRFCM {
 
             case "artist":
                 // Build SQL
-                $sql = 
+                $sql =
                 "SELECT *
                     FROM nr_artist_fcm_topics
                     WHERE artist_id = $id;";
