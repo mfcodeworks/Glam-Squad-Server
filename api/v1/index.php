@@ -24,23 +24,23 @@
 	require_once PROJECT_INC . "NRImage.php";
 	require_once PROJECT_INC . "NRSpaces.php";
     require_once PROJECT_INC . "NRPackage.php";
-    
+
 	/**
 	 * API: Slim 3 RESTful API implementation
 	 */
     $api = new \Slim\App;
 
-    // HMAC check for queries 
+    // HMAC check for queries
     $api->add(function ($request, $response, $next) {
         // DEBUG: Measure exec time
-        $time_start = microtime(true); 
+        $time_start = microtime(true);
 
         // If HMAC enabled check
         if(HMAC_ENABLED) {
             /**
              * Skip HMAC for same origin requests
-             * 
-             * Same origin requests 
+             *
+             * Same origin requests
              *  - lost-password.php does key checking before sending server data
              */
             if($request->getHeader("ORIGIN") && $request->getHeader("ORIGIN")[0] === SERVER_URL)
@@ -55,13 +55,13 @@
                 return $response->withStatus(401)
                     ->write("No Authorization Header");
             }
-    
+
             // Get HMAC sent with request & Calculate HMAC of message with API key
             $hmac = $request->getHeader("NR_HASH")[0];
             $hash = hash_hmac('sha512', $request->getBody(), API_SECRET);
-    
+
             // TODO: Authorization check for authorized user and actions
-    
+
             // If HMAC incorrect return 401 Unauthorized
             if(!hash_equals($hash, $hmac)) {
                 return $response->withStatus(401)
@@ -79,7 +79,7 @@
 
         // If HMAC is correct proceed
         $response = $next($request, $response);
-            
+
         // DEBUG: Measure exec time
         $time_end = microtime(true);
         $execution_time = ($time_end - $time_start);
@@ -116,7 +116,7 @@
             case "facebook":
                 $return = (new NRClient)->registerFacebook($form);
                 break;
-            
+
             case "twitter":
                 $return = (new NRClient)->registerTwitter($form);
                 break;
@@ -188,7 +188,7 @@
 
             // Cache client data
             $redis->set(
-                "client-{$return["data"][0]["id"]}", 
+                "client-{$return["data"][0]["id"]}",
                 json_encode($return["data"][0], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                 REDIS_TIMEOUT
             );
@@ -205,7 +205,7 @@
 
 		// Get Authorization
         if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
-            // Update Client Info 
+            // Update Client Info
             $return = (new NRClient)->update($form);
 
             if($return["data"]) {
@@ -216,7 +216,7 @@
                 $redis = new Redis;
                 $redis->connect(REDIS_HOST);
                 $redis->set(
-                    "client-{$return["data"][0]["id"]}", 
+                    "client-{$return["data"][0]["id"]}",
                     json_encode($return["data"][0], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                     REDIS_TIMEOUT
                 );
@@ -231,7 +231,7 @@
         // Get POST form
         $form = $request->getParsedBody();
 
-        // Validate Client Session 
+        // Validate Client Session
         $return = (new NRClient)->validateSession($args["id"], $form["key"]);
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -245,7 +245,7 @@
 
         // Get Authorization
         if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
-            // Save Client Payment Info 
+            // Save Client Payment Info
             $return = (new NRClient)->savePaymentInfo($form);
 
             // Empty Redis cache for Client
@@ -261,7 +261,7 @@
     $api->delete('/clients/{id: [0-9]+}/payment/{token}', function($request, $response, $args) {
         // Get Authorization
         if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
-            // Delete Client Payment Info 
+            // Delete Client Payment Info
             $return = (new NRClient)->deleteCard($args);
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -276,7 +276,7 @@
         // Merge form and URL arguments
         $form["id"] = $args["id"];
         $form["type"] = "client";
-        
+
         // Get Authorization
 		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Save client FCM topic
@@ -303,22 +303,22 @@
                 ->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
                 ->write("{\"response\":true,\"error\":null,\"id\":0,\"data\":$return}");
-            
+
             // Set fcm fetch type
             $args["type"] = "client";
-    
+
             // Get client FCM topic
             $return = (new NRFCM)->getTopics($args);
-    
+
             // Save Client FCM Topic Cache
             if($return["data"]) {
                 $redis->set(
-                    "client-{$args["id"]}-fcm-topics", 
+                    "client-{$args["id"]}-fcm-topics",
                     json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                     REDIS_TIMEOUT
                 );
             }
-    
+
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
@@ -358,7 +358,7 @@
         // Save Client Events Cache
         if($return["data"]) {
             $redis->set(
-                "client-{$args["id"]}-events", 
+                "client-{$args["id"]}-events",
                 json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                 REDIS_TIMEOUT
             );
@@ -369,7 +369,7 @@
     $api->delete('/clients/{id: [0-9]+}/events/{eventId: [0-9]+}', function($request, $response, $args) {
         // Get Authorization
 		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
-            // Delete event 
+            // Delete event
             $return = (new NREvent)->delete($args);
 
             // Clear Client Events Cache
@@ -394,16 +394,16 @@
                 ->withHeader('Content-type', 'application/json')
                 ->write("{\"response\":true,\"error\":null,\"id\":0,\"data\":$return}");
 
-            // Set events get type 
+            // Set events get type
             $args["type"] = "client";
 
-            // Get recently completed unpaid events 
+            // Get recently completed unpaid events
             $return = (new NREvent)->getRecentlyCompletedEvents($args);
-            
+
             // Save Client Unpaid Events Cache
             if($return["data"]) {
                 $redis->set(
-                    "client-{$args["id"]}-events-unpaid", 
+                    "client-{$args["id"]}-events-unpaid",
                     json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                     REDIS_TIMEOUT
                 );
@@ -447,7 +447,7 @@
 
         // Authenticate artist
         $return = (new NRArtist)->authenticate($form["username"], $form["password"]);
-        
+
         // Set user key and remove password
         if($return["data"]) {
             $password = $return["data"][0]->getPassword();
@@ -520,7 +520,7 @@
                     $return->getPassword()
                 );
             }
-            
+
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
@@ -531,9 +531,9 @@
         // Get POST form
         $form = $request->getParsedBody();
 
-        // Validate Artist Session 
+        // Validate Artist Session
         $return = (new NRArtist)->validateSession($args["id"], $form["key"]);
-        
+
         // Set user key and remove password
         if($return["data"]) {
             $return["data"][0]->key = NRAuth::userAuthKey(
@@ -555,7 +555,7 @@
 
             // Save Artist Location
             $return = (new NRArtist)->saveLocation($form);
-            
+
             // Clear Artist Cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -578,7 +578,7 @@
                 ->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
                 ->write("{\"response\":true,\"error\":null,\"id\":0,\"data\":$return}");
-            
+
             // Merge form and URL arguments
             $form["id"] = $args["id"];
 
@@ -588,7 +588,7 @@
             // Save Artist Locations Cache
             if($return["data"]) {
                 $redis->set(
-                    "artist-{$args["id"]}-locations", 
+                    "artist-{$args["id"]}-locations",
                     json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                     REDIS_TIMEOUT
                 );
@@ -604,7 +604,7 @@
 		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Delete Artist Location
             $return = (new NRArtist)->deleteLocation($args);
-            
+
             // Clear Artist Cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -653,7 +653,7 @@
 
             // Save Artist Stripe payment ID
             $return = (new NRArtist)->saveStripeInfo($form);
-            
+
             // Clear Artist Cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -716,7 +716,7 @@
                 ->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
                 ->write("{\"response\":true,\"error\":null,\"id\":0,\"data\":$return}");
-            
+
             // Set fcm fetch type
             $args["type"] = "artist";
 
@@ -726,7 +726,7 @@
             // Save Artist FCM Topic Cache
             if($return["data"]) {
                 $redis->set(
-                    "artist-{$args["id"]}-fcm-topics", 
+                    "artist-{$args["id"]}-fcm-topics",
                     json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                     REDIS_TIMEOUT
                 );
@@ -749,16 +749,16 @@
                 ->withHeader('Content-type', 'application/json')
                 ->write("{\"response\":true,\"error\":null,\"id\":0,\"data\":$return}");
 
-            // Set events get type 
+            // Set events get type
             $args["type"] = "artist";
 
-            // Get recently completed unpaid events 
+            // Get recently completed unpaid events
             $return = (new NREvent)->getRecentlyCompletedEvents($args);
 
             // Save Artist Unpaid Events Cache
             if($return["data"]) {
                 $redis->set(
-                    "artist-{$args["id"]}-events-unpaid", 
+                    "artist-{$args["id"]}-events-unpaid",
                     json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                     REDIS_TIMEOUT
                 );
@@ -785,7 +785,7 @@
         // Save Artist Roles Cache
         if($return["data"]) {
             $redis->set(
-                "artist-roles", 
+                "artist-roles",
                 json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                 REDIS_TIMEOUT
             );
@@ -803,7 +803,7 @@
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
 
-    /** 
+    /**
      * EVENT: Event Functions
      */
     $api->post('/events', function($request, $response, $args) {
@@ -812,16 +812,18 @@
 
         // Get Authorization from client ID (sender)
         if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["userId"])) {
-            // Create new event 
+            // Create new event
             $return = (new NREvent)->save($form);
-    
+
+            error_log(print_r($return, true));
+
             if($return["id"]) {
                 // Clear cache
                 $redis = new Redis;
                 $redis->connect(REDIS_HOST);
                 $redis->delete("event-{$return["id"]}");
             }
-    
+
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
         }
         return $response->withStatus(401)
@@ -836,14 +838,14 @@
             ->withStatus(200)
             ->withHeader('Content-type', 'application/json')
             ->write($return);
-            
+
         // If event not found in Redis get from DB
         $return = (new NREvent)->getSingle($args["id"]);
-        
+
         // Cache event data
         if($return->id) {
             $redis->set(
-                "event-{$return->id}", 
+                "event-{$return->id}",
                 json_encode($return, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                 REDIS_TIMEOUT
             );
@@ -860,9 +862,9 @@
             // Merge form and URL arguments
             $form["id"] = $args["id"];
 
-            // Update event 
+            // Update event
             $return = (new NREvent)->update($form);
-            
+
             // Clear cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -906,7 +908,7 @@
 
             // Set event client rating
             $return = NREvent::clientRating($form);
-            
+
             // Clear cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -928,7 +930,7 @@
 
             // Save event artist attendance
             $return = NREvent::saveArtistAttendance($form);
-            
+
             // Clear cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -950,7 +952,7 @@
 
             // Save event client attendance
             $return = NREvent::saveClientAttendance($form);
-            
+
             // Clear cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -964,7 +966,7 @@
     $api->post('/events/{id: [0-9]+}/apply', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();
-        
+
         // Get Authorization from artist ID (sender)
 		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["userId"], "artist")) {
             // Merge form and URL arguments
@@ -1015,7 +1017,7 @@
                 ->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
                 ->write("{\"response\":true,\"error\":null,\"data\":$return}");
-            
+
             // Get events near artist from ID
             $return = (new NREvent)->getNew($args);
 
@@ -1023,7 +1025,7 @@
                 $redis = new Redis;
                 $redis->connect(REDIS_HOST);
                 $redis->set(
-                    "artist-{$args["userId"]}-events-new", 
+                    "artist-{$args["userId"]}-events-new",
                     json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                     REDIS_TIMEOUT
                 );
@@ -1042,7 +1044,7 @@
         // Get POST form
         $form = $request->getParsedBody();
 
-        // Create new event 
+        // Create new event
         $return = (new NRPackage)->save($form);
 
         // Clear cache
@@ -1080,7 +1082,7 @@
         // Write Package Cache
         if($return["data"] && isset($args["id"])) {
             $redis->set(
-                "package-{$return["data"][0]["id"]}", 
+                "package-{$return["data"][0]["id"]}",
                 json_encode($return["data"][0], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                 REDIS_TIMEOUT
             );
@@ -1088,16 +1090,16 @@
         // Write Packages Cache
         } else if($return["data"]) {
             $redis->set(
-                "packages", 
+                "packages",
                 json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                 REDIS_TIMEOUT
             );
         }
-        
+
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
     $api->delete('/packages/{id: [0-9]+}', function($request, $response, $args) {
-        // Delete package 
+        // Delete package
         $return = (new NRPackage)->delete($args);
 
         // Clear Packages Cache
@@ -1105,7 +1107,7 @@
         $redis->connect(REDIS_HOST);
         $redis->delete("packages");
         $redis->delete("package-{$args["id"]}");
-        
+
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
 
@@ -1114,8 +1116,8 @@
      */
     $api->get('/chat/{type: [a-z]+}/{username}/token', function($request, $response, $args) {
         // Get API Token
-        $return = (new NRChat)->token($args);      
-        
+        $return = (new NRChat)->token($args);
+
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
 
