@@ -34,7 +34,7 @@ use Enqueue\AmqpLib\AmqpContext;
  * Inititate queue
  */
 spacesUploadQueue();
-    
+
 function spacesUploadQueue(){
     // Create consumer
     $context = (new AmqpConnectionFactory(ENQUEUE_OPTIONS))->createContext();
@@ -48,18 +48,18 @@ function spacesUploadQueue(){
 
         if($message) {
             // DEBUG: Measure exec time
-            $time_start = microtime(true); 
+            $time_start = microtime(true);
 
             // Extract args
             $args = json_decode($message->getBody(), true);
             extract($args);
-    
+
             // Upload file
             try {
                 $spaces = new NRSpaces();
                 $spaces->upload($path, $privacy, $subdir, $mime);
                 unlink($path);
-            
+
                 // Acknowledge
                 $consumer->acknowledge($message);
             }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
     <head>
         <!-- https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy -->
-        <meta 
-            http-equiv="Content-Security-Policy" 
-            content="default-src * 'unsafe-inline' data: blob: gap:; 
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src * 'unsafe-inline' data: blob: gap:;
                 script-src 'self' 'unsafe-eval' blob: data: https://glam-squad-db.nygmarosebeauty.com https://stackpath.bootstrapcdn.com https://code.jquery.com https://use.fontawesome.com https://cdnjs.cloudflare.com;
                 connect-src * data: blob:;">
         <meta name="format-detection" content="telephone=no">
@@ -19,7 +19,7 @@
         <link rel="stylesheet" type="text/css" href="/public/css/custom.css">
     </head>
     <body class='clr-dark'>
-        
+
         <!-- Navigation -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-black" data-role="header">
             <a class="navbar-brand" href="#"></a>
@@ -45,7 +45,7 @@
         define('PROJECT_CONFIG', PROJECT_ROOT . '/config/');
         define('PROJECT_INC', PROJECT_ROOT . '/src/');
         define('PROJECT_LIB', PROJECT_ROOT . '/vendor/');
-        
+
         // Require classes
         require_once PROJECT_CONFIG . "config.php";
         require_once PROJECT_INC . "NRArtist.php";
@@ -57,15 +57,15 @@
             // Get lost password key & type
             $key = $_GET["key"];
             $type = $_GET["type"];
-        
+
             // Get data linked to key
             $sql =
             "SELECT {$type}_id, expiration_date
                 FROM nr_{$type}_forgot_password_key
                 WHERE unique_key = \"$key\";";
-        
+
             $r = runSQLQuery($sql);
-        
+
             // Return data or false if not found
             if(!isset($r["data"])) {
                 return false;
@@ -95,7 +95,7 @@
         <!-- /Invalid Key Form -->
 
         <?php } else { ?>
-        
+
         <!-- Reset Password Form -->
         <div class="container">
             <div class="col-lg-10 col-sm-10 col-xs 10" data-role="none" id="new-password-container">

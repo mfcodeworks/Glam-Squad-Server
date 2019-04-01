@@ -6,7 +6,7 @@ define("GIT_SECRET", "ZKeU8S6FXT4BSt7i0mM8VBdtmVch7t5c");
 
 // Argon2 Password Hashing Config
 define("ARGON_CONFIG", [
-    "memory_cost" => 4096, 
+    "memory_cost" => 4096,
     "time_cost" => 20,
     "threads" => 2
 ]);

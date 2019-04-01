@@ -32,7 +32,7 @@ class NRAuth {
     public static function verifyUserKey($key, $username, $passwordHash) {
         return self::verifyInput($passwordHash.$username, $key);
     }
-    
+
     // Hash input with Argon2 (PHP7.2+)
     public static function hashInput($input) {
         return password_hash($input, PASSWORD_ARGON2I, ARGON_CONFIG);

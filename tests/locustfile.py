@@ -8,18 +8,18 @@ def registerClient(l):
 def registerArtist(l):
     username = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
     l.client.post("/api/v1/artists", {
-    "country": "SG",
-    "username": username,
-    "password": "password",
-    "email": username+"@nygmarosebeauty.com",
-    "bio": "Glam Squad Locust IO User",
-    "instagram": "locust",
-    "facebook": "locust",
-    "twitter": "locust",
-    "role": 1,
-    "portfolio": [
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII="
-    ]
+        "country": "SG",
+        "username": username,
+        "password": "password",
+        "email": username+"@nygmarosebeauty.com",
+        "bio": "Glam Squad Locust IO User",
+        "instagram": "locust",
+        "facebook": "locust",
+        "twitter": "locust",
+        "role": 1,
+        "portfolio": [
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII="
+        ]
     })
 
 def loginClient(l):

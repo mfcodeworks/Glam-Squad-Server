@@ -1,4 +1,4 @@
-::-webkit-scrollbar { 
+::-webkit-scrollbar {
     width: 0px !important;
     display: none !important;
 }
@@ -28,14 +28,14 @@
 }
 /* Splash Screen */
 #splash-screen {
-    position: fixed; 
+    position: fixed;
     z-index: 2000;
     /* background-color: white; */
     background-color: #f25f70;
     left: 0;
     top: 0;
     width: 100%;
-    height: 100%; 
+    height: 100%;
     overflow: auto;
 }
 #splash-screen-inner {
@@ -118,15 +118,15 @@ a.col-md-6 {
     color: #fff;
     border-color: #333;
 }
-.input-dark, 
-.input-dark:active, 
+.input-dark,
+.input-dark:active,
 .input-dark::placeholder {
     background-color: grey !important;
     border-color: grey !important;
     color: #fff !important;
 }
 /* Side Menu's */
-.side-menu-toggler, 
+.side-menu-toggler,
 .notification-menu-toggler {
     position:absolute;
     z-index: 15;
@@ -182,12 +182,12 @@ a.col-md-6 {
 .input-warning {
     border: 1px solid red !important;
 }
-#login-form-container, 
-#user-info-form-container, 
+#login-form-container,
+#user-info-form-container,
 #payment-info-form-container,
 #events-form-container,
 #new-password-container {
-    padding-top: 1rem !important; 
+    padding-top: 1rem !important;
     padding-bottom: 1rem;
     margin: auto;
 }
@@ -216,7 +216,7 @@ a.navbar-brand {
     border-color: #000 !important;
 }
 .bg-black {
-    background-color: #000; 
+    background-color: #000;
 }
 /* Image preview horizontal list */
 #event-photos-preview {
@@ -228,7 +228,7 @@ a.navbar-brand {
     list-style: none;
 }
 /* Remove scrollbar */
-#event-photos-preview::-webkit-scrollbar { 
+#event-photos-preview::-webkit-scrollbar {
     display: none;
 }
 .event-photo-preview-image {

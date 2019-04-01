@@ -34,7 +34,7 @@ use Enqueue\AmqpLib\AmqpContext;
  * Inititate queue
  */
 emailQueue();
-    
+
 function emailQueue(){
     // Create consumer
     $context = (new AmqpConnectionFactory(ENQUEUE_OPTIONS))->createContext();
@@ -48,12 +48,12 @@ function emailQueue(){
 
         if($message) {
             // DEBUG: Measure exec time
-            $time_start = microtime(true); 
+            $time_start = microtime(true);
 
             // Extract args
             $args = json_decode($message->getBody(), true);
             extract($args);
-    
+
             // Send email
             $mail = new Mailer();
             $mail->setFrom($from, $from_name);
@@ -61,7 +61,7 @@ function emailQueue(){
             $mail->Subject = $subject;
             $mail->Body = $body;
             $mail->send();
-            
+
             // Acknowledge
             $consumer->acknowledge($message);
 

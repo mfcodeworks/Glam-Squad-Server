@@ -29,7 +29,7 @@ $(document).ready(function() {
 
                 // Log response
                 console.log("User update response:\n" + JSON.stringify(r,null,2));
-                
+
                 // Alert response
                 if(r.response === true) alert("Password changed successfully");
                 else alert("An error occured, please try again later.\n"+JSON.stringify(r.error));
@@ -44,7 +44,7 @@ $(document).ready(function() {
     // Send to API
     function apiSend(method = "GET", url, form = null) {
         var message = JSON.stringify(form);
-    
+
         return new Promise(function(resolve, reject) {
             $.ajax({
                 method: method,
@@ -70,7 +70,7 @@ $(document).ready(function() {
         if(password.length < 4) return false;
         return true;
     }
-    
+
     // Loading UI tools
     function startLoader(color = "black") {
         $("body").prepend(`<div class='loader-${color}'></div>`);

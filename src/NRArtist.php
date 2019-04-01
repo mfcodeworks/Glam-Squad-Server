@@ -6,7 +6,7 @@
  * Description:
  * User class to handle artist authentication and registration
  */
-    
+
 require_once "database-interface.php";
 
 use Enqueue\AmqpLib\AmqpConnectionFactory;
@@ -58,15 +58,15 @@ class NRArtist {
         // Build SQL
         // FIXME: Fix locked to initially = 1 (true)
         if(isset($profile_photo)) {
-            $sql = 
+            $sql =
             "INSERT INTO nr_artists(username, email, password, bio, instagram, facebook, twitter, role_id, locked, probation, profile_photo)
-                VALUES(\"$username\", \"$email\", \"$password\", \"$bio\", \"$instagram\", \"$facebook\", \"$twitter\", $role, 0, 0, \"$profile_photo\");";    
+                VALUES(\"$username\", \"$email\", \"$password\", \"$bio\", \"$instagram\", \"$facebook\", \"$twitter\", $role, 0, 0, \"$profile_photo\");";
         } else {
-            $sql = 
+            $sql =
             "INSERT INTO nr_artists(username, email, password, bio, instagram, facebook, twitter, role_id, locked, probation, profile_photo)
                 VALUES(\"$username\", \"$email\", \"$password\", \"$bio\", \"$instagram\", \"$facebook\", \"$twitter\", $role, 0, 0, \"https://glamsquad.sgp1.cdn.digitaloceanspaces.com/GlamSquad/default/images/profile.svg\");";
         }
-        
+
         $res = runSQLQuery($sql);
 
         if(!isset($res["id"])) {
@@ -81,7 +81,7 @@ class NRArtist {
                 "error" => "Unable to save new artist",
                 "query" => $res
             ];
-        } 
+        }
 
         $this->id = $res["id"];
         $this->username = $username;
@@ -137,7 +137,7 @@ class NRArtist {
             "from" => "mua@nygmarosebeauty.com",
             "from_name" => "NygmaRose",
             "subject" => "NygmaRose Glam Squad Registration",
-            "body" => 
+            "body" =>
                 "<html>
                     <head>
                         <style>
@@ -150,7 +150,7 @@ class NRArtist {
                         <p>
                             Hi $username,
                             <br><br>
-                            Your Glam Squad registration has been successfully received! 
+                            Your Glam Squad registration has been successfully received!
                             <br>
                             The NR Glam Squad team will be in contact soon if your application is approved and schedule an interview.
                             <br><br>
@@ -166,12 +166,12 @@ class NRArtist {
         // Send message for queue
         $context->createProducer()->send($queue, $message);
     }
-    
+
     public function forgotPassword($username) {
-        // Get user info 
+        // Get user info
         $sql =
-        "SELECT id, email 
-            FROM nr_artists 
+        "SELECT id, email
+            FROM nr_artists
             WHERE username = \"$username\";";
 
         $r = runSQLQuery($sql);
@@ -189,7 +189,7 @@ class NRArtist {
 
         $key = $this->randomString();
 
-        $sql = 
+        $sql =
         "INSERT INTO nr_artist_forgot_password_key(
             unique_key,
             expiration_date,
@@ -210,7 +210,7 @@ class NRArtist {
                 "error" => "Database error occured\n" . json_encode($r)
             ];
         }
-        
+
         try {
             $url = FORGOT_PASSWORD_URI . "?key=$key&type=artist";
             $mail = new Mailer();
@@ -253,15 +253,15 @@ EOD;
 
     public function forgotPasswordUpdate($args) {
         extract($args);
-        
+
         // Double check key validity
         $sql =
         "SELECT artist_id, expiration_date
             FROM nr_artist_forgot_password_key
             WHERE unique_key = \"$key\";";
-    
+
         $r = runSQLQuery($sql);
-    
+
         // Return data or false if not found
         if(!isset($r["data"])) {
             return [
@@ -275,7 +275,7 @@ EOD;
         $password = NRAuth::hashInput($password);
 
         // Update user password
-        $sql = 
+        $sql =
         "UPDATE nr_artists
             SET password = \"$password\"
             WHERE id = $id;";
@@ -287,7 +287,7 @@ EOD;
             "error_code" => 900,
             "error" => "Unknown database error"
         ];
-        
+
         // Remove key validity
         $sql =
         "DELETE FROM nr_artist_forgot_password_key
@@ -315,7 +315,7 @@ EOD;
         $res = runSQLQuery($sql);
 
         if($res["response"] !== true) throw new Exception("Could not save image at $uri.");
-        
+
         return $res["id"];
     }
 
@@ -324,7 +324,7 @@ EOD;
         extract($args);
 
         // Build SQL
-        $sql = 
+        $sql =
         "SELECT a.id, a.username, a.password, a.profile_photo, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid
             FROM nr_artists as a
             LEFT JOIN nr_job_roles as r ON r.id = a.role_id
@@ -396,7 +396,7 @@ EOD;
     public function getLocations($args) {
         extract($args);
 
-        $sql = 
+        $sql =
         "SELECT id, loc_name as name, loc_lat as lat, loc_lng as lng
         FROM nr_artist_locations
         WHERE artist_id = {$id};";
@@ -415,7 +415,7 @@ EOD;
     }
 
     public static function getRoles() {
-        $sql = 
+        $sql =
         "SELECT id, role_name as name
             FROM nr_job_roles
             ORDER BY id ASC;";
@@ -432,7 +432,7 @@ EOD;
 
         switch(trim($password)) {
             case "":
-                $sql = 
+                $sql =
                 "UPDATE nr_artists
                 SET username = \"$username\", email = \"$email\"
                 WHERE id = $id;";
@@ -442,7 +442,7 @@ EOD;
                 // Hash password
                 $password = NRAuth::hashInput($password);
 
-                $sql = 
+                $sql =
                 "UPDATE nr_artists
                 SET username = \"$username\", email = \"$email\", password = \"$password\"
                 WHERE id = $id;";
@@ -470,7 +470,7 @@ EOD;
 
     public function authenticate($username, $password) {
         // Get user ID & Password hash
-        $sql = 
+        $sql =
         "SELECT *
             FROM nr_artists
             WHERE username = \"$username\";
@@ -529,18 +529,18 @@ EOD;
     public function saveStripeInfo($args) {
         extract($args);
 
-        $sql = 
+        $sql =
         "UPDATE nr_artists
             SET stripe_account_token = \"$token\"
             WHERE id = $id";
-            
+
         return runSQLQuery($sql);
     }
 
     public function saveLocation($args) {
         extract($args);
 
-        $sql = 
+        $sql =
         "INSERT INTO nr_artist_locations(loc_name, loc_lat, loc_lng, artist_id)
             VALUES(\"$name\", $lat, $lng, $id);";
 

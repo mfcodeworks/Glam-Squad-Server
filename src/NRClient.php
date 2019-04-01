@@ -40,11 +40,11 @@ class NRClient {
 
         // Build SQL
         if(isset($profile_photo)) {
-            $sql = 
+            $sql =
             "INSERT INTO nr_clients(username, email, password, profile_photo)
                 VALUES(\"$username\", \"$email\", \"$password\", \"$url\");";
         } else {
-            $sql = 
+            $sql =
             "INSERT INTO nr_clients(username, email, password, profile_photo)
                 VALUES(\"$username\", \"$email\", \"$password\", \"https://glamsquad.sgp1.cdn.digitaloceanspaces.com/GlamSquad/default/images/profile.svg\");";
         }
@@ -85,7 +85,7 @@ class NRClient {
             "from" => "mua@nygmarosebeauty.com",
             "from_name" => "NygmaRose",
             "subject" => "NygmaRose Glam Squad Registration",
-            "body" => 
+            "body" =>
                 "<html>
                     <head>
                         <style>
@@ -98,7 +98,7 @@ class NRClient {
                         <p>
                             Hi $username,
                             <br><br>
-                            Your Glam Squad registration has been successfully received! 
+                            Your Glam Squad registration has been successfully received!
                             <br><br>
                             Welcome to Glam Squad, enjoy getting your face beat and relaxing while your own personal glam squad attend to your every beauty need.
                             <br>
@@ -136,8 +136,8 @@ class NRClient {
         $userName = str_replace(" ", "", $payload["name"]);
         $email = $payload["email"];
         $profilePicture = $payload["picture"];
-        
-        $sql = 
+
+        $sql =
         "SELECT *
             FROM nr_clients
             WHERE email = \"$email\";";
@@ -150,8 +150,8 @@ class NRClient {
             // Register user with random password
             $password = $this->randomString();
             $register = $this->register([
-                "username" => $userName, 
-                "email" => $email, 
+                "username" => $userName,
+                "email" => $email,
                 "password" => $password,
                 "profile_photo" => $profilePicture
             ]);
@@ -186,7 +186,7 @@ class NRClient {
 
         $response = json_decode($response, true);
         error_log(print_r($response, true));
-        
+
         if($userName !== $response["screen_name"] || $userId !== $response["id"]) {
             return[
                 "response" => false,
@@ -194,8 +194,8 @@ class NRClient {
                 "error_code" => 205
             ];
         }
-        
-        $sql = 
+
+        $sql =
         "SELECT *
             FROM nr_clients
             WHERE username = \"$userName\";";
@@ -210,10 +210,10 @@ class NRClient {
             // FIXME: Get email permissions
             $email = "faketestemail@email.com";
             $profilePicture = $response["profile_image_url_https"];
-            
+
             $register = $this->register([
-                "username" => $userName, 
-                "email" => $email, 
+                "username" => $userName,
+                "email" => $email,
                 "password" => $password,
                 "profile_photo" => $profilePicture
             ]);
@@ -262,7 +262,7 @@ class NRClient {
             ];
         }
 
-        $sql = 
+        $sql =
         "SELECT *
             FROM nr_clients
             WHERE email = \"$email\";";
@@ -275,8 +275,8 @@ class NRClient {
             // Register user with random password
             $password = $this->randomString();
             $register = $this->register([
-                "username" => $username, 
-                "email" => $email, 
+                "username" => $username,
+                "email" => $email,
                 "password" => $password,
                 "profile_photo" => $profilePicture
             ]);
@@ -303,8 +303,8 @@ class NRClient {
         extract($args);
 
         // Build SQL
-        $sql = 
-        "SELECT * 
+        $sql =
+        "SELECT *
             FROM nr_clients
             WHERE id = $id;";
 
@@ -318,7 +318,7 @@ class NRClient {
 
         switch(trim($password)) {
             case "":
-                $sql = 
+                $sql =
                 "UPDATE nr_clients
                 SET username = \"$username\", email = \"$email\"
                 WHERE id = $id;";
@@ -328,7 +328,7 @@ class NRClient {
                 // Hash password
                 $password = NRAuth::hashInput($password);
 
-                $sql = 
+                $sql =
                 "UPDATE nr_clients
                 SET username = \"$username\", email = \"$email\", password = \"$password\"
                 WHERE id = $id;";
@@ -341,7 +341,7 @@ class NRClient {
 
     public function authenticate($username, $password) {
         // Get user ID & Password hash
-        $sql = 
+        $sql =
         "SELECT *
             FROM nr_clients
             WHERE username = \"$username\";
@@ -373,10 +373,10 @@ class NRClient {
     }
 
     public function forgotPassword($username) {
-        // Get user info 
+        // Get user info
         $sql =
-        "SELECT id, email 
-            FROM nr_clients 
+        "SELECT id, email
+            FROM nr_clients
             WHERE username = \"$username\";";
 
         $r = runSQLQuery($sql);
@@ -394,7 +394,7 @@ class NRClient {
 
         $key = $this->randomString();
 
-        $sql = 
+        $sql =
         "INSERT INTO nr_client_forgot_password_key(
             unique_key,
             expiration_date,
@@ -415,7 +415,7 @@ class NRClient {
                 "error" => "Database error occured\n" . json_encode($r)
             ];
         }
-        
+
         try {
             $url = FORGOT_PASSWORD_URI . "?key=$key&type=client";
             $mail = new Mailer();
@@ -458,15 +458,15 @@ EOD;
 
     public function forgotPasswordUpdate($args) {
         extract($args);
-        
+
         // Double check key validity
         $sql =
         "SELECT client_id, expiration_date
             FROM nr_client_forgot_password_key
             WHERE unique_key = \"$key\";";
-    
+
         $r = runSQLQuery($sql);
-    
+
         // Return data or false if not found
         if(!isset($r["data"])) {
             return [
@@ -480,7 +480,7 @@ EOD;
         $password = NRAuth::hashInput($password);
 
         // Update user password
-        $sql = 
+        $sql =
         "UPDATE nr_clients
         SET password = \"$password\"
         WHERE id = $id;";
@@ -492,7 +492,7 @@ EOD;
             "error_code" => 900,
             "error" => "Unknown database error"
         ];
-        
+
         // Remove key validity
         $sql =
         "DELETE FROM nr_client_forgot_password_key
@@ -516,7 +516,7 @@ EOD;
     public function validateSession($id, $key) {
         $client = $this->get(["id" => $id]);
 
-        // If the ID exists 
+        // If the ID exists
         if(isset($client["id"])) {
             return NRAuth::verifyUserKey($key, $client["data"][0]["username"], $client["data"][0]["password"]);
         }
@@ -530,17 +530,17 @@ EOD;
 
         // If client wishes to save card permanently
         if(isset($stripeId)) {
-            $sql = 
+            $sql =
             "UPDATE nr_clients
             SET stripe_customer_id = \"$stripeId\"
             WHERE id = $id;
             ";
-    
+
             $res = runSQLQuery($sql);
             if($res["response"] != true) return $res;
         }
 
-        $sql = 
+        $sql =
         "INSERT INTO nr_payment_cards(
             card_type,
             card_last_digits,
@@ -562,7 +562,7 @@ EOD;
     public function deleteCard($args) {
         extract($args);
 
-        $sql = 
+        $sql =
         "DELETE FROM nr_payment_cards
         WHERE client_id = $id
         AND card_token LIKE \"$token\";

@@ -16,14 +16,14 @@
 	require_once PROJECT_INC . "NRImage.php";
 	require_once PROJECT_INC . "NRPackage.php";
     require_once PROJECT_LIB . "autoload.php";
-    
+
     // Select events occuring within the next 2 hours that haven't passed
-    $sql = 
+    $sql =
     "SELECT id
-        FROM nr_jobs 
-        WHERE TIMESTAMPDIFF(MINUTE, NOW(), event_datetime) <= 120 
+        FROM nr_jobs
+        WHERE TIMESTAMPDIFF(MINUTE, NOW(), event_datetime) <= 120
 		AND TIMESTAMPDIFF(MINUTE, NOW(), event_datetime) >= 0;";
-		
+
 	// Get list of events
 	$query = runSQLQuery($sql);
 
@@ -39,16 +39,16 @@
 			// Get event info
 			$event = new NREvent();
 			$event->getSingle($eventObject["id"]);
-	
+
 			// Init. FCM object
 			$fcm = new NRFCM();
-	
+
 			// Format address for notifications
 			$addressArray = explode(",", $event->address);
 			$notifAddress = $addressArray[0];
 			(isset($addressArray[1])) ? $notifAddress .= "," . $addressArray[1] : null;
 			(isset($addressArray[2])) ? $notifAddress .= "," . $addressArray[2] : null;
-	
+
 			// Create notification payload
 			$notification = [
 				"condition" => "'event-{$event->id}-client' in topics || 'event-{$event->id}-artist' in topics",
@@ -60,7 +60,7 @@
 					"image" => 'logo'
 				]
 			];
-	
+
 			// Try to send reminder notification
 			try {
 				$fcm->send($notification, FCM_NOTIFICATION_ENDPOINT);
@@ -74,7 +74,7 @@
 
 	// Check reminder sent
 	function reminderSent($id) {
-		// Check for reminder 
+		// Check for reminder
 		$sql =
 		"SELECT id
 			FROM nr_job_reminders

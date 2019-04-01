@@ -30,7 +30,7 @@ class NRChat {
         // Create context and queue
         $context = (new AmqpConnectionFactory(ENQUEUE_OPTIONS))->createContext();
         $queue = $context->createQueue('twilio_register');
-        
+
         // Create message
         $context->declareQueue($queue);
         $args = [
@@ -68,7 +68,7 @@ class NRChat {
 
     public function updateUser($twilio_sid, $update) {
         return $this->twilio
-            ->chat 
+            ->chat
             ->v2
             ->services(TWILIO_SERVICE_DEV_SID)
             ->users($twilio_sid)
@@ -86,7 +86,7 @@ class NRChat {
 
     public function addToChannel($user, $type, $channel) {
         return $this->twilio
-            ->chat 
+            ->chat
             ->v2
             ->services(TWILIO_SERVICE_DEV_SID)
             ->channels($channel)
@@ -96,7 +96,7 @@ class NRChat {
 
     public function removeFromChannel($user, $type, $channel) {
         return $this->twilio
-            ->chat 
+            ->chat
             ->v2
             ->services(TWILIO_SERVICE_DEV_SID)
             ->channels($channel)

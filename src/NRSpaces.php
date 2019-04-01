@@ -39,11 +39,11 @@ class NRSpaces {
             // If file is not a filepath append the filename directly to subdir
             $subdir .= $path;
         }
-        
+
         // Create context and queue
         $context = (new AmqpConnectionFactory(ENQUEUE_OPTIONS))->createContext();
         $queue = $context->createQueue('spaces_upload');
-        
+
         // Create message
         $context->declareQueue($queue);
         $args = [

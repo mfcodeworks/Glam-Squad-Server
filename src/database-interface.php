@@ -46,7 +46,7 @@
 				else {
 					$data['data'] = null;
                 }
-                
+
                 return $data;
         }
     }

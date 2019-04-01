@@ -91,5 +91,5 @@ services:
         volumes:
             - ../:/var/www/html
             - ./docker/media:/srv/nr-glam-squad/media
-networks: 
+networks:
     webnet:

@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     twitter VARCHAR(255),
     instagram VARCHAR(255),
     rating TINYINT,
-    stripe_account_token VARCHAR(255), 
+    stripe_account_token VARCHAR(255),
     fcm_token VARCHAR(255) UNIQUE,
     role_id BIGINT,
     probation BIT,
@@ -313,7 +313,7 @@ INSERT INTO nr_packages(
 )
 VALUES(
     "MUA Extension",
-    "Have your makeup artist stay beyond 60 minutes at just $20 per hour. 
+    "Have your makeup artist stay beyond 60 minutes at just $20 per hour.
     (Example: For a 6 hour event, enter 5 for extra hours and pay just $250 for a 6 hour day of makeup artistry all for you!)",
     20.00
 );

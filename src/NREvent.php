@@ -28,9 +28,9 @@ class NREvent {
     public $fulfillment = [];
     public $artists = [];
     public $ratings = [];
-    
+
     public function __construct() {
-        
+
     }
 
     public function save($args) {
@@ -76,7 +76,7 @@ class NREvent {
         }
 
         foreach($packages as $package) {
-            try { 
+            try {
                 $this->savePackageReference($package);
                 if($package === 3) $this->saveEventHours();
             }
@@ -211,7 +211,7 @@ class NREvent {
             FROM nr_package_roles as pr
             LEFT JOIN nr_job_roles as r ON r.id = pr.role_id
             WHERE pr.package_id = $package";
-        
+
         $res = runSQLQuery($sql);
 
         if($res['response'] !== true) throw new Exception(json_encode($res));
@@ -246,7 +246,7 @@ class NREvent {
     }
 
     private function getCardId($user, $card) {
-        $sql = 
+        $sql =
         "SELECT *
             FROM nr_payment_cards
             WHERE card_token LIKE \"$card\"
@@ -268,7 +268,7 @@ class NREvent {
 
         // Get event
         $sql =
-        "SELECT id            
+        "SELECT id
             FROM nr_jobs
             WHERE client_id = $id
             ORDER BY event_datetime DESC;";
@@ -278,7 +278,7 @@ class NREvent {
         if($res["response"] !== true || !$res["data"]) {
             return $res;
         }
-        
+
         $eventList = $res["data"];
         foreach($eventList as $event) {
             $events[] = (new NREvent)->getSingle($event["id"]);
@@ -308,16 +308,16 @@ class NREvent {
     public function getSingle($id) {
         $this->id = $id;
 
-        $sql = 
-        "SELECT 
-            j.id, 
-            j.event_address, 
-            j.event_lat, 
-            j.event_lng, 
-            j.event_datetime, 
-            j.event_note, 
-            j.event_price, 
-            j.client_id, 
+        $sql =
+        "SELECT
+            j.id,
+            j.event_address,
+            j.event_lat,
+            j.event_lng,
+            j.event_datetime,
+            j.event_note,
+            j.event_price,
+            j.client_id,
             j.client_card_id,
             GROUP_CONCAT(p.event_package_id) as event_package_id
             FROM nr_jobs as j
@@ -338,14 +338,14 @@ class NREvent {
         $this->price = $event_price;
         $this->clientId = $client_id;
         $this->clientCardId = $client_card_id;
-        
+
         // Create package array, accounting for single package jobs
         if(strpos($event_package_id, ",") > -1) $event_package_id = explode(",", $event_package_id);
         else $event_package_id = [$event_package_id];
         $this->packages = $event_package_id;
 
         if(in_array(3, $this->packages)) $this->getHours();
-        
+
         // Get requirement properties
         for($i = 0; $i < count($this->packages); $i++) {
             try {
@@ -407,7 +407,7 @@ class NREvent {
         $this->ratings["artists"] = [];
 
         if(isset($res["data"]))
-            foreach($res["data"] as $rating) 
+            foreach($res["data"] as $rating)
                 $this->ratings["artists"][ $rating["artist_id"] ][] = $rating["rating"];
 
         // Get client ratings
@@ -515,7 +515,7 @@ class NREvent {
         "SELECT id, loc_lat as lat, loc_lng as lng
             FROM nr_artist_locations
             WHERE artist_id = {$artist->id};";
-        
+
         $res = runSQLQuery($sql);
 
         if($res["response"] !== true || !isset($res["data"])) {
@@ -534,13 +534,13 @@ class NREvent {
             $distance = new DegreeDistanceFinder(JOB_DISTANCE);
             $distance->lat = $location["lat"];
             $distance->lng = $location["lng"];
-    
+
             // Get lat/lng range
             $latRange = $distance->latRange();
             $lngRange = $distance->lngRange();
 
             // Get events and packages that are in the future
-            $sql = 
+            $sql =
             "SELECT id
                 FROM nr_jobs
                 WHERE event_datetime >= CURDATE()
@@ -607,14 +607,14 @@ class NREvent {
 
         ($attendance) ? $attendance = 1 : $attendance = 0;
 
-        $sql = 
+        $sql =
         "INSERT INTO nr_job_client_attendance(
-            event_id, 
+            event_id,
             client_id,
             attendance
         )
         VALUES(
-            $id, 
+            $id,
             $clientId,
             $attendance
         );";
@@ -627,14 +627,14 @@ class NREvent {
 
         ($attendance) ? $attendance = 1 : $attendance = 0;
 
-        $sql = 
+        $sql =
         "INSERT INTO nr_job_artist_attendance(
             event_id,
             artist_id,
             attendance
         )
         VALUES(
-            $id, 
+            $id,
             $artistId,
             $attendance
         );";
@@ -648,9 +648,9 @@ class NREvent {
         switch($type) {
             case "client":
                 // Get recently completed, unpaid jobs for client
-                $sql = 
-                "SELECT j.id 
-                    FROM nr_jobs as j 
+                $sql =
+                "SELECT j.id
+                    FROM nr_jobs as j
                     LEFT JOIN nr_client_receipts as r ON j.id = r.event_id
                     WHERE r.event_id IS NULL
                     AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= 0
@@ -664,14 +664,14 @@ class NREvent {
                 $count = count($data["data"]);
 
                 for($i = 0; $i < $count; $i++) {
-                    // Check if attendance already sent 
-                    $sql = 
-                    "SELECT * FROM nr_job_client_attendance 
-                        WHERE event_id = {$data["data"][$i]["id"]} 
+                    // Check if attendance already sent
+                    $sql =
+                    "SELECT * FROM nr_job_client_attendance
+                        WHERE event_id = {$data["data"][$i]["id"]}
                         AND client_id = $id;";
-                        
+
                     $check = runSQLQuery($sql);
-                    
+
                     if(isset($check["data"])) {
                         unset($data["data"][$i]);
                         continue;
@@ -684,14 +684,14 @@ class NREvent {
 
                 // Reindex events array after possible event deletion
                 $data["data"] = array_values($data["data"]);
-                
+
                 return $data;
 
             case "artist":
                 // Get recently completed, unpaid jobs for artist
-                $sql = 
-                "SELECT j.id 
-                    FROM nr_jobs as j 
+                $sql =
+                "SELECT j.id
+                    FROM nr_jobs as j
                     LEFT JOIN nr_client_receipts as r ON j.id = r.event_id
                     LEFT JOIN nr_artist_jobs as a ON j.id = a.event_id
                     WHERE r.event_id IS NULL
@@ -706,10 +706,10 @@ class NREvent {
                 $count = count($data["data"]);
 
                 for($i = 0; $i < $count; $i++) {
-                    // Check if attendance already sent 
-                    $sql = 
-                    "SELECT * FROM nr_job_artist_attendance 
-                        WHERE event_id = {$data["data"][$i]["id"]} 
+                    // Check if attendance already sent
+                    $sql =
+                    "SELECT * FROM nr_job_artist_attendance
+                        WHERE event_id = {$data["data"][$i]["id"]}
                         AND artist_id = $id;";
 
                     $check = runSQLQuery($sql);
@@ -727,7 +727,7 @@ class NREvent {
 
                 // Reindex events array after possible event deletion
                 $data["data"] = array_values($data["data"]);
-                
+
                 return $data;
         }
     }
@@ -740,7 +740,7 @@ class NREvent {
             "UPDATE nr_jobs
             SET event_address = \"$address\"
             WHERE id = $id;";
-    
+
             $res = runSQLQuery($sql);
             if($res["response"] !== true) {
                 return $res;
@@ -751,7 +751,7 @@ class NREvent {
             "UPDATE nr_jobs
             SET event_datetime = \"$datetime\"
             WHERE id = $id;";
-    
+
             $res = runSQLQuery($sql);
             if($res["response"] !== true) {
                 return $res;
@@ -762,7 +762,7 @@ class NREvent {
             "UPDATE nr_jobs
             SET client_card_id = $cardId
             WHERE id = $id;";
-    
+
             $res = runSQLQuery($sql);
             if($res["response"] !== true) {
                 return $res;
@@ -780,7 +780,7 @@ class NREvent {
         $artist = new NRArtist();
         $artist->get(["id" => $userId]);
 
-        $sql = 
+        $sql =
         "INSERT INTO nr_artist_jobs(event_id, artist_id)
             VALUES(
                 \"{$event->id}\",
@@ -796,14 +796,14 @@ class NREvent {
                 ];
             }
         }
-        
+
         // Save event if artist is needed
         foreach($event->requirements as $role => $required) {
             // If the role being check is the artists role and the requirement is greater than whats fulfilled, save event
             if($role === $artist->role["name"] && $event->requirements[$role] > $event->fulfillment[$role]) {
                 // Run SQL
                 $res = runSQLQuery($sql);
-                
+
                 // Send client notification
                 if($res["response"] === true) {
                     $notif = [
@@ -839,11 +839,11 @@ class NREvent {
     public static function artistRating($args) {
         extract($args);
 
-        $sql = 
+        $sql =
         "INSERT INTO nr_artist_ratings(
-            event_id, 
-            client_id, 
-            artist_id, 
+            event_id,
+            client_id,
+            artist_id,
             rating
         )
         VALUES(
@@ -859,11 +859,11 @@ class NREvent {
     public static function clientRating($args) {
         extract($args);
 
-        $sql = 
+        $sql =
         "INSERT INTO nr_client_ratings(
-            event_id, 
-            client_id, 
-            artist_id, 
+            event_id,
+            client_id,
+            artist_id,
             rating
         )
         VALUES(
@@ -880,7 +880,7 @@ class NREvent {
     public function delete($args) {
         extract($args);
 
-        $sql = 
+        $sql =
         "DELETE from nr_jobs
             WHERE id = $eventId
             AND client_id = $id;";

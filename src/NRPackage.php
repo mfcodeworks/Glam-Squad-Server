@@ -17,14 +17,14 @@ class NRPackage {
     public $description;
     public $price;
     public $roleRequirements = [];
-    
+
     public function __construct() {
-        
+
     }
 
     public function get($args) {
         extract($args);
-        
+
         // Build SQL
         if(isset($id))
             $sql = "SELECT id, package_name as name, package_description as description, ROUND(package_price, 2) as price
@@ -44,8 +44,8 @@ class NRPackage {
 
         // Build SQL
         $sql = "INSERT INTO nr_packages(
-            package_name, 
-            package_description, 
+            package_name,
+            package_description,
             package_price
         )
         VALUES(

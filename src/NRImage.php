@@ -6,7 +6,7 @@
  * Description:
  * Image class to handle image reading and saving
  */
-    
+
 require_once "database-interface.php";
 
 class NRImage {
@@ -68,7 +68,7 @@ class NRImage {
             // Throw file read error
             throw new Exception("Couldn't read URI: $uri.");
         }
-        
+
         // Put file contents
         if(file_put_contents($this->filepath, $this->data) !== false) {
             // Create public path

@@ -16,15 +16,15 @@
 	require_once PROJECT_INC . "NRImage.php";
 	require_once PROJECT_INC . "NRPackage.php";
     require_once PROJECT_LIB . "autoload.php";
-    
+
     // Select events that have already passed which remain unpaid
-    $sql = 
-    "SELECT j.id 
-        FROM nr_jobs as j 
-        LEFT JOIN nr_client_receipts as r ON j.id = r.event_id 
+    $sql =
+    "SELECT j.id
+        FROM nr_jobs as j
+        LEFT JOIN nr_client_receipts as r ON j.id = r.event_id
         WHERE r.event_id IS NULL
         AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= -60;";
-		
+
 	// Get list of events
 	$query = runSQLQuery($sql);
 
@@ -40,16 +40,16 @@
 			// Get event info
 			$event = new NREvent();
 			$event->getSingle($eventObject["id"]);
-	
+
 			// Init. FCM object
 			$fcm = new NRFCM();
-	
+
 			// Format address for notifications
 			$addressArray = explode(",", $event->address);
 			$notifAddress = $addressArray[0];
 			(isset($addressArray[1])) ? $notifAddress .= "," . $addressArray[1] : null;
 			(isset($addressArray[2])) ? $notifAddress .= "," . $addressArray[2] : null;
-	
+
 			// Create notification payload
 			$notification = [
 				"condition" => "'event-{$event->id}-client' in topics || 'event-{$event->id}-artist' in topics",
@@ -61,7 +61,7 @@
 					"image" => "logo"
 				]
 			];
-	
+
 			// Try to send reminder notification
 			try {
 				$fcm->send($notification, FCM_NOTIFICATION_ENDPOINT);
@@ -75,7 +75,7 @@
 
 	// Check reminder sent
 	function reminderSent($id) {
-		// Check for reminder 
+		// Check for reminder
 		$sql =
 		"SELECT id
 			FROM nr_job_confirmation_reminders
