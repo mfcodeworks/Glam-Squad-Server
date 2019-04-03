@@ -209,6 +209,12 @@
             $return = (new NRClient)->update($form);
 
             if($return["data"]) {
+                // Set user key
+                $key = NRAuth::userAuthKey(
+                    $return["data"][0]["username"],
+                    $return["data"][0]["password"]
+                );
+
                 // Remove password field
                 unset($return["data"][0]["password"]);
 
@@ -220,6 +226,9 @@
                     json_encode($return["data"][0], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
                     REDIS_TIMEOUT
                 );
+
+                // Add key into user data
+                $return["data"][0]["key"] = $key;
             }
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
