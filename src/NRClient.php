@@ -290,6 +290,26 @@ class NRClient {
         }
     }
 
+    public function updatePhoto($args) {
+        extract($args);
+
+        try {
+            $photo = new NRImage();
+            $photo->subdir = "GlamSquad/client/{$id}/images/";
+            $photo->getData($picture);
+            $photo->upload();
+            return $this->saveProfilePic($id, SPACES_CDN . $spaces_path);
+        }
+        catch (Exception $e) {
+            error_log($e);
+            return [
+                "response" => false,
+                "error_code" => 500,
+                "error" => $e
+            ];
+        }
+    }
+
     public function saveProfilePic($id, $url) {
         $sql = "UPDATE nr_clients
             SET profile_photo = \"$url\"

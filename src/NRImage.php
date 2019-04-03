@@ -92,6 +92,19 @@ class NRImage {
         }
     }
 
+    public function upload() {
+        $space = new NRSpaces();
+
+        if(!$this->mime) $this->getMime();
+
+        try {
+            return $space->upload($this->filepath, "public", $this->subdir, $this->mime);
+        } catch(Exception $e) {
+            error_log($e);
+            throw $e;
+        }
+    }
+
     private function randomString($length = 32) {
         // Create random string with current date salt for uniqueness
         return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;

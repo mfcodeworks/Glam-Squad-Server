@@ -100,7 +100,7 @@ class NRArtist {
                 try {
                     // Create photo object
                     $photo = new NRImage();
-                    $photo->subdir = "GlamSquad/artist/{$this->username}/portfolio/";
+                    $photo->subdir = "GlamSquad/artist/{$this->id}/portfolio/";
                     $photo->getData($artistPhoto);
                     $spaces_path = $photo->uploadToSpaces();
                     $this->savePortfolioImage(SPACES_CDN . $spaces_path);
