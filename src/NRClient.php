@@ -297,8 +297,16 @@ class NRClient {
             $photo = new NRImage();
             $photo->subdir = "GlamSquad/client/{$id}/images/";
             $photo->getData($picture);
-            $photo->upload();
-            return $this->saveProfilePic($id, SPACES_CDN . $spaces_path);
+            $spaces_path = $photo->upload();
+            if($this->saveProfilePic($id, SPACES_CDN . $spaces_path)["response"]) {
+                return [
+                    "response" => true,
+                    "error" => null,
+                    "profile_photo" => SPACES_CDN . $spaces_path
+                ];
+            } else {
+                throw new Exception("Error Saving Photo to Database.");
+            }
         }
         catch (Exception $e) {
             error_log($e);

@@ -25,6 +25,12 @@
 	require_once PROJECT_INC . "NRSpaces.php";
     require_once PROJECT_INC . "NRPackage.php";
 
+    /**
+     * DEBUG: Remove all Twilio refs
+     */
+    //(new NRChat)->deleteAllUsers();
+    //(new NRChat)->deleteAllChannels();
+
 	/**
 	 * API: Slim 3 RESTful API implementation
 	 */
