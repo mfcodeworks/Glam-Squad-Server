@@ -55,6 +55,7 @@ class NREvent {
             $this->clientCardId = $this->getCardId($userId, $card);
         }
         catch(Exception $e) {
+            error_log($e);
             return [
                 "response" => false,
                 "error_code" => 107,
@@ -67,6 +68,7 @@ class NREvent {
             $this->id = $this->saveEventMeta();
         }
         catch(Exception $e) {
+            error_log($e);
             return [
                 "response" => false,
                 "error_code" => 107,
@@ -85,6 +87,7 @@ class NREvent {
                     "eventId" => $this->id,
                     "id" => $this->clientId
                 ]);
+                error_log($e);
                 return [
                     "response" => false,
                     "error_code" => 107,
@@ -115,6 +118,7 @@ class NREvent {
                         "eventId" => $this->id,
                         "id" => $this->clientId
                     ]);
+                    error_log($e);
                     return [
                         "response" => false,
                         "error_code" => 107,
@@ -133,6 +137,7 @@ class NREvent {
                 "eventId" => $this->id,
                 "id" => $this->clientId
             ]);
+            error_log(print_r($notification, true));
             return $notification;
         }
 

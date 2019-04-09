@@ -91,5 +91,6 @@ services:
         volumes:
             - ../:/var/www/html
             - ./docker/media:/srv/nr-glam-squad/media
+            - ./docker/.well-known:/var/www/html/.well-known
 networks:
     webnet:
