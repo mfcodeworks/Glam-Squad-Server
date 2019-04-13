@@ -890,7 +890,11 @@ class NREvent {
             WHERE id = $eventId
             AND client_id = $id;";
 
-        $chat = (new NRChat())->deleteChannel("event-$eventId");
+        try {
+            $chat = (new NRChat())->deleteChannel("event-$eventId");
+        } catch (Exception $e) {
+            error_log($e);
+        }
 
         return runSQLQuery($sql);
     }
