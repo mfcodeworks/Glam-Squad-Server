@@ -33,6 +33,7 @@ class NRArtist {
     public $fcmTopics = [];
     public $fcmTokens = [];
     public $bookings = [];
+    public $social = [];
     public $receipts;
     public $twilio_sid;
 
@@ -325,7 +326,7 @@ EOD;
 
         // Build SQL
         $sql =
-        "SELECT a.id, a.username, a.password, a.profile_photo, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid
+        "SELECT a.id, a.username, a.password, a.profile_photo, a.facebook, a.twitter, a.instagram, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid
             FROM nr_artists as a
             LEFT JOIN nr_job_roles as r ON r.id = a.role_id
             WHERE a.id = $id;";
@@ -357,6 +358,11 @@ EOD;
         $this->locked = $locked;
         $this->stripe_account_token = $stripe_account_token;
         $this->twilio_sid = $twilio_sid;
+        $this->social = [
+            "facebook" => $facebook,
+            "twitter" => $twitter,
+            "instagram" => $instagram
+        ];
 
         if($this->locked) {
             return [
