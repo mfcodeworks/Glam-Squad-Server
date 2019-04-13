@@ -1011,7 +1011,8 @@
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
             $redis->delete("event-{$args["id"]}");
-            $redis->delete("artist-{$args["id"]}-events-new");
+            $redis->delete("artist-{$form["userId"]}-events-new");
+            $redis->delete("client-{$return["clientId"]}-events");
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}

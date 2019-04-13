@@ -808,6 +808,7 @@ class NREvent {
             if($role === $artist->role["name"] && $event->requirements[$role] > $event->fulfillment[$role]) {
                 // Run SQL
                 $res = runSQLQuery($sql);
+                $res["clientId"] = $event->clientId;
 
                 // Send client notification
                 if($res["response"] === true) {
@@ -825,8 +826,12 @@ class NREvent {
                     $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
                 }
 
-                // Add artist to event chat
-                $chat = (new NRChat())->addToChannel($artist->username, "artist", "event-{$event->id}");
+                try {
+                    // Add artist to event chat
+                    $chat = (new NRChat())->addToChannel($artist->username, "artist", "event-{$event->id}");
+                } catch(Exception $e) {
+                    error_log($e);
+                }
 
                 // Return SQL response
                 return $res;
