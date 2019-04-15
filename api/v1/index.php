@@ -854,6 +854,7 @@
                 $redis = new Redis;
                 $redis->connect(REDIS_HOST);
                 $redis->delete("event-{$return["id"]}");
+                $redis->delete("client-{$form["userId"]}-events");
             }
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -1011,7 +1012,6 @@
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
             $redis->delete("event-{$args["id"]}");
-            $redis->delete("artist-{$form["userId"]}-events-new");
             $redis->delete("client-{$return["clientId"]}-events");
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -1032,7 +1032,6 @@
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
             $redis->delete("event-{$args["id"]}");
-            $redis->delete("artist-{$args["userId"]}-events-new");
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
@@ -1042,27 +1041,8 @@
     $api->get('/events/new/artist/{userId}', function($request, $response, $args) {
         // Get Authorization
 		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["userId"], "artist")) {
-            // Get Cache
-            $redis = new Redis;
-            $redis->connect(REDIS_HOST);
-            $return = $redis->get("artist-{$args["userId"]}-events-new");
-            if($return) return $response
-                ->withStatus(200)
-                ->withHeader('Content-type', 'application/json')
-                ->write("{\"response\":true,\"error\":null,\"data\":$return}");
-
             // Get events near artist from ID
             $return = (new NREvent)->getNew($args);
-
-            if($return["data"]) {
-                $redis = new Redis;
-                $redis->connect(REDIS_HOST);
-                $redis->set(
-                    "artist-{$args["userId"]}-events-new",
-                    json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
-                    REDIS_TIMEOUT
-                );
-            }
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
