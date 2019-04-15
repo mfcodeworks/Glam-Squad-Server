@@ -211,6 +211,9 @@ class NREvent {
 
         $this->packages[] = $package;
 
+        // Skip role requirement for MUA extra hours
+        if($package == 3) return;
+
         $sql =
         "SELECT r.role_name, pr.role_amount_required
             FROM nr_package_roles as pr
