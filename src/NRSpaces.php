@@ -55,10 +55,10 @@ class NRSpaces {
             $filename = $filePath[($index-1)];
 
             // Append filename to subdir
-            $subdir .= $filename;
+            $return = $subdir.$filename;
         } else {
             // If file is not a filepath append the filename directly to subdir
-            $subdir .= $path;
+            $return = $subdir.$path;
         }
 
         // Create context and queue
@@ -79,7 +79,7 @@ class NRSpaces {
         $context->createProducer()->send($queue, $message);
 
         // Return Spaces Filepath
-        return $subdir;
+        return $return;
     }
 
     public function upload($path, $privacy = "public", $subdir = "GlamSquad/", $mime = "application/octet-stream") {
