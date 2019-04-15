@@ -85,6 +85,7 @@ class NRImage {
         if(!$this->mime) $this->getMime();
 
         try {
+            error_log("Uploading to spaces:\nFilepath: {$this->filepath}\nPrivacy: public\nSubdir: {$this->subdir}\nMime: {$this->mime}");
             return $space->queueUpload($this->filepath, "public", $this->subdir, $this->mime);
         } catch(Exception $e) {
             error_log($e);
@@ -98,6 +99,7 @@ class NRImage {
         if(!$this->mime) $this->getMime();
 
         try {
+            error_log("Uploading to spaces:\nFilepath: {$this->filepath}\nPrivacy: public\nSubdir: {$this->subdir}\nMime: {$this->mime}");
             return $space->upload($this->filepath, "public", $this->subdir, $this->mime);
         } catch(Exception $e) {
             error_log($e);

@@ -103,6 +103,7 @@ class NRSpaces {
 
         // Upload file with filepath, privacy of file, spaces subdir
         try {
+            error_log("Uploading to spaces:\nFilepath: $path\nPrivacy: $privacy\nSubdir: $subdir\nMime: $mime");
             $this->space->UploadFile($path, $privacy, $subdir, $mime);
             return $subdir;
         } catch (Exception $e) {
