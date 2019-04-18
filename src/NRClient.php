@@ -392,6 +392,9 @@ class NRClient {
             return $response;
         }
 
+        // Get client rating
+        $response["data"][0]["rating"] = $this->getRating($response["data"][0]["id"]);
+
         // Password wasn't correct, return an error
         return [
             "response" => false,
@@ -597,6 +600,12 @@ EOD;
         ";
 
         return runSQLQuery($sql);
+    }
+
+    private function getRating($id) {
+        $sql = "SELECT AVG(rating) as avg FROM nr_client_ratings WHERE client_id = \"$id\";";
+        $response = runSQLQuery($sql);
+        return (isset($response["data"])) ? $response["data"][0]["avg"] : 0;
     }
 
     private function hashInput($password) {

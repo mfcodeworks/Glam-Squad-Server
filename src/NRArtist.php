@@ -21,7 +21,7 @@ class NRArtist {
     public $profile_photo;
     public $bio;
     public $portfolio = [];
-    public $rating;
+    public $rating = 0;
     public $stripe_account_token;
     public $role = [
         "id" => 0,
@@ -326,7 +326,7 @@ EOD;
 
         // Build SQL
         $sql =
-        "SELECT a.id, a.username, a.password, a.profile_photo, a.facebook, a.twitter, a.instagram, a.email, a.bio, a.rating, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid
+        "SELECT a.id, a.username, a.password, a.profile_photo, a.facebook, a.twitter, a.instagram, a.email, a.bio, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid
             FROM nr_artists as a
             LEFT JOIN nr_job_roles as r ON r.id = a.role_id
             WHERE a.id = $id;";
@@ -349,7 +349,7 @@ EOD;
         $this->profile_photo = $profile_photo;
         $this->email = $email;
         $this->bio = $bio;
-        $this->rating = $rating;
+        $this->rating = $this->getRating();
         $this->role = [
             "id" => $role_id,
             "name" => $role_name,
@@ -427,6 +427,12 @@ EOD;
             ORDER BY id ASC;";
 
         return runSQLQuery($sql);
+    }
+
+    private function getRating() {
+        $sql = "SELECT AVG(rating) as avg FROM nr_artist_ratings WHERE artist_id = \"{$this->id}\";";
+        $response = runSQLQuery($sql);
+        return (isset($response["data"])) ? $response["data"][0]["avg"] : 0;
     }
 
     public function update($args) {

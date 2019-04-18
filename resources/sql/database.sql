@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS  nr_clients(
     password VARCHAR(255) NOT NULL,
     stripe_customer_id VARCHAR(255) UNIQUE,
     fcm_token VARCHAR(255) UNIQUE,
-    rating TINYINT,
     twilio_sid VARCHAR(255) UNIQUE
 );
 
@@ -68,7 +67,6 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     facebook VARCHAR(255),
     twitter VARCHAR(255),
     instagram VARCHAR(255),
-    rating TINYINT,
     stripe_account_token VARCHAR(255),
     fcm_token VARCHAR(255) UNIQUE,
     role_id BIGINT,
@@ -102,6 +100,24 @@ CREATE TABLE IF NOT EXISTS nr_artist_portfolios(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     photo TEXT NOT NULL,
     artist_id BIGINT NOT NULL,
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
+);
+
+# Artist Reported Log (1 Client); 1 (Artist))
+CREATE TABLE IF NOT EXISTS nr_artist_reported(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    artist_id BIGINT NOT NULL,
+    client_id BIGINT NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
+);
+
+# Client Reported Log (1 Artist); 1 (Client))
+CREATE TABLE IF NOT EXISTS nr_client_reported(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    client_id BIGINT NOT NULL,
+    artist_id BIGINT NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
