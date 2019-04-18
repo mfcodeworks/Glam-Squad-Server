@@ -13,8 +13,8 @@ ErrorDocument 403 /api/v1/index.php
     RewriteRule ^vendor.* /api/v1/ [QSA,L,R=301]
     RewriteRule ^tests.* /api/v1/ [QSA,L,R=301]
     RewriteRule ^bin/deploy.sh$ /api/v1/ [QSA,L,R=301]
-    RewriteRule ^.well-known.* /.well-known [QSA,L]
 
+    RewriteCond ${REQUEST_URI} !^.well-known
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
 
