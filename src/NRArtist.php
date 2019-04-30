@@ -464,8 +464,6 @@ EOD;
         error_log(print_r($response, true));
 
         if($response["response"] == true) {
-            $this->get(["id" => $id]);
-
             foreach ($portfolio as $artistPhoto) {
                 try {
                     // Create photo object
@@ -492,6 +490,7 @@ EOD;
                 ]);
             }
 
+            $this->get(["id" => $id]);
             return $this;
         }
         else return $response;
