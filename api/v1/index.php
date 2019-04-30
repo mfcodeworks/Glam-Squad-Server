@@ -553,7 +553,6 @@
                 );
             }
 
-
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)

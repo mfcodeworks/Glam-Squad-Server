@@ -446,8 +446,8 @@ EOD;
             case "":
                 $sql =
                 "UPDATE nr_artists
-                SET username = \"$username\", email = \"$email\"
-                WHERE id = $id;";
+                    SET username = \"$username\", email = \"$email\", bio = \"$bio\", twitter = \"$twitter\", instagram = \"$instagram\", facebook = \"$facebook\"
+                    WHERE id = $id;";
                 break;
 
             default:
@@ -456,8 +456,8 @@ EOD;
 
                 $sql =
                 "UPDATE nr_artists
-                SET username = \"$username\", email = \"$email\", password = \"$password\"
-                WHERE id = $id;";
+                    SET username = \"$username\", email = \"$email\", bio = \"$bio\", twitter = \"$twitter\", instagram = \"$instagram\", facebook = \"$facebook\", password = \"$password\"
+                    WHERE id = $id;";
                 break;
         }
         $response = runSQLQuery($sql);
@@ -465,6 +465,23 @@ EOD;
 
         if($response["response"] == true) {
             $this->get(["id" => $id]);
+
+            foreach ($portfolio as $artistPhoto) {
+                try {
+                    // Create photo object
+                    $photo = new NRImage();
+                    $photo->subdir = "GlamSquad/artist/{$this->id}/portfolio/";
+                    $photo->getData($artistPhoto);
+                    $spaces_path = $photo->uploadToSpaces();
+                    $this->savePortfolioImage(SPACES_CDN . $spaces_path);
+                } catch(Exception $e) {
+                    return [
+                        "response" => false,
+                        "error_code" => 107,
+                        "error" => "Failed saving attached portfolio images"
+                    ];
+                }
+            }
 
             // Update twilio username
             if(TWILIO_ENABLED) {
