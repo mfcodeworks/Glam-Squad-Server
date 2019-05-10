@@ -320,6 +320,34 @@ EOD;
         return $res["id"];
     }
 
+    public function updatePhoto($args) {
+        extract($args);
+
+        try {
+            $photo = new NRImage();
+            $photo->subdir = "GlamSquad/artist/{$id}/images/";
+            $photo->getData($picture);
+            $spaces_path = $photo->upload();
+            if($this->saveProfilePic($id, SPACES_CDN . $spaces_path)["response"]) {
+                return [
+                    "response" => true,
+                    "error" => null,
+                    "profile_photo" => SPACES_CDN . $spaces_path
+                ];
+            } else {
+                throw new Exception("Error Saving Photo to Database.");
+            }
+        }
+        catch (Exception $e) {
+            error_log($e);
+            return [
+                "response" => false,
+                "error_code" => 500,
+                "error" => $e
+            ];
+        }
+    }
+
     public function get($args) {
         // Get args
         extract($args);
@@ -561,6 +589,14 @@ EOD;
         "UPDATE nr_artists
             SET stripe_account_token = \"$token\"
             WHERE id = $id";
+
+        return runSQLQuery($sql);
+    }
+
+    public function saveProfilePic($id, $url) {
+        $sql = "UPDATE nr_artists
+            SET profile_photo = \"$url\"
+            WHERE id = $id;";
 
         return runSQLQuery($sql);
     }
