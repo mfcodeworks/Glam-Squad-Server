@@ -310,7 +310,10 @@ class NREvent {
 
         $chat = (new NRChat())->removeFromChannel($artist->username, "artist", "event-$id");
 
-        return runSQLQuery($sql);
+        $this->getSingle($id);
+
+        $response = runSQLQuery($sql);
+        $response["clientId"] = $this->clientId;
     }
 
     public function getSingle($id) {

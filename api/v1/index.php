@@ -1048,6 +1048,7 @@
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
             $redis->delete("event-{$args["id"]}");
+            $redis->delete("client-{$return["clientId"]}-events");
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
