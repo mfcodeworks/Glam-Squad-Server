@@ -340,8 +340,9 @@ class NRClient {
         // Rating SQL
         $ratingSql = "SELECT AVG(rating) as avg
             FROM nr_client_ratings
-            WHERE client_id = \"{$response["data"][0]["id"]}\";";
+            WHERE client_id = \"{$id}\";";
         $rating = runSQLQuery($sql);
+        error_log($rating);
         $response["data"][0]["rating"] = $rating["data"][0]["avg"];
 
         // Return object
