@@ -330,14 +330,21 @@ class NRClient {
         // Get args
         extract($args);
 
-        // Build SQL
+        // Client SQL
         $sql =
         "SELECT *
             FROM nr_clients
             WHERE id = $id;";
-
         $response = runSQLQuery($sql);
 
+        // Rating SQL
+        $ratingSql = "SELECT AVG(rating) as avg
+            FROM nr_client_ratings
+            WHERE client_id = \"{$response["data"][0]["id"]}\";";
+        $rating = runSQLQuery($sql);
+        $response["data"][0]["rating"] = $rating["data"][0]["avg"];
+
+        // Return object
         return $response;
     }
 
