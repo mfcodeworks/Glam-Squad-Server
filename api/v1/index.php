@@ -210,7 +210,7 @@
         $form["id"] = $args["id"];
 
 		// Get Authorization
-        if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Update Client Info
             $return = (new NRClient)->update($form);
 
@@ -250,7 +250,7 @@
         $form["id"] = $args["id"];
 
 		// Get Authorization
-        if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Update Client Info
             $return = (new NRClient)->updatePhoto($form);
 
@@ -276,7 +276,7 @@
         $form["id"] = $args["id"];
 
         // Get Authorization
-        if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Save Client Payment Info
             $return = (new NRClient)->savePaymentInfo($form);
 
@@ -292,7 +292,7 @@
     });
     $api->delete('/clients/{id: [0-9]+}/payment/{token}', function($request, $response, $args) {
         // Get Authorization
-        if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Delete Client Payment Info
             $return = (new NRClient)->deleteCard($args);
 
@@ -310,7 +310,7 @@
         $form["type"] = "client";
 
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Save client FCM topic
             $return = (new NRFCM)->registerTopic($form);
 
@@ -326,7 +326,7 @@
     });
     $api->get('/clients/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
 			// Get Client FCM Topics Cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -358,7 +358,7 @@
     });
     $api->put('/clients/{id: [0-9]+}/fcm/token', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Get PUT form
             $form = $request->getParsedBody();
 
@@ -400,7 +400,7 @@
     });
     $api->delete('/clients/{id: [0-9]+}/events/{eventId: [0-9]+}', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Delete event
             $return = (new NREvent)->delete($args);
 
@@ -416,7 +416,7 @@
     });
     $api->get('/clients/{id: [0-9]+}/events/recent/unpaid', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Get Client Events Cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -526,7 +526,7 @@
     });
     $api->put('/artists/{id: [0-9]+}', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Get PUT form
             $form = $request->getParsedBody();
 
@@ -575,9 +575,26 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->put('/artists/{id: [0-9]+}/photo', function($request, $response, $args) {
+        // Get PUT form
+        $form = $request->getParsedBody();
+
+        // Merge URL arguments and form parameters
+        $form["id"] = $args["id"];
+
+		// Get Authorization
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+            // Update Artist Info
+            $return = (new NRArtist)->updatePhoto($form);
+
+            return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        }
+        return $response->withStatus(401)
+            ->write("Unauthorization Request");
+    });
     $api->put('/artists/{id: [0-9]+}/locations', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Get PUT form
             $form = $request->getParsedBody();
 
@@ -600,7 +617,7 @@
     });
     $api->get('/artists/{id: [0-9]+}/locations', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Get Artist Locations Cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -632,7 +649,7 @@
     });
     $api->delete('/artists/{id: [0-9]+}/locations/{loc_id: [0-9]+}', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Delete Artist Location
             $return = (new NRArtist)->deleteLocation($args);
 
@@ -649,7 +666,7 @@
     });
     $api->put('/artists/{id: [0-9]+}/portfolio', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // TODO: Implement artist portfolio update
 
             // Clear Artist Cache
@@ -662,7 +679,7 @@
     });
     $api->delete('/artists/{id: [0-9]+}/portfolio', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // TODO: Implement artist portfolio delete
 
             // Clear Artist Cache
@@ -675,7 +692,7 @@
     });
     $api->put('/artists/{id: [0-9]+}/payment/id', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Get PUT form
             $form = $request->getParsedBody();
 
@@ -697,7 +714,7 @@
     });
     $api->put('/artists/{id: [0-9]+}/fcm/token', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Get PUT form
             $form = $request->getParsedBody();
 
@@ -715,7 +732,7 @@
     });
     $api->put('/artists/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Get PUT form
             $form = $request->getParsedBody();
 
@@ -738,7 +755,7 @@
     });
     $api->get('/artists/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Get Artist FCM Topics Cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -770,7 +787,7 @@
     });
     $api->get('/artists/{id: [0-9]+}/events/recent/unpaid', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
             // Get Artist Events Cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
@@ -842,7 +859,7 @@
         $form = $request->getParsedBody();
 
         // Get Authorization from client ID (sender)
-        if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["userId"])) {
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["userId"])) {
             // Create new event
             $return = (new NREvent)->save($form);
 
@@ -890,7 +907,7 @@
         $form = $request->getParsedBody();
 
         // Get Authorization from client ID (sender)
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["userId"])) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["userId"])) {
             // Merge form and URL arguments
             $form["id"] = $args["id"];
 
@@ -912,7 +929,7 @@
         $form = $request->getParsedBody();
 
         // Get Authorization from client ID (sender)
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["clientId"])) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["clientId"])) {
             // Merge form and URL arguments
             $form["id"] = $args["id"];
 
@@ -934,7 +951,7 @@
         $form = $request->getParsedBody();
 
         // Get Authorization from artist ID (sender)
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["artistId"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["artistId"], "artist")) {
             // Merge form and URL arguments
             $form["id"] = $args["id"];
 
@@ -956,7 +973,7 @@
         $form = $request->getParsedBody();
 
         // Get Authorization from artist ID (sender)
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["artistId"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["artistId"], "artist")) {
             // Merge form and URL arguments
             $form["id"] = $args["id"];
 
@@ -978,7 +995,7 @@
         $form = $request->getParsedBody();
 
         // Get Authorization from client ID (sender)
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["clientId"])) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["clientId"])) {
             // Merge form and URL arguments
             $form["id"] = $args["id"];
 
@@ -1000,7 +1017,7 @@
         $form = $request->getParsedBody();
 
         // Get Authorization from artist ID (sender)
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["userId"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["userId"], "artist")) {
             // Merge form and URL arguments
             $form["id"] = $args["id"];
 
@@ -1020,7 +1037,7 @@
     });
     $api->post('/events/{id: [0-9]+}/artist/{userId: [0-9]+}/cancel', function($request, $response, $args) {
         // Get Authorization from artist ID (sender)
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["userId"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["userId"], "artist")) {
             // Get POST form
             $form = $request->getParsedBody();
 
@@ -1039,7 +1056,7 @@
     });
     $api->get('/events/new/artist/{userId}', function($request, $response, $args) {
         // Get Authorization
-		if($request->getHeader("NR_AUTH") && $request->getHeader("NR_AUTH")[0] && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["userId"], "artist")) {
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["userId"], "artist")) {
             // Get events near artist from ID
             $return = (new NREvent)->getNew($args);
 
