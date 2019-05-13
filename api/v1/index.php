@@ -240,7 +240,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
         }
         return $response->withStatus(401)
-            ->write("Unauthorization Request");
+            ->write("Unauthorized Request");
     });
     $api->put('/clients/{id: [0-9]+}/photo', function($request, $response, $args) {
         // Get PUT form
@@ -257,7 +257,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
         }
         return $response->withStatus(401)
-            ->write("Unauthorization Request");
+            ->write("Unauthorized Request");
     });
     $api->post('/clients/{id: [0-9]+}/validate', function($request, $response, $args) {
         // Get POST form
@@ -288,7 +288,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
         }
         return $response->withStatus(401)
-            ->write("Unauthorization Request");
+            ->write("Unauthorized Request");
     });
     $api->delete('/clients/{id: [0-9]+}/payment/{token}', function($request, $response, $args) {
         // Get Authorization
@@ -299,7 +299,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
         }
         return $response->withStatus(401)
-            ->write("Unauthorization Request");
+            ->write("Unauthorized Request");
     });
     $api->put('/clients/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
         // Get PUT form
@@ -322,7 +322,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->get('/clients/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
         // Get Authorization
@@ -354,7 +354,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-            ->write("Unauthorization Request");
+            ->write("Unauthorized Request");
     });
     $api->put('/clients/{id: [0-9]+}/fcm/token', function($request, $response, $args) {
         // Get Authorization
@@ -372,7 +372,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->get('/clients/{id: [0-9]+}/events', function($request, $response, $args) {
         // Get Client Events Cache
@@ -412,7 +412,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->get('/clients/{id: [0-9]+}/events/recent/unpaid', function($request, $response, $args) {
         // Get Authorization
@@ -444,7 +444,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->put('/clients/{id: [0-9]+}/forgot-password', function($request, $response, $args) {
         // Get POST form
@@ -556,7 +556,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->post('/artists/{id: [0-9]+}/validate', function($request, $response, $args) {
         // Get POST form
@@ -590,7 +590,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
         }
         return $response->withStatus(401)
-            ->write("Unauthorization Request");
+            ->write("Unauthorized Request");
     });
     $api->put('/artists/{id: [0-9]+}/locations', function($request, $response, $args) {
         // Get Authorization
@@ -613,7 +613,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->get('/artists/{id: [0-9]+}/locations', function($request, $response, $args) {
         // Get Authorization
@@ -645,7 +645,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->delete('/artists/{id: [0-9]+}/locations/{loc_id: [0-9]+}', function($request, $response, $args) {
         // Get Authorization
@@ -662,7 +662,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->put('/artists/{id: [0-9]+}/portfolio', function($request, $response, $args) {
         // Get Authorization
@@ -675,7 +675,7 @@
             $redis->delete("artist-{$args["id"]}");
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->delete('/artists/{id: [0-9]+}/portfolio', function($request, $response, $args) {
         // Get Authorization
@@ -688,7 +688,7 @@
             $redis->delete("artist-{$args["id"]}");
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->put('/artists/{id: [0-9]+}/payment/id', function($request, $response, $args) {
         // Get Authorization
@@ -710,7 +710,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->put('/artists/{id: [0-9]+}/fcm/token', function($request, $response, $args) {
         // Get Authorization
@@ -728,7 +728,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->put('/artists/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
         // Get Authorization
@@ -751,7 +751,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->get('/artists/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
         // Get Authorization
@@ -783,7 +783,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->get('/artists/{id: [0-9]+}/events/recent/unpaid', function($request, $response, $args) {
         // Get Authorization
@@ -815,7 +815,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->get('/artists/roles', function($request, $response, $args) {
         // Get Artist Roles Cache
@@ -876,7 +876,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
         }
         return $response->withStatus(401)
-            ->write("Unauthorization Request");
+            ->write("Unauthorized Request");
     });
     $api->get('/events/{id: [0-9]+}', function($request, $response, $args) {
         // Get Event from Redis
@@ -922,7 +922,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->put('/events/{id: [0-9]+}/ratings/artist', function($request, $response, $args) {
         // Get PUT form
@@ -944,7 +944,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->put('/events/{id: [0-9]+}/ratings/client', function($request, $response, $args) {
         // Get PUT form
@@ -966,7 +966,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->put('/events/{id: [0-9]+}/attendance/artist', function($request, $response, $args) {
         // Get PUT form
@@ -988,7 +988,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->put('/events/{id: [0-9]+}/attendance/client', function($request, $response, $args) {
         // Get PUT form
@@ -1010,7 +1010,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->post('/events/{id: [0-9]+}/apply', function($request, $response, $args) {
         // Get POST form
@@ -1033,7 +1033,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->post('/events/{id: [0-9]+}/artist/{userId: [0-9]+}/cancel', function($request, $response, $args) {
         // Get Authorization from artist ID (sender)
@@ -1052,7 +1052,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
     $api->get('/events/new/artist/{userId}', function($request, $response, $args) {
         // Get Authorization
@@ -1063,7 +1063,7 @@
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
 		return $response->withStatus(401)
-			->write("Unauthorization Request");
+			->write("Unauthorized Request");
     });
 
     /**
