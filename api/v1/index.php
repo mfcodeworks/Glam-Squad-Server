@@ -268,6 +268,22 @@
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     });
+    $api->post('/clients/{id: [0-9]+}/report', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Merge URL arguments and form parameters
+        $form["clientId"] = $args["id"];
+
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["artistId"], "artist")) {
+            // Validate Client Session
+            $return = (new NRClient)->report($form);
+
+            return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        }
+        return $response->withStatus(401)
+            ->write("Unauthorized Request");
+    });
     $api->put('/clients/{id: [0-9]+}/payment', function($request, $response, $args) {
         // Get PUT form
         $form = $request->getParsedBody();
@@ -574,6 +590,22 @@
         }
 
         return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+    });
+    $api->post('/artists/{id: [0-9]+}/report', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Merge URL arguments and form parameters
+        $form["artistId"] = $args["id"];
+
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $form["artistId"])) {
+            // Validate Client Session
+            $return = (new NRArtist)->report($form);
+
+            return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        }
+        return $response->withStatus(401)
+            ->write("Unauthorized Request");
     });
     $api->put('/artists/{id: [0-9]+}/photo', function($request, $response, $args) {
         // Get PUT form

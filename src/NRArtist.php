@@ -622,6 +622,15 @@ EOD;
         return runSQLQuery($sql);
     }
 
+    public function report($args) {
+        extract($args);
+
+        $sql = "INSERT INTO nr_artist_reported(client_id, artist_id)
+            VALUES($clientId, $artistId);";
+
+        return runSQLQuery($sql);
+    }
+
     public function getPassword() {
         return $this->password;
     }
