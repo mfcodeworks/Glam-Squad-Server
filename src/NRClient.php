@@ -293,7 +293,7 @@ class NRClient {
     public function report($args) {
         extract($args);
 
-        $sql = "INSERT INTO nr_client_reported(client_id, artist_id)
+        $sql = "INSERT INTO nr_client_reports(client_id, artist_id)
             VALUES($clientId, $artistId);";
 
         return runSQLQuery($sql);

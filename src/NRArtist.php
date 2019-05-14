@@ -625,7 +625,7 @@ EOD;
     public function report($args) {
         extract($args);
 
-        $sql = "INSERT INTO nr_artist_reported(client_id, artist_id)
+        $sql = "INSERT INTO nr_artist_reports(client_id, artist_id)
             VALUES($clientId, $artistId);";
 
         return runSQLQuery($sql);

@@ -104,20 +104,20 @@ CREATE TABLE IF NOT EXISTS nr_artist_portfolios(
 );
 
 # Artist Reported Log (1 Client); 1 (Artist))
-CREATE TABLE IF NOT EXISTS nr_artist_reported(
+CREATE TABLE IF NOT EXISTS nr_artist_reports(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     artist_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
-    FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
+    FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
 # Client Reported Log (1 Artist); 1 (Client))
-CREATE TABLE IF NOT EXISTS nr_client_reported(
+CREATE TABLE IF NOT EXISTS nr_client_reports(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     client_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
-    FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
+    FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
