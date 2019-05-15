@@ -140,8 +140,10 @@ class NRFCM {
                 "data" => [
                     "title" => "New Event Available",
                     "message" => "New event at {$event->address}",
-                    'content-available'  => '1',
-                    "image" => 'logo'
+                    "content-available"  => "1",
+                    "image" => 'logo',
+                    "notId" => $event->id,
+                    "newEvent" => (array) $event,
                 ]
             ];
 
