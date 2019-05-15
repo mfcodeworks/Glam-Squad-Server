@@ -134,6 +134,8 @@ class NRFCM {
 
             $group = runSQLQuery($sql)["data"][0]["fcm_token"];
 
+            $event->datetime = (new Datetime($event->datetime))->format(Datetime::ATOM);
+
             $notif = [
                 "to" => $group,
                 "priority" => 'high',
