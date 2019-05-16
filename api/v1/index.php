@@ -574,6 +574,34 @@
 		return $response->withStatus(401)
 			->write("Unauthorized Request");
     });
+    $api->put('/artists/{id: [0-9]+}/role', function($request, $response, $args) {
+        // Get Authorization
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+            // Get PUT form
+            $form = $request->getParsedBody();
+
+            // Merge form with URL arguments
+            $form["id"] = $args["id"];
+
+            // Update artist info
+            $return = (new NRArtist)->updateRole($form);
+
+            // Cache Artist data
+            if($return->id) {
+                $redis = new Redis;
+                $redis->connect(REDIS_HOST);
+                $redis->set(
+                    "artist-{$return->id}",
+                    json_encode($return, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
+                    REDIS_TIMEOUT
+                );
+            }
+
+            return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+		}
+		return $response->withStatus(401)
+			->write("Unauthorized Request");
+    });
     $api->post('/artists/{id: [0-9]+}/validate', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();

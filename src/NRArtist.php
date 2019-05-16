@@ -524,6 +524,22 @@ EOD;
         else return $response;
     }
 
+    public function updateRole($args) {
+        extract($args);
+
+        $sql = "UPDATE nr_artists
+            SET role_id = {$roleId}
+            WHERE id = $id;";
+
+        $return = runSQLQuery($sql);
+
+        if($return["response"] == true) {
+            $this->get(["id" => $id]);
+            return $this;
+        }
+        return $response;
+    }
+
     public function authenticate($username, $password) {
         // Get user ID & Password hash
         $sql =
