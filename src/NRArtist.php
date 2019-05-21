@@ -472,7 +472,14 @@ EOD;
 
         $return = runSQLQuery($sql);
 
-        return (isset($return["data"][0])) ? $return["data"][0] : [];
+        if(isset($return["data"])) {
+            for($i = 0; $i < count($return["data"]); $i++) {
+                $return["data"][$i]["payment_datetime"] = (new Datetime($return["data"][$i]["payment_datetime"]))->format(Datetime::ATOM);
+            }
+            return $return["data"];
+        }
+
+        return [];
     }
 
     public function update($args) {
