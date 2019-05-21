@@ -463,6 +463,16 @@ EOD;
         return (isset($response["data"])) ? $response["data"][0]["avg"] : 0;
     }
 
+    public function getReceipts($args) {
+        extract($args);
+
+        $sql = "SELECT *
+            FROM nr_artist_payments
+            WHERE artist_id = $id;";
+
+        return runSQLQuery($sql);
+    }
+
     public function update($args) {
         extract($args);
 

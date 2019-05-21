@@ -433,29 +433,11 @@
     $api->get('/clients/{id: [0-9]+}/events/recent/unpaid', function($request, $response, $args) {
         // Get Authorization
 		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
-            // Get Client Events Cache
-            $redis = new Redis;
-            $redis->connect(REDIS_HOST);
-            $return = $redis->get("client-{$args["id"]}-events-unpaid");
-            if($return) return $response
-                ->withStatus(200)
-                ->withHeader('Content-type', 'application/json')
-                ->write("{\"response\":true,\"error\":null,\"id\":0,\"data\":$return}");
-
             // Set events get type
             $args["type"] = "client";
 
             // Get recently completed unpaid events
             $return = (new NREvent)->getRecentlyCompletedEvents($args);
-
-            // Save Client Unpaid Events Cache
-            if($return["data"]) {
-                $redis->set(
-                    "client-{$args["id"]}-events-unpaid",
-                    json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
-                    REDIS_TIMEOUT
-                );
-            }
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
@@ -772,6 +754,20 @@
 		return $response->withStatus(401)
 			->write("Unauthorized Request");
     });
+    $api->get('/artists/{id: [0-9+]}/receipts', function($request, $response, $args) {
+        // Get Authorization
+		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+            // Get PUT form
+            $form = $request->getParsedBody();
+
+            // Save Artist Stripe payment ID
+            $return = (new NRArtist)->getReceipts($args);
+
+            return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+		}
+		return $response->withStatus(401)
+			->write("Unauthorized Request");
+    });
     $api->put('/artists/{id: [0-9]+}/fcm/token', function($request, $response, $args) {
         // Get Authorization
 		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
@@ -848,29 +844,11 @@
     $api->get('/artists/{id: [0-9]+}/events/recent/unpaid', function($request, $response, $args) {
         // Get Authorization
 		if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
-            // Get Artist Events Cache
-            $redis = new Redis;
-            $redis->connect(REDIS_HOST);
-            $return = $redis->get("artist-{$args["id"]}-events-unpaid");
-            if($return) return $response
-                ->withStatus(200)
-                ->withHeader('Content-type', 'application/json')
-                ->write("{\"response\":true,\"error\":null,\"id\":0,\"data\":$return}");
-
             // Set events get type
             $args["type"] = "artist";
 
             // Get recently completed unpaid events
             $return = (new NREvent)->getRecentlyCompletedEvents($args);
-
-            // Save Artist Unpaid Events Cache
-            if($return["data"]) {
-                $redis->set(
-                    "artist-{$args["id"]}-events-unpaid",
-                    json_encode($return["data"], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES),
-                    REDIS_TIMEOUT
-                );
-            }
 
             return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		}
