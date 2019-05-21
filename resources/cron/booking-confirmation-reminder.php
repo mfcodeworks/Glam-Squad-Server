@@ -15,15 +15,18 @@
 	require_once PROJECT_INC . "NRFCM.php";
 	require_once PROJECT_INC . "NRImage.php";
 	require_once PROJECT_INC . "NRPackage.php";
-    require_once PROJECT_LIB . "autoload.php";
+	require_once PROJECT_LIB . "autoload.php";
 
-    // Select events that have already passed which remain unpaid
+	error_log("Sending recent event confirmation reminders.");
+
+    // Select events that have passed an hour with less than 3 hours which remain unpaid
     $sql =
     "SELECT j.id
         FROM nr_jobs as j
         LEFT JOIN nr_client_receipts as r ON j.id = r.event_id
         WHERE r.event_id IS NULL
-        AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= -60;";
+        AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) > -60
+		AND TIMESTAMPDIFF(MINUTE, NOW(), j.event_datetime) <= -180;";
 
 	// Get list of events
 	$query = runSQLQuery($sql);

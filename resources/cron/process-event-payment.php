@@ -22,6 +22,8 @@
      * Select all unpaid events greater than 3 days old
      */
 
+    error_log("Processing event payment for events T+3days");
+
     $sql =
     "SELECT j.id
         FROM nr_jobs as j
@@ -288,6 +290,8 @@
      * Select all events without receipts that are less than 3 days in age to check for attendance completion
      */
 
+    error_log("Processing event payment for recent events with attendance responded");
+
     $sql =
     "SELECT j.id
         FROM nr_jobs as j
@@ -328,9 +332,9 @@
 
         // If client + artist attendance doesn't fulfill all persons attended continue to wait
         if(($clientAttended + $artistAttended) !== $attendanceRequirement) continue;
-        error_log("Event {$event->id} all persons responded");
+        error_log("Event {$event->id} all persons responded, processing payment");
 
-        // Set client attendance
+        // Get client attendance
         $clientSql = "SELECT *
             FROM nr_job_client_attendance
             WHERE event_id = {$event->id}
@@ -364,7 +368,7 @@
                         continue 2;
                     }
 
-                    // Transfer to makeup artist
+                    // If attended, transfer to makeup artist
                     $amount = 150 * ARTIST_PERCENTAGE;
 
                     // Calculate extra hours payment
@@ -380,7 +384,7 @@
                         continue 2;
                     }
 
-                    // Transfer to hair stylist
+                    // If attended, transfer to hair stylist
                     $amount = 80 * ARTIST_PERCENTAGE;
                     break;
             }
@@ -393,6 +397,8 @@
                 "description" => "Payment to {$artist->username} <{$artist->email}> for event {$artist->role["name"]}",
                 "transfer_group" => "EVENT-{$event->id}"
             ];
+
+            error_log("Transferring {$amount} SGD to {$artist->username} <{$artist->email}> for event {$event->id}");
         }
 
         // Get card

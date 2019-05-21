@@ -1,7 +1,7 @@
 <?php
 	// Paths
-    define('PROJECT_ROOT', dirname(dirname(dirname(__FILE__))));
-    define('PROJECT_CONFIG', PROJECT_ROOT . '/config/');
+	define('PROJECT_ROOT', dirname(dirname(dirname(__FILE__))));
+	define('PROJECT_CONFIG', PROJECT_ROOT . '/config/');
 	define('PROJECT_INC', PROJECT_ROOT . '/src/');
 	define('PROJECT_LIB', PROJECT_ROOT . '/vendor/');
 
@@ -15,13 +15,15 @@
 	require_once PROJECT_INC . "NRFCM.php";
 	require_once PROJECT_INC . "NRImage.php";
 	require_once PROJECT_INC . "NRPackage.php";
-    require_once PROJECT_LIB . "autoload.php";
+	require_once PROJECT_LIB . "autoload.php";
 
-    // Select events occuring within the next 2 hours that haven't passed
-    $sql =
-    "SELECT id
-        FROM nr_jobs
-        WHERE TIMESTAMPDIFF(MINUTE, NOW(), event_datetime) <= 120
+	error_log("Sending upcoming event reminders");
+
+	// Select events occuring within the next 3 hours that haven't passed
+	$sql =
+	"SELECT id
+		FROM nr_jobs
+		WHERE TIMESTAMPDIFF(MINUTE, NOW(), event_datetime) <= 180
 		AND TIMESTAMPDIFF(MINUTE, NOW(), event_datetime) >= 0;";
 
 	// Get list of events
