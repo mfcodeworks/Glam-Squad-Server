@@ -136,7 +136,7 @@
                 // Enter receipt
                 $chargeSql =
                 "INSERT INTO nr_client_receipts(
-                    client_payment_amount,
+                    payment_amount,
                     event_id,
                     client_id,
                     client_card_id,
@@ -182,7 +182,7 @@
                 // Enter receipt
                 $chargeSql =
                 "INSERT INTO nr_client_receipts(
-                    client_payment_amount,
+                    payment_amount,
                     event_id,
                     client_id,
                     client_card_id,
@@ -226,7 +226,7 @@
                 // Enter receipt
                 $chargeSql =
                 "INSERT INTO nr_client_receipts(
-                    client_payment_amount,
+                    payment_amount,
                     event_id,
                     client_id,
                     client_card_id,
@@ -260,7 +260,7 @@
                     $amount = $transfer->amount / 100;
                     $transferSql =
                     "INSERT INTO nr_artist_payments(
-                        artist_payment_amount,
+                        payment_amount,
                         event_id,
                         artist_id,
                         artist_stripe_account,
@@ -427,7 +427,7 @@
             // Enter receipt
             $chargeSql =
             "INSERT INTO nr_client_receipts(
-                client_payment_amount,
+                payment_amount,
                 event_id,
                 client_id,
                 client_card_id,
@@ -470,7 +470,7 @@
             // Enter receipt
             $chargeSql =
             "INSERT INTO nr_client_receipts(
-                client_payment_amount,
+                payment_amount,
                 event_id,
                 client_id,
                 client_card_id,
@@ -511,7 +511,7 @@
             // Enter receipt
             $chargeSql =
             "INSERT INTO nr_client_receipts(
-                client_payment_amount,
+                payment_amount,
                 event_id,
                 client_id,
                 client_card_id,
@@ -545,7 +545,7 @@
                 $amount = $transfer->amount / 100;
                 $transferSql =
                 "INSERT INTO nr_artist_payments(
-                    artist_payment_amount,
+                    payment_amount,
                     event_id,
                     artist_id,
                     artist_stripe_account,

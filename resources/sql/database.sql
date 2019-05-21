@@ -259,7 +259,8 @@ CREATE TABLE IF NOT EXISTS nr_client_ratings(
 # Glam Squad Event Receipt for Client (160.00; 1 (Event); 1 (Client); 1 (Card))
 CREATE TABLE IF NOT EXISTS nr_client_receipts(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    client_payment_amount DECIMAL(13,4) NOT NULL,
+    payment_amount DECIMAL(13,4) NOT NULL,
+    payment_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     event_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
     client_card_id BIGINT NOT NULL,
@@ -272,7 +273,8 @@ CREATE TABLE IF NOT EXISTS nr_client_receipts(
 # Glam Squad Artist Payments for Events (80.00; 1 (Event); 1 (Artist); 1234 (Stripe Token))
 CREATE TABLE IF NOT EXISTS nr_artist_payments(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    artist_payment_amount DECIMAL(13,4) NOT NULL,
+    payment_amount DECIMAL(13,4) NOT NULL,
+    payment_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     event_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
     artist_stripe_account VARCHAR(255) NOT NULL,
