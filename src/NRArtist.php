@@ -470,7 +470,9 @@ EOD;
             FROM nr_artist_payments
             WHERE artist_id = $id;";
 
-        return runSQLQuery($sql);
+        $return = runSQLQuery($sql);
+
+        return (isset($return["data"][0])) ? $return["data"][0] : [];
     }
 
     public function update($args) {

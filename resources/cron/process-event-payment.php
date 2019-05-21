@@ -94,7 +94,7 @@
                     "amount" => $amount * 100,
                     "currency" => "sgd",
                     "destination" => $artist->stripe_account_token,
-                    "description" => "Payment to {$artist->username} <{$artist->email}> for event {$artist->role["name"]}",
+                    "description" => "Payment to {$artist->username} <{$artist->email}> for event {$event->id} {$artist->role["name"]}",
                     "transfer_group" => "EVENT-{$event->id}"
                 ];
             }
@@ -106,9 +106,8 @@
 
             $clientAttendance = runSQLQuery($clientSql);
 
-            // If artist responded with attendance accept that, else set unattended
-            if(isset($clientAttendance["data"][0])) $clientAttendance = $clientAttendance["data"][0];
-            else $clientAttendance["attendance"] = 0;
+            // If client responded with attendance accept that, else set unattended
+            $clientAttendance["attendance"] = $clientAttendance["data"][0];
 
             // Get card
             $sql = "SELECT *
@@ -175,7 +174,7 @@
                     "currency" => "sgd",
                     "source" => $card["card_token"],
                     "customer" => $client["stripe_customer_id"],
-                    "description" => "Event charge for {$client["username"]} <{$client["email"]}>.",
+                    "description" => "Event {$event->id} charge for {$client["username"]} <{$client["email"]}>",
                     "receipt_email" => $client["email"],
                     "transfer_group" => "EVENT-{$event->id}"
                 ]);
@@ -219,7 +218,7 @@
                     "currency" => "sgd",
                     "source" => $card["card_token"],
                     "customer" => $client["stripe_customer_id"],
-                    "description" => "Event charge for {$client["username"]} <{$client["email"]}>.",
+                    "description" => "Event {$event->id} charge for {$client["username"]} <{$client["email"]}>.",
                     "receipt_email" => $client["email"],
                     "transfer_group" => "EVENT-{$event->id}"
                 ]);
@@ -343,7 +342,7 @@
         $clientAttendance = runSQLQuery($clientSql);
 
         // Get client attendance response
-        $clientAttendance = $clientAttendance["data"][0];
+        $clientAttendance["attendance"] = $clientAttendance["data"][0];
 
         // Set event initial price
         $eventPrice = $event->price;
