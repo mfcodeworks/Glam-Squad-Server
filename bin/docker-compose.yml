@@ -35,9 +35,9 @@ services:
                     cpus: "0.05"
                     memory: 28M
             restart_policy:
-                condition: on-failure
+                condition: any
                 delay: 10s
-                max_attempts: 300
+                max_attempts: 500
                 window: 60s
         networks:
             - webnet
@@ -91,6 +91,5 @@ services:
         volumes:
             - ../:/var/www/html
             - ./docker/media:/srv/nr-glam-squad/media
-            - ./docker/.well-known:/var/www/html/.well-known
 networks:
     webnet:
