@@ -87,8 +87,7 @@
         $response = $next($request, $response);
 
         // DEBUG: Measure exec time
-        $time_end = microtime(true);
-        $execution_time = ($time_end - $time_start);
+        $execution_time = (microtime(true) - $time_start);
         error_log("API Execution Time: $execution_time s");
 
         return $response
