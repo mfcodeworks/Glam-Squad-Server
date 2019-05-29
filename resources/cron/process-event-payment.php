@@ -22,7 +22,7 @@
      * Select all unpaid events greater than 3 days old
      */
 
-    error_log("Processing event payment for events T+3days");
+    error_log("[".date('Y-m-d H:i:s')."] Processing event payment for events T+3days");
 
     $sql =
     "SELECT j.id
@@ -289,7 +289,7 @@
      * Select all events without receipts that are less than 3 days in age to check for attendance completion
      */
 
-    error_log("Processing event payment for recent events with attendance responded");
+    error_log("[".date('Y-m-d H:i:s')."] Processing event payment for recent events with attendance responded");
 
     $sql =
     "SELECT j.id

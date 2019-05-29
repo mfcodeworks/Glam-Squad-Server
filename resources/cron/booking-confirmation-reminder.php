@@ -17,7 +17,7 @@
 	require_once PROJECT_INC . "NRPackage.php";
 	require_once PROJECT_LIB . "autoload.php";
 
-	error_log("Sending recent event confirmation reminders.");
+	error_log("[".date('Y-m-d H:i:s')."] Sending recent event confirmation reminders.");
 
     // Select events that have passed an hour with less than 3 hours which remain unpaid
     $sql =
