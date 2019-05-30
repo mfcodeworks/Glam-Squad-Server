@@ -320,6 +320,25 @@ EOD;
         return $res["id"];
     }
 
+    public function deletePortfolioImage($id) {
+        $sql = "SELECT *
+            FROM nr_artist_portfolios
+            WHERE id = $id;";
+
+        $res = runSQLQuery($sql);
+
+        if($res["response"] !== true) throw new Exception("Could not delete image $id.");
+
+        // Instantiate DO Spaces connection and delete file
+        $spaces = new NRSpaces();
+        $spaces->delete(explode(SPACES_CDN, $res["data"][0]["photo"])[1]);
+
+        // Delete image from DB
+        $sql = "DELETE FROM nr_artist_portfolios
+            WHERE id = {$res["data"][0]["id"]};";
+        return runSQLQuery($sql);
+    }
+
     public function updatePhoto($args) {
         extract($args);
 

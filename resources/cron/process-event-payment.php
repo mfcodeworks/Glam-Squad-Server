@@ -1,20 +1,20 @@
 <?php
-	// Paths
+    // Paths
     define('PROJECT_ROOT', dirname(dirname(dirname(__FILE__))));
     define('PROJECT_CONFIG', PROJECT_ROOT . '/config/');
-	define('PROJECT_INC', PROJECT_ROOT . '/src/');
-	define('PROJECT_LIB', PROJECT_ROOT . '/vendor/');
+    define('PROJECT_INC', PROJECT_ROOT . '/src/');
+    define('PROJECT_LIB', PROJECT_ROOT . '/vendor/');
 
-	// Require classes
-	require_once PROJECT_CONFIG . "config.php";
-	require_once PROJECT_INC . "DegreeDistanceFinder.php";
-	require_once PROJECT_INC . "Mailer.php";
-	require_once PROJECT_INC . "NRArtist.php";
-	require_once PROJECT_INC . "NRClient.php";
-	require_once PROJECT_INC . "NREvent.php";
-	require_once PROJECT_INC . "NRFCM.php";
-	require_once PROJECT_INC . "NRImage.php";
-	require_once PROJECT_INC . "NRPackage.php";
+    // Require classes
+    require_once PROJECT_CONFIG . "config.php";
+    require_once PROJECT_INC . "DegreeDistanceFinder.php";
+    require_once PROJECT_INC . "Mailer.php";
+    require_once PROJECT_INC . "NRArtist.php";
+    require_once PROJECT_INC . "NRClient.php";
+    require_once PROJECT_INC . "NREvent.php";
+    require_once PROJECT_INC . "NRFCM.php";
+    require_once PROJECT_INC . "NRImage.php";
+    require_once PROJECT_INC . "NRPackage.php";
     require_once PROJECT_LIB . "autoload.php";
     \Stripe\Stripe::setApiKey(STRIPE_SECRET);
 
@@ -301,7 +301,7 @@
     // Get list of event IDs
     $query = runSQLQuery($sql);
 
-	// If no events, exit
+    // If no events, exit
     if(!isset($query["data"])) die(0);
 
     // Loop event ID list

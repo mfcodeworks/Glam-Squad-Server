@@ -113,7 +113,7 @@ class NRSpaces {
     }
 
     public function delete($filepath) {
-        return $this->spaces->DeleteObject($filepath);
+        return $this->space->DeleteObject($filepath);
     }
 }
 ?>

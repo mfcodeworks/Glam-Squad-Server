@@ -38,13 +38,13 @@
                     'id' => $db->insert_id
                 ];
 
-				if( $response->num_rows > 0) {
+                if( $response->num_rows > 0) {
                     while( $row = $response->fetch_assoc() ) {
                         $data['data'][] = $row;
                     }
-				}
-				else {
-					$data['data'] = null;
+                }
+                else {
+                    $data['data'] = null;
                 }
 
                 return $data;
