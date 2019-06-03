@@ -1,7 +1,7 @@
 <?php
     // Allow all origin and headers
     header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Headers: content-type,nr-hash,origin,referrer,user-agent,*');
+    header('Access-Control-Allow-Headers: content-type,nr-hash,nr-auth,origin,referrer,user-agent,*');
     header('Access-Control-Allow-Methods: GET,POST,OPTIONS,PUT,DELETE');
 
     // Paths
