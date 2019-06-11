@@ -258,6 +258,23 @@
         return $response->withStatus(401)
             ->write("Unauthorized Request");
     });
+    $api->post('/clients/{id: [0-9]+}/qr-pay', function($request, $response, $args) {
+        // Get POST form
+        $form = $request->getParsedBody();
+
+        // Merge URL arguments and form parameters
+        $form["id"] = $args["id"];
+
+        // Get Authorization
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+            // Update Client Info
+            $return = (new NRClient)->qrPay($form);
+
+            return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        }
+        return $response->withStatus(401)
+            ->write("Unauthorized Request");
+    });
     $api->post('/clients/{id: [0-9]+}/validate', function($request, $response, $args) {
         // Get POST form
         $form = $request->getParsedBody();

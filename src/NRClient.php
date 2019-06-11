@@ -618,6 +618,102 @@ EOD;
         return runSQLQuery($sql);
     }
 
+    /**
+     * Process QR Payment from one NRClient to one NRArtist
+     *
+     * @param [integer] $id
+     * @param [string] $cardToken
+     * @param [string] $stripeAccountToken
+     * @param [float] $amount
+     * @return boolean
+     */
+    public function qrPay($args) {
+        extract($args);
+
+        // Get card
+        $sql = "SELECT *
+            FROM nr_payment_cards
+            WHERE card_token = \"{$cardToken}\";";
+        $query = runSQLQuery($sql);
+        $card = $query["data"][0];
+
+        // Get client
+        $client = (new NRClient)->get(["id" => $id])["data"][0];
+
+        // Get artist
+        $artistSql =
+        "SELECT *
+            FROM nr_artists
+            WHERE stripe_account_token = \"{$stripeAccountToken}\";";
+        $artistQuery = runSQLQuery($artistSql);
+        $artist = (new NRArtist)->get(["id" => $artistQuery["data"][0]["id"]]);
+
+        // Set Stripe API key
+        \Stripe\Stripe::setApiKey(STRIPE_SECRET);
+
+        // Create client charge
+        $charge = \Stripe\Charge::create([
+            "amount" => $amount * 100,
+            "currency" => "sgd",
+            "source" => $card["card_token"],
+            "customer" => $client["stripe_customer_id"],
+            "description" => "QR pay charge for {$client["username"]} <{$client["email"]}>.",
+            "receipt_email" => $client["email"]
+        ]);
+        error_log("Charging {$amount} SGD from {$client["username"]} <{$client["email"]}> with QR pay");
+
+        // Enter receipt
+        $chargeSql =
+        "INSERT INTO nr_client_receipts(
+            payment_amount,
+            event_id,
+            client_id,
+            client_card_id,
+            stripe_charge_id
+        )
+        VALUES(
+            {$amount},
+            0,
+            {$client["id"]},
+            {$card["id"]},
+            \"$charge->id\"
+        );";
+        runSQLQuery($chargeSql);
+
+        // Create artist transfer with 15% fee as usual
+        $transfer = [
+            "amount" => ($amount * 0.85) * 100,
+            "currency" => "sgd",
+            "destination" => $artist->stripe_account_token,
+            "description" => "Payment to {$artist->username} <{$artist->email}> with QR pay",
+            "source_transaction" => $charge->id
+        ];
+        error_log("Transferring {$amount} SGD to {$artist->username} <{$artist->email}> with QR pay");
+
+        // Create artist transfer
+        $transfer = \Stripe\Transfer::create($transfer);
+
+        // Enter artist payment receipt
+        $transferSql =
+        "INSERT INTO nr_artist_payments(
+            payment_amount,
+            event_id,
+            artist_id,
+            artist_stripe_account,
+            stripe_transfer_id
+        )
+        VALUES(
+            {$amount},
+            0,
+            {$artist->id},
+            \"{$artist->stripe_account_token}\",
+            \"{$transfer->id}\"
+        );";
+        $query = runSQLQuery($transferSql);
+
+        return true;
+    }
+
     private function getRating($id) {
         $sql = "SELECT AVG(rating) as avg FROM nr_client_ratings WHERE client_id = \"$id\";";
         $response = runSQLQuery($sql);
