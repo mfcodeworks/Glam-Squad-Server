@@ -24,6 +24,9 @@
 
     error_log("[".date('Y-m-d H:i:s')."] Processing event payment for events T+3days");
 
+    // Create payment notification object
+    $fcm = new NRFCM();
+
     $sql =
     "SELECT j.id
         FROM nr_jobs as j
@@ -203,6 +206,19 @@
                     email_error(print_r($query, true));
                 }
 
+                // Notify Client of charge
+                $notif = [
+                    "to" => $client["fcm_token"],
+                    "priority" => 'high',
+                    "data" => [
+                        "title" => "Event Charge",
+                        "message" => "${$event->price} deducted for event payment",
+                        'content-available'  => '1',
+                        "image" => 'logo'
+                    ]
+                ];
+                $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
+
             // If client attended
             } else {
                 isset($transfers) ? $artistCount = count($transfers) : $artistCount = 0;
@@ -246,6 +262,19 @@
                 if($query["error"] != null) {
                     email_error(print_r($query, true));
                 }
+
+                // Notify Client of charge
+                $notif = [
+                    "to" => $client["fcm_token"],
+                    "priority" => 'high',
+                    "data" => [
+                        "title" => "Event Charge",
+                        "message" => "${$event->price} deducted for event payment",
+                        'content-available'  => '1',
+                        "image" => 'logo'
+                    ]
+                ];
+                $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
             }
 
             // Execute artist payments
@@ -280,6 +309,19 @@
                     if($query["error"] != null) {
                         email_error(print_r($query, true));
                     }
+
+                    // Notify Client of charge
+                    $notif = [
+                        "to" => $client["fcm_token"],
+                        "priority" => 'high',
+                        "data" => [
+                            "title" => "Event Payment",
+                            "message" => "$$amount transferred to your account for event payment",
+                            'content-available'  => '1',
+                            "image" => 'logo'
+                        ]
+                    ];
+                    $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
                 }
             }
         }
@@ -491,6 +533,19 @@
                 email_error(print_r($query, true));
             }
 
+            // Notify Client of charge
+            $notif = [
+                "to" => $client["fcm_token"],
+                "priority" => 'high',
+                "data" => [
+                    "title" => "Event Charge",
+                    "message" => "${$event->price} deducted for event payment",
+                    'content-available'  => '1',
+                    "image" => 'logo'
+                ]
+            ];
+            $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
+
         // If client and at least one artist attended
         } else {
             /**
@@ -531,6 +586,19 @@
             if($query["error"] != null) {
                 email_error(print_r($query, true));
             }
+
+            // Notify Client of charge
+            $notif = [
+                "to" => $client["fcm_token"],
+                "priority" => 'high',
+                "data" => [
+                    "title" => "Event Charge",
+                    "message" => "${$event->price} deducted for event payment",
+                    'content-available'  => '1',
+                    "image" => 'logo'
+                ]
+            ];
+            $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
         }
 
         // Execute artist payments
@@ -565,6 +633,19 @@
                 if($query["error"] != null) {
                     email_error(print_r($query, true));
                 }
+
+                // Notify Client of charge
+                $notif = [
+                    "to" => $client["fcm_token"],
+                    "priority" => 'high',
+                    "data" => [
+                        "title" => "Event Payment",
+                        "message" => "$$amount transferred to your account for event payment",
+                        'content-available'  => '1',
+                        "image" => 'logo'
+                    ]
+                ];
+                $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
             }
         }
     }

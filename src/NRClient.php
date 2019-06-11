@@ -678,7 +678,7 @@ EOD;
             {$card["id"]},
             \"$charge->id\"
         );";
-        runSQLQuery($chargeSql);
+        error_log(print_r(runSQLQuery($chargeSql), true));
 
         // Create artist transfer with 15% fee as usual
         $artistAmount = $amount * 0.85;
@@ -710,9 +710,9 @@ EOD;
             \"{$artist->stripe_account_token}\",
             \"{$transfer->id}\"
         );";
-        $query = runSQLQuery($transferSql);
+        error_log(print_r(runSQLQuery($transferSql), true));
 
-        // TODO: Create payment notification
+        // Create payment notification
         $fcm = new NRFCM();
 
         // Notify Client of charge
@@ -726,7 +726,6 @@ EOD;
                 "image" => 'logo'
             ]
         ];
-        error_log(print_r($notif, true));
         $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
 
         // Notify Artist of payment
@@ -740,7 +739,6 @@ EOD;
                 "image" => 'logo'
             ]
         ];
-        error_log(print_r($notif, true));
         $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
 
         return true;
