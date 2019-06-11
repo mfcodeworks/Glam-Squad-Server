@@ -31,7 +31,7 @@ class NRArtist {
     private $locked = 1;
     public $locations = [];
     public $fcmTopics = [];
-    public $fcmTokens = [];
+    public $fcmToken;
     public $bookings = [];
     public $social = [];
     public $receipts;
@@ -373,7 +373,7 @@ EOD;
 
         // Build SQL
         $sql =
-        "SELECT a.id, a.username, a.password, a.profile_photo, a.facebook, a.twitter, a.instagram, a.email, a.bio, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid
+        "SELECT a.id, a.username, a.password, a.profile_photo, a.facebook, a.twitter, a.instagram, a.email, a.bio, a.role_id, r.role_name, a.probation, a.locked, a.stripe_account_token, a.twilio_sid, a.fcm_token
             FROM nr_artists as a
             LEFT JOIN nr_job_roles as r ON r.id = a.role_id
             WHERE a.id = $id;";
@@ -396,6 +396,7 @@ EOD;
         $this->profile_photo = $profile_photo;
         $this->email = $email;
         $this->bio = $bio;
+        $this->fcm_token = $fcm_token;
         $this->rating = $this->getRating();
         $this->role = [
             "id" => $role_id,

@@ -681,14 +681,15 @@ EOD;
         runSQLQuery($chargeSql);
 
         // Create artist transfer with 15% fee as usual
+        $artistAmount = $amount * 0.85;
         $transfer = [
-            "amount" => ($amount * 0.85) * 100,
+            "amount" => $artistAmount * 100,
             "currency" => "sgd",
             "destination" => $artist->stripe_account_token,
             "description" => "Payment to {$artist->username} <{$artist->email}> with QR pay",
             "source_transaction" => $charge->id
         ];
-        error_log("Transferring {$amount} SGD to {$artist->username} <{$artist->email}> with QR pay");
+        error_log("Transferring {$artistAmount} SGD to {$artist->username} <{$artist->email}> with QR pay");
 
         // Create artist transfer
         $transfer = \Stripe\Transfer::create($transfer);
@@ -703,13 +704,44 @@ EOD;
             stripe_transfer_id
         )
         VALUES(
-            {$amount},
+            {$artistAmount},
             0,
             {$artist->id},
             \"{$artist->stripe_account_token}\",
             \"{$transfer->id}\"
         );";
         $query = runSQLQuery($transferSql);
+
+        // TODO: Create payment notification
+        $fcm = new NRFCM();
+
+        // Notify Client of charge
+        $notif = [
+            "to" => $client["fcm_token"],
+            "priority" => 'high',
+            "data" => [
+                "title" => "QR Pay Charge",
+                "message" => "$$amount deducted for payment to artist {$artist->username}",
+                'content-available'  => '1',
+                "image" => 'logo'
+            ]
+        ];
+        error_log(print_r($notif, true));
+        $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
+
+        // Notify Artist of payment
+        $notif = [
+            "to" => $artist->fcm_token,
+            "priority" => 'high',
+            "data" => [
+                "title" => "New QR Payment",
+                "message" => "Payment of $$artistAmount from {$client["username"]} transferred to account",
+                'content-available'  => '1',
+                "image" => 'logo'
+            ]
+        ];
+        error_log(print_r($notif, true));
+        $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
 
         return true;
     }
