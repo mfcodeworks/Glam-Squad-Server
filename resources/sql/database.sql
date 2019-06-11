@@ -265,7 +265,6 @@ CREATE TABLE IF NOT EXISTS nr_client_receipts(
     client_id BIGINT NOT NULL,
     client_card_id BIGINT NOT NULL,
     stripe_charge_id VARCHAR(255) NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
     FOREIGN KEY (client_id) REFERENCES nr_clients(id),
     FOREIGN KEY (client_card_id) REFERENCES nr_payment_cards(id)
 );
@@ -279,7 +278,6 @@ CREATE TABLE IF NOT EXISTS nr_artist_payments(
     artist_id BIGINT NOT NULL,
     artist_stripe_account VARCHAR(255) NOT NULL,
     stripe_transfer_id VARCHAR(255) NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES nr_jobs(id),
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id)
 );
 
