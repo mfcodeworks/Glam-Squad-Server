@@ -67,28 +67,28 @@
                     case 1:
                         // If artist didn't attend, deduct from event price
                         if($attendance["attendance"] == 0) {
-                            $eventPrice -= 150;
+                            $eventPrice -= MAKEUP_ARTIST_FEE;
                             continue 2;
                         }
 
                         // Transfer to makeup artist
-                        $amount = 150 * ARTIST_PERCENTAGE;
+                        $amount = MAKEUP_ARTIST_FEE * ARTIST_PERCENTAGE;
 
                         // Calculate extra hours payment
                         if($event->extraHours > 0) {
-                            $amount += (20 * $event->extraHours) * ARTIST_PERCENTAGE;
+                            $amount += (MAKEUP_ARTIST_HOURLY_FEE * $event->extraHours) * ARTIST_PERCENTAGE;
                         }
                         break;
 
                     case 2:
                         // If artist didn't attend, deduct from event price
                         if($attendance["attendance"] == 0) {
-                            $eventPrice -= 80;
+                            $eventPrice -= HAIR_STYLIST_FEE;
                             continue 2;
                         }
 
                         // Transfer to hair stylist
-                        $amount = 80 * ARTIST_PERCENTAGE;
+                        $amount = HAIR_STYLIST_FEE * ARTIST_PERCENTAGE;
                         break;
                 }
 
@@ -405,28 +405,28 @@
                 case 1:
                     // If artist didn't attend, deduct from event price
                     if($attendance["attendance"] == 0) {
-                        $eventPrice -= 150;
+                        $eventPrice -= MAKEUP_ARTIST_FEE;
                         continue 2;
                     }
 
                     // If attended, transfer to makeup artist
-                    $amount = 150 * ARTIST_PERCENTAGE;
+                    $amount = MAKEUP_ARTIST_FEE * ARTIST_PERCENTAGE;
 
                     // Calculate extra hours payment
                     if($event->extraHours > 0) {
-                        $amount += (20 * $event->extraHours) * ARTIST_PERCENTAGE;
+                        $amount += (MAKEUP_ARTIST_HOURLY_FEE * $event->extraHours) * ARTIST_PERCENTAGE;
                     }
                     break;
 
                 case 2:
                     // If artist didn't attend, deduct from event price
                     if($attendance["attendance"] == 0) {
-                        $eventPrice -= 80;
+                        $eventPrice -= HAIR_STYLIST_FEE;
                         continue 2;
                     }
 
                     // If attended, transfer to hair stylist
-                    $amount = 80 * ARTIST_PERCENTAGE;
+                    $amount = HAIR_STYLIST_FEE * ARTIST_PERCENTAGE;
                     break;
             }
 

@@ -25,7 +25,7 @@ define("REDIS_TIMEOUT", 43200);
 // Server
 define("SERVER_URL", "https://glam-squad-db.nygmarosebeauty.com");
 
-// Path
+// Paths
 define("MEDIA_PATH", "/srv/nr-glam-squad/media/");
 define("FORGOT_PASSWORD_URI", "https://glam-squad-db.nygmarosebeauty.com/forgot-password");
 
@@ -55,14 +55,24 @@ define("FCM_NOTIFICATION_ENDPOINT", "https://fcm.googleapis.com/fcm/send");
 define("FCM_GROUP_ENDPOINT", "https://fcm.googleapis.com/fcm/notification");
 
 // Availability
-define("COUNTRIES", ["SG"]);
+define("COUNTRIES", [
+    "SG"
+]);
 
 // API: Stripe Constant
 define("STRIPE_SECRET", "sk_test_ccu7Gl8YxOlksae8zncTMTiE");
 define("STRIPE_PAYMENT_ENDPOINT", "https://api.stripe.com/v1/charges");
 
-// Artist percentage calculation
+/**
+ * Artist percentage calculation
+ * 15% from Glam Squad scheduled bookings
+ * 10% from QR Pay
+ */
 define("ARTIST_PERCENTAGE", 0.85);
+define("QR_PERCENTAGE", 0.90);
+define("MAKEUP_ARTIST_FEE", 150);
+define("MAKEUP_ARTIST_HOURLY_FEE", 20);
+define("HAIR_STYLIST_FEE", 80);
 
 // API: Facebook Constants
 define("FACEBOOK_APP_ID", "808819612792596");

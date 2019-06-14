@@ -681,7 +681,7 @@ EOD;
         error_log(print_r(runSQLQuery($chargeSql), true));
 
         // Create artist transfer with 15% fee as usual
-        $artistAmount = $amount * 0.85;
+        $artistAmount = $amount * QR_PERCENTAGE;
         $transfer = [
             "amount" => $artistAmount * 100,
             "currency" => "sgd",
