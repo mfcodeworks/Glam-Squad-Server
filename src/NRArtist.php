@@ -649,6 +649,20 @@ EOD;
     }
 
     public function saveProfilePic($id, $url) {
+        // Delete old profile photo
+        $sql = "SELECT profile_photo
+            FROM nr_artists
+            WHERE id = $id;";
+
+        $current = runSQLQuery($sql);
+
+        if($current["data"][0]["profile_photo"]) {
+            // Instantiate DO Spaces connection and delete file
+            $spaces = new NRSpaces();
+            $spaces->delete(explode(SPACES_CDN, $current["data"][0]["profile_photo"])[1]);
+        }
+
+        // Save new photo
         $sql = "UPDATE nr_artists
             SET profile_photo = \"$url\"
             WHERE id = $id;";
