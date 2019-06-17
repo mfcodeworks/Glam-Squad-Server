@@ -103,13 +103,15 @@
                 }
 
                 // Create artist transfer
-                $transfers[] = [
-                    "amount" => $amount * 100,
-                    "currency" => "sgd",
-                    "destination" => $artist->stripe_account_token,
-                    "description" => "Payment to {$artist->username} <{$artist->email}> for event {$event->id} {$artist->role["name"]}",
-                    "transfer_group" => "EVENT-{$event->id}"
-                ];
+                if($attendance["attendance"]) {
+                    $transfers[] = [
+                        "amount" => $amount * 100,
+                        "currency" => "sgd",
+                        "destination" => $artist->stripe_account_token,
+                        "description" => "Payment to {$artist->username} <{$artist->email}> for event {$event->id} {$artist->role["name"]}",
+                        "transfer_group" => "EVENT-{$event->id}"
+                    ];
+                }
             }
 
             $clientSql = "SELECT *
@@ -457,15 +459,16 @@
             }
 
             // Create artist transfer
-            $transfers[] = [
-                "amount" => $amount * 100,
-                "currency" => "sgd",
-                "destination" => $artist->stripe_account_token,
-                "description" => "Payment to {$artist->username} <{$artist->email}> for event {$artist->role["name"]}",
-                "transfer_group" => "EVENT-{$event->id}"
-            ];
-
-            error_log("Transferring {$amount} SGD to {$artist->username} <{$artist->email}> for event {$event->id}");
+            if($attendance["attendance"]) {
+                $transfers[] = [
+                    "amount" => $amount * 100,
+                    "currency" => "sgd",
+                    "destination" => $artist->stripe_account_token,
+                    "description" => "Payment to {$artist->username} <{$artist->email}> for event {$artist->role["name"]}",
+                    "transfer_group" => "EVENT-{$event->id}"
+                ];
+                error_log("Transferring {$amount} SGD to {$artist->username} <{$artist->email}> for event {$event->id}");
+            }
         }
 
         // Get card
