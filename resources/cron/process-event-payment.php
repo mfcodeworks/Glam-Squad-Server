@@ -114,6 +114,8 @@
                 }
             }
 
+            error_log(print_r($transfers, true));
+
             $clientSql = "SELECT *
                 FROM nr_job_client_attendance
                 WHERE event_id = {$event->id}
