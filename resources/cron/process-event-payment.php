@@ -68,6 +68,11 @@
                         // If artist didn't attend, deduct from event price
                         if($attendance["attendance"] == 0) {
                             $eventPrice -= MAKEUP_ARTIST_FEE;
+                            // Add attendance breach
+                            runSQLQuery(
+                                "INSERT INTO nr_artist_attendance_breaches(artist_id, event_id)
+                                    VALUES({$artist->id}, {$event->id});"
+                            );
                             continue 2;
                         }
 
@@ -84,6 +89,11 @@
                         // If artist didn't attend, deduct from event price
                         if($attendance["attendance"] == 0) {
                             $eventPrice -= HAIR_STYLIST_FEE;
+                            // Add attendance breach
+                            runSQLQuery(
+                                "INSERT INTO nr_artist_attendance_breaches(artist_id, event_id)
+                                    VALUES({$artist->id}, {$event->id});"
+                            );
                             continue 2;
                         }
 
@@ -166,6 +176,12 @@
             } else if($clientAttendance["attendance"] == 0) {
                 isset($transfers) ? $artistCount = count($transfers) : $artistCount = 0;
                 error_log("Event {$event->id} client didn't attend, {$artistCount} artists attended");
+
+                // Add attendance breach
+                runSQLQuery(
+                    "INSERT INTO nr_client_attendance_breaches(event_id, client_id)
+                        VALUES({$event->id}, {$client["id"]});"
+                );
 
                 /**
                  * API: Stripe PHP SDK
@@ -406,6 +422,11 @@
                     // If artist didn't attend, deduct from event price
                     if($attendance["attendance"] == 0) {
                         $eventPrice -= MAKEUP_ARTIST_FEE;
+                        // Add attendance breach
+                        runSQLQuery(
+                            "INSERT INTO nr_artist_attendance_breaches(artist_id, event_id)
+                                VALUES({$artist->id}, {$event->id});"
+                        );
                         continue 2;
                     }
 
@@ -422,6 +443,11 @@
                     // If artist didn't attend, deduct from event price
                     if($attendance["attendance"] == 0) {
                         $eventPrice -= HAIR_STYLIST_FEE;
+                        // Add attendance breach
+                        runSQLQuery(
+                            "INSERT INTO nr_artist_attendance_breaches(artist_id, event_id)
+                                VALUES({$artist->id}, {$event->id});"
+                        );
                         continue 2;
                     }
 
@@ -494,6 +520,12 @@
 
         // If client didn't attend charge full fee
         } else if($clientAttendance["attendance"] == 0) {
+            // Add attendance breach
+            runSQLQuery(
+                "INSERT INTO nr_client_attendance_breaches(event_id, client_id)
+                    VALUES({$event->id}, {$client["id"]});"
+            );
+
             /**
              * API: Stripe PHP SDK
              */

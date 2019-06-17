@@ -188,12 +188,30 @@ CREATE TABLE IF NOT EXISTS nr_job_client_attendance(
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
 );
 
+# Glam Squad Client Attendance Breaches (1 (Event), 1 (Client))
+CREATE TABLE IF NOT EXISTS nr_client_attendance_breaches(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    event_id BIGINT NOT NULL,
+    client_id BIGINT NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
+    FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
+);
+
 # Glam Squad Artist Attendance (1 (Event), 1 (Artist), 1 (Attendance))
 CREATE TABLE IF NOT EXISTS nr_job_artist_attendance(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
     attendance BIT NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
+    FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
+);
+
+# Glam Squad Artist Attendance Breaches (1 (Event), 1 (Artist))
+CREATE TABLE IF NOT EXISTS nr_artist_attendance_breaches(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    event_id BIGINT NOT NULL,
+    artist_id BIGINT NOT NULL,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
