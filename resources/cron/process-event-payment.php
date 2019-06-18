@@ -331,7 +331,7 @@
 
                     // Notify Client of charge
                     $notif = [
-                        "to" => $client["fcm_token"],
+                        "to" => $artist->fcmToken,
                         "priority" => 'high',
                         "data" => [
                             "title" => "Event Payment",
@@ -676,7 +676,7 @@
 
                 // Notify Client of charge
                 $notif = [
-                    "to" => $client["fcm_token"],
+                    "to" => $artist->fcmToken,
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Payment",
