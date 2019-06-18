@@ -288,7 +288,7 @@
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Charge",
-                        "message" => "\${$event->price} deducted for event payment",
+                        "message" => "\${$eventPrice} deducted for event payment",
                         'content-available'  => '1',
                         "image" => 'logo'
                     ]
@@ -340,6 +340,7 @@
                             "image" => 'logo'
                         ]
                     ];
+                    error_log(print_r($notif, true));
                     $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
                 }
             }
@@ -633,7 +634,7 @@
                 "priority" => 'high',
                 "data" => [
                     "title" => "Event Charge",
-                    "message" => "\${$event->price} deducted for event payment",
+                    "message" => "\${$eventPrice} deducted for event payment",
                     'content-available'  => '1',
                     "image" => 'logo'
                 ]
@@ -685,6 +686,7 @@
                         "image" => 'logo'
                     ]
                 ];
+                error_log(print_r($notif, true));
                 $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
             }
         }
