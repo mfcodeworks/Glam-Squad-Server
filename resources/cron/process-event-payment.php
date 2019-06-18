@@ -124,7 +124,7 @@
             $clientAttendance = runSQLQuery($clientSql);
 
             // If client responded with attendance accept that, else set unattended
-            $clientAttendance["attendance"] = $clientAttendance["data"][0];
+            $clientAttendance["attendance"] = $clientAttendance["data"][0]["attendance"];
 
             // Get card
             $sql = "SELECT *
@@ -404,7 +404,7 @@
         $clientAttendance = runSQLQuery($clientSql);
 
         // Get client attendance response
-        $clientAttendance["attendance"] = $clientAttendance["data"][0];
+        $clientAttendance["attendance"] = $clientAttendance["data"][0]["attendance"];
 
         // Set event initial price
         $eventPrice = $event->price;
