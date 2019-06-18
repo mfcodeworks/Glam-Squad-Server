@@ -117,7 +117,7 @@ class NRArtist {
 
         try {
             $this->sendWelcomeEmail($email, $username);
-            $this->sendNewRegEmail($id, $email, $username, $country);
+            $this->sendNewRegEmail($res["id"], $email, $username, $country);
         }
         catch(Exception $e) {
             error_log($e);
@@ -435,7 +435,7 @@ EOD;
         $this->profile_photo = $profile_photo;
         $this->email = $email;
         $this->bio = $bio;
-        $this->fcm_token = $fcm_token;
+        $this->fcmToken = $fcm_token;
         $this->rating = $this->getRating();
         $this->role = [
             "id" => $role_id,
