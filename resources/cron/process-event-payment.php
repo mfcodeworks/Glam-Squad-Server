@@ -106,6 +106,7 @@
                 // Create artist transfer
                 if($attendance["attendance"]) {
                     $transfers[] = [
+                        "fcm_token" => $artist->fcmToken,
                         "amount" => $amount * 100,
                         "currency" => "sgd",
                         "destination" => $artist->stripe_account_token,
@@ -299,6 +300,8 @@
             // Execute artist payments
             if(isset($transfers)) {
                 foreach($transfers as $transfer) {
+                    $fcmToken = $transfer["fcm_token"];
+                    unset($transfer["fcm_token"]);
                     $transfer["source_transaction"] = $charge->id;
 
                     // Create artist transfer
@@ -331,7 +334,7 @@
 
                     // Notify Client of charge
                     $notif = [
-                        "to" => $artist->fcmToken,
+                        "to" => $fcmToken,
                         "priority" => 'high',
                         "data" => [
                             "title" => "Event Payment",
@@ -467,6 +470,7 @@
             // Create artist transfer
             if($attendance["attendance"]) {
                 $transfers[] = [
+                    "fcm_token" => $artist->fcmToken,
                     "amount" => $amount * 100,
                     "currency" => "sgd",
                     "destination" => $artist->stripe_account_token,
@@ -645,6 +649,8 @@
         // Execute artist payments
         if(isset($transfers)) {
             foreach($transfers as $transfer) {
+                $fcmToken = $transfer["fcm_token"];
+                unset($transfer["fcm_token"]);
                 $transfer["source_transaction"] = $charge->id;
 
                 // Create artist transfer
@@ -677,7 +683,7 @@
 
                 // Notify Client of charge
                 $notif = [
-                    "to" => $artist->fcmToken,
+                    "to" => $fcmToken,
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Payment",
