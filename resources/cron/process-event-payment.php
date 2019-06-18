@@ -227,12 +227,13 @@
                 }
 
                 // Notify Client of charge
+                $fcmAmount = number_format($event->price, 2);
                 $notif = [
                     "to" => $client["fcm_token"],
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Charge",
-                        "message" => "\${$event->price} deducted for event payment",
+                        "message" => "\$$fcmAmount deducted for event payment",
                         'content-available'  => '1',
                         "image" => 'logo'
                     ]
@@ -284,12 +285,13 @@
                 }
 
                 // Notify Client of charge
+                $fcmAmount = number_format($eventPrice, 2);
                 $notif = [
                     "to" => $client["fcm_token"],
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Charge",
-                        "message" => "\${$eventPrice} deducted for event payment",
+                        "message" => "\$$fcmAmount deducted for event payment",
                         'content-available'  => '1',
                         "image" => 'logo'
                     ]
@@ -333,17 +335,17 @@
                     }
 
                     // Notify Client of charge
+                    $fcmAmount = number_format($amount, 2);
                     $notif = [
                         "to" => $fcmToken,
                         "priority" => 'high',
                         "data" => [
                             "title" => "Event Payment",
-                            "message" => "\$$amount transferred to your account for event payment",
+                            "message" => "\$$fcmAmount transferred to your account for event payment",
                             'content-available'  => '1',
                             "image" => 'logo'
                         ]
                     ];
-                    error_log(print_r($notif, true));
                     $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
                 }
             }
@@ -579,12 +581,13 @@
             }
 
             // Notify Client of charge
+            $fcmAmount = number_format($event->price, 2);
             $notif = [
                 "to" => $client["fcm_token"],
                 "priority" => 'high',
                 "data" => [
                     "title" => "Event Charge",
-                    "message" => "\${$event->price} deducted for event payment",
+                    "message" => "\$$fcmAmount deducted for event payment",
                     'content-available'  => '1',
                     "image" => 'logo'
                 ]
@@ -633,12 +636,13 @@
             }
 
             // Notify Client of charge
+            $fcmAmount = number_format($eventPrice, 2);
             $notif = [
                 "to" => $client["fcm_token"],
                 "priority" => 'high',
                 "data" => [
                     "title" => "Event Charge",
-                    "message" => "\${$eventPrice} deducted for event payment",
+                    "message" => "\$$fcmAmount deducted for event payment",
                     'content-available'  => '1',
                     "image" => 'logo'
                 ]
@@ -682,17 +686,17 @@
                 }
 
                 // Notify Client of charge
+                $fcmAmount = number_format($amount, 2);
                 $notif = [
                     "to" => $fcmToken,
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Payment",
-                        "message" => "\$$amount transferred to your account for event payment",
+                        "message" => "\$$fcmAmount transferred to your account for event payment",
                         'content-available'  => '1',
                         "image" => 'logo'
                     ]
                 ];
-                error_log(print_r($notif, true));
                 $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
             }
         }
