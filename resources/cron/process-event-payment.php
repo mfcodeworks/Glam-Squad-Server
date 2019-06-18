@@ -11,6 +11,7 @@
     require_once PROJECT_INC . "Mailer.php";
     require_once PROJECT_INC . "NRArtist.php";
     require_once PROJECT_INC . "NRClient.php";
+    require_once PROJECT_INC . "NRChat.php";
     require_once PROJECT_INC . "NREvent.php";
     require_once PROJECT_INC . "NRFCM.php";
     require_once PROJECT_INC . "NRImage.php";
@@ -230,7 +231,7 @@
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Charge",
-                        "message" => "${$event->price} deducted for event payment",
+                        "message" => "\${$event->price} deducted for event payment",
                         'content-available'  => '1',
                         "image" => 'logo'
                     ]
@@ -287,7 +288,7 @@
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Charge",
-                        "message" => "${$event->price} deducted for event payment",
+                        "message" => "\${$event->price} deducted for event payment",
                         'content-available'  => '1',
                         "image" => 'logo'
                     ]
@@ -334,7 +335,7 @@
                         "priority" => 'high',
                         "data" => [
                             "title" => "Event Payment",
-                            "message" => "$$amount transferred to your account for event payment",
+                            "message" => "\$$amount transferred to your account for event payment",
                             'content-available'  => '1',
                             "image" => 'logo'
                         ]
@@ -578,7 +579,7 @@
                 "priority" => 'high',
                 "data" => [
                     "title" => "Event Charge",
-                    "message" => "${$event->price} deducted for event payment",
+                    "message" => "\${$event->price} deducted for event payment",
                     'content-available'  => '1',
                     "image" => 'logo'
                 ]
@@ -632,7 +633,7 @@
                 "priority" => 'high',
                 "data" => [
                     "title" => "Event Charge",
-                    "message" => "${$event->price} deducted for event payment",
+                    "message" => "\${$event->price} deducted for event payment",
                     'content-available'  => '1',
                     "image" => 'logo'
                 ]
@@ -679,7 +680,7 @@
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Payment",
-                        "message" => "$$amount transferred to your account for event payment",
+                        "message" => "\$$amount transferred to your account for event payment",
                         'content-available'  => '1',
                         "image" => 'logo'
                     ]
