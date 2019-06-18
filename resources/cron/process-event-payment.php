@@ -174,8 +174,6 @@
                     email_error(print_r($query, true));
                 }
 
-                continue;
-
             // If client didnt attend
             } else if($clientAttendance["attendance"] == 0) {
                 isset($transfers) ? $artistCount = count($transfers) : $artistCount = 0;
@@ -344,6 +342,10 @@
                     $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
                 }
             }
+
+            // Remove Twilio Channel
+            error_log("Removing chat: event-{$event->id}");
+            (new NRChat())->deleteChannel("event-{$event->id}");
         }
     }
 
@@ -685,6 +687,10 @@
                 $fcm->send($notif, FCM_NOTIFICATION_ENDPOINT);
             }
         }
+
+        // Remove Twilio Channel
+        error_log("Removing chat: event-{$event->id}");
+        (new NRChat())->deleteChannel("event-{$event->id}");
     }
 
     function email_error($error) {
