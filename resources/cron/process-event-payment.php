@@ -63,19 +63,16 @@
     }
 
     function processTransfers($event, $transfers, $charge) {
-        // DEBUG: Log transfers
-        error_log(print_r($transfers, true));
-
         // Loop through transfers array
         foreach($transfers as $transfer) {
             // Find correct artist and save reference
-            $currentArtist;
-            foreach($event->artists as $artist) {
-                if($artist->id === $transfer["artist_id"]) {
-                    $fcmToken = $artist->fcmToken;
-                    $currentArtist = $artist;
+            $artist;
+            foreach($event->artists as $a) {
+                if($a->id === $transfer["artist_id"]) {
+                    $fcmToken = $a->fcmToken;
+                    $artist = $a;
                     unset($transfer["artist_id"]);
-                    continue;
+                    break;
                 }
             }
 
@@ -98,8 +95,8 @@
                 VALUES(
                     {$amount},
                     {$event->id},
-                    {$currentArtist->id},
-                    \"{$currentArtist->stripe_account_token}\",
+                    {$artist->id},
+                    \"{$artist->stripe_account_token}\",
                     \"{$transfer->id}\"
                 );"
             );
@@ -111,7 +108,7 @@
             $fcmAmount = number_format($amount, 2);
             (new NRFCM())->send(
                 $notif = [
-                    "to" => $currentArtist->fcmToken,
+                    "to" => $artist->fcmToken,
                     "priority" => 'high',
                     "data" => [
                         "title" => "Event Payment",
@@ -248,7 +245,8 @@
             AND TIMESTAMPDIFF(DAY, j.event_datetime, NOW()) < 3;";
 
         // Get list of event IDs
-        return runSQLQuery($sql)["data"];
+        $query = runSQLQuery($sql)["data"];
+        return $query ? $query : [];
     }
 
     function getExpiredEvents() {
@@ -259,7 +257,8 @@
             AND TIMESTAMPDIFF(DAY, j.event_datetime, NOW()) >= 3;";
 
         // Get list of event IDs
-        return runSQLQuery($sql)["data"];
+        $query = runSQLQuery($sql)["data"];
+        return $query ? $query : [];
     }
 
     function getClientAttendance($event) {
