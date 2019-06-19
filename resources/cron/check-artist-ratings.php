@@ -18,6 +18,8 @@
     require_once PROJECT_INC . "NRPackage.php";
     require_once PROJECT_LIB . "autoload.php";
 
+    error_log("[".date('Y-m-d H:i:s')."] Checking for low rated artists");
+
     // Find artists with below average scores
     $query = runSQLQuery(
         "SELECT *
