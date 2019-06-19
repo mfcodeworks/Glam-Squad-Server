@@ -32,7 +32,7 @@
             AND a.locked = 0
             GROUP BY a.id
         ) as ra
-        WHERE ra.rating <= 5.0;"
+        WHERE ra.rating <= 3.5;"
     );
 
     // If artiss found, construct email
