@@ -910,6 +910,33 @@ class NREvent {
         return runSQLQuery($sql);
     }
 
+    public function attendanceComplete() {
+        // Set attendance requirement to 1 (Client)
+        $attendanceRequirement = 1;
+
+        // Add attendance requirement for each role required (Hair Stylist, MUA, etc.)
+        foreach($this->requirements as $role => $required) {
+            $attendanceRequirement+= $required;
+        }
+
+        // Count artist attendance
+        $artistAttended = runSQLQuery(
+            "SELECT COUNT(id) as attended
+            FROM nr_job_artist_attendance
+            WHERE event_id = {$this->id};"
+        )["data"][0]["attended"];
+
+        // Count client attendance
+        $clientAttended = runSQLQuery(
+            "SELECT COUNT(id) as attended
+            FROM nr_job_client_attendance
+            WHERE event_id = {$this->id};"
+        )["data"][0]["attended"];
+
+        // Return result of client+artist attendance equalling the attendance requirement (true/false)
+        return (($clientAttended + $artistAttended) === $attendanceRequirement);
+    }
+
     private function randomString($length = 32) {
         // Create random string with current date salt for uniqueness
         return date('Y-m-d-H-i-s').bin2hex(random_bytes($length));;
