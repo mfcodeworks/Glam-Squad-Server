@@ -24,7 +24,7 @@
     $query = runSQLQuery(
         "SELECT *
         FROM (
-            SELECT AVG(r.rating) as rating, a.id, a.username
+            SELECT AVG(r.rating) as rating, a.id as id, a.username as name, a.email as email
             FROM nr_artists as a
             LEFT OUTER JOIN nr_artist_ratings as r
             ON r.artist_id = a.id
@@ -38,19 +38,17 @@
     // If artiss found, construct email
     $query["data"] ? $artists = $query["data"] : exit(0);
     $text = "";
+    error_log(print_r($artists, true));
 
     foreach($artists as $artist) {
         $rating = number_format($artist["rating"], 2);
-        $text .= "<br>{$artist["name"]} <{$artist["email"]}> $rating<br><br>";
+        $text .= "<br>ID {$artist["id"]} {$artist["name"]} <<a href='mailto:{$artist["email"]}'>{$artist["email"]}</a>> Rating $rating<br><br>";
     }
 
     send_email($text);
 
     function send_email($artists) {
-        // Log error
-        error_log($artists);
-
-        // Email error
+        // Email artists
         $mail = new Mailer();
         $mail->setFrom("it@nygmarosebeauty.com", "Glam Squad IT");
         $mail->addAddress("mua@nygmarosebeauty.com");
