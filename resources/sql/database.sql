@@ -43,7 +43,8 @@ CREATE TABLE IF NOT EXISTS  nr_clients(
     password VARCHAR(255) NOT NULL,
     stripe_customer_id VARCHAR(255) UNIQUE,
     fcm_token VARCHAR(255) UNIQUE,
-    twilio_sid VARCHAR(255) UNIQUE
+    twilio_sid VARCHAR(255) UNIQUE,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 # Glam Squad Forgot Password Client Keys (String (Unique Key); 2019-01-16 2:43:00 (Expiration time); 1 (User ID))
@@ -73,6 +74,7 @@ CREATE TABLE IF NOT EXISTS nr_artists(
     probation BIT,
     locked BIT,
     twilio_sid VARCHAR(255) UNIQUE,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (role_id) REFERENCES nr_job_roles(id) ON DELETE CASCADE
 );
 
@@ -92,6 +94,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_locations(
     loc_lat DECIMAL(9,6) NOT NULL,
     loc_lng DECIMAL(9,6) NOT NULL,
     artist_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
@@ -100,6 +103,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_portfolios(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     photo TEXT NOT NULL,
     artist_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
 
@@ -108,6 +112,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_reports(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     artist_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
@@ -117,6 +122,7 @@ CREATE TABLE IF NOT EXISTS nr_client_reports(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     client_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
@@ -146,6 +152,7 @@ CREATE TABLE IF NOT EXISTS nr_payment_cards(
     card_last_digits SMALLINT NOT NULL,
     card_token VARCHAR(255) NOT NULL UNIQUE,
     client_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id)
 );
 
@@ -160,6 +167,7 @@ CREATE TABLE IF NOT EXISTS nr_jobs(
     event_price DECIMAL(13,4) NOT NULL,
     client_id BIGINT NOT NULL,
     client_card_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id),
     FOREIGN KEY (client_card_id) REFERENCES nr_payment_cards(id)
 );
@@ -168,6 +176,7 @@ CREATE TABLE IF NOT EXISTS nr_jobs(
 CREATE TABLE IF NOT EXISTS nr_job_reminders(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
 );
 
@@ -175,6 +184,7 @@ CREATE TABLE IF NOT EXISTS nr_job_reminders(
 CREATE TABLE IF NOT EXISTS nr_job_confirmation_reminders(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
 );
 
@@ -184,6 +194,7 @@ CREATE TABLE IF NOT EXISTS nr_job_client_attendance(
     event_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
     attendance BIT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
 );
@@ -193,6 +204,7 @@ CREATE TABLE IF NOT EXISTS nr_client_attendance_breaches(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE
 );
@@ -203,6 +215,7 @@ CREATE TABLE IF NOT EXISTS nr_job_artist_attendance(
     event_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
     attendance BIT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
@@ -212,6 +225,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_attendance_breaches(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
@@ -246,6 +260,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_jobs(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT NOT NULL,
     artist_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE
 );
@@ -257,6 +272,7 @@ CREATE TABLE IF NOT EXISTS nr_artist_ratings(
     artist_id BIGINT NOT NULL,
     event_id BIGINT NOT NULL,
     rating TINYINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
@@ -269,6 +285,7 @@ CREATE TABLE IF NOT EXISTS nr_client_ratings(
     artist_id BIGINT NOT NULL,
     event_id BIGINT NOT NULL,
     rating TINYINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES nr_clients(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES nr_artists(id) ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
