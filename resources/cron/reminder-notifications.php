@@ -25,7 +25,7 @@
 
     // Loop event ID list, if reminder hasn't been sent, send reminder
     foreach($events as $event) {
-        if(!confirmationReminderSent($event["id"])) constructReminder("confirmation", $event);
+        if(!confirmationReminderSent($event["id"])) constructReminder(1, $event);
     }
 
     // Log cron task
@@ -36,9 +36,19 @@
 
     // Loop upcoming event ID list
     foreach($events as $event) {
-        if(!upcomingReminderSent($event["id"])) constructReminder("upcoming", $event);
+        if(!upcomingReminderSent($event["id"])) constructReminder(2, $event);
     }
 
+    /**
+     * Construct reminder notification for users.
+     * Type:
+     * - 1: Confirmation
+     * - 2: Reminder
+     *
+     * @param int $type
+     * @param array $eventObject
+     * @return void
+     */
     function constructReminder($type, $eventObject) {
         // Get event info
         $event = (new NREvent())->getSingle($eventObject["id"]);
@@ -48,9 +58,9 @@
             "condition" => "'event-{$event->id}-client' in topics || 'event-{$event->id}-artist' in topics",
             "priority" => "high",
             "data" => [
-                "title" => ($type === "confirmation") ? "Event Confirmation" : "Event Reminder",
+                "title" => ($type === 1) ? "Event Confirmation" : "Event Reminder",
                 "message" =>
-                    ($type === "confirmation")
+                    ($type === 1)
                         ? "It looks like the event at {$event->formatAddress()} is finished. Don't forget to confirm the event for payment."
                         : "Event at {$event->formatAddress()} starting soon, don't forget!",
                 "content-available"  => "1",
@@ -66,7 +76,7 @@
             (new NRFCM)->send($notification, FCM_NOTIFICATION_ENDPOINT);
 
             // Log reminder sent for specific type
-            ($type === "confirmation")
+            ($type === 1)
                 ? setConfirmationReminderSent($event->id)
                 : setUpcomingReminderSent($event->id);
         } catch(Exception $e) {
@@ -107,8 +117,8 @@
          * - - Get events that are less than 3 hours away (T-3 or lesser)
          */
         $query = runSQLQuery(
-            "SELECT *
-            FROM nr_jobs
+            "SELECT j.id
+            FROM nr_jobs as j
             WHERE TIMESTAMPDIFF(HOUR, event_datetime, NOW()) <= 0
             AND TIMESTAMPDIFF(HOUR, event_datetime, NOW()) >= -3;"
         )["data"];
@@ -119,14 +129,14 @@
 
     function confirmationReminderSent($id) {
         // Check for reminder
-        $data = runSQLQuery(
+        $query = runSQLQuery(
             "SELECT id
             FROM nr_job_confirmation_reminders
             WHERE event_id = $id;"
         );
 
         // Return true if reminder has been sent
-        return isset($data["data"][0]);
+        return isset($query["data"][0]);
     }
 
     function upcomingReminderSent($id) {
@@ -138,7 +148,7 @@
         );
 
         // Return true if reminder has been sent
-        return isset($data["data"][0]);
+        return isset($query["data"][0]);
     }
 
     function setConfirmationReminderSent($id) {
