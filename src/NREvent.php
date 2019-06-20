@@ -936,6 +936,13 @@ class NREvent {
         // Return result of client+artist attendance equalling the attendance requirement (true/false)
         return (($clientAttended + $artistAttended) === $attendanceRequirement);
     }
+    public function formatAddress() {
+        // Format address for notifications
+        $addressArray = explode(",", $this->address);
+        $notifAddress = $addressArray[0] . "," . $addressArray[1];
+        isset($addressArray[2]) ? $notifAddress .= "," . $addressArray[2] : null;
+        return $notifAddress;
+    }
 
     private function randomString($length = 32) {
         // Create random string with current date salt for uniqueness
