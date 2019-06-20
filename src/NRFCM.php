@@ -206,69 +206,79 @@ class NRFCM {
 
         switch($type) {
             case "artist":
-                $sql =
-                "UPDATE nr_artists
+                return runSQLQuery(
+                    "UPDATE nr_artists
                     SET fcm_token = \"$notification_token\"
-                    WHERE id = $id;";
-
-                return runSQLQuery($sql);
-                break;
+                    WHERE id = $id;"
+                );
 
             case "client":
-                $sql =
-                "UPDATE nr_clients
+                return runSQLQuery(
+                    "UPDATE nr_clients
                     SET fcm_token = \"$notification_token\"
-                    WHERE id = $id;";
-
-                return runSQLQuery($sql);
-                break;
+                    WHERE id = $id;"
+                );
         }
     }
 
     public function registerTopic($args) {
         extract($args);
 
+        // Save topic
         switch($type) {
             case "client":
-                // Build SQL
-                $sql =
-                "INSERT INTO nr_client_fcm_topics(fcm_topic, client_id)
-                    VALUES(\"$topic\", $id);";
-                return runSQLQuery($sql);
-                break;
+                return runSQLQuery(
+                    "INSERT INTO nr_client_fcm_topics(fcm_topic, client_id)
+                    VALUES(\"$topic\", $id);"
+                );
 
             case "artist":
-                // Build SQL
-                $sql =
-                "INSERT INTO nr_artist_fcm_topics(fcm_topic, artist_id)
-                    VALUES(\"$topic\", $id);";
-                return runSQLQuery($sql);
-                break;
+                return runSQLQuery(
+                    "INSERT INTO nr_artist_fcm_topics(fcm_topic, artist_id)
+                    VALUES(\"$topic\", $id);"
+                );
+        }
+    }
+
+    public function deleteTopic($args) {
+        extract($args);
+
+        // Delete topic
+        switch($type) {
+            case "client":
+                return runSQLQuery(
+                    "DELETE FROM nr_client_fcm_topics(fcm_topic, client_id)
+                    WHERE fcm_topic = \"$topic\"
+                    AND client_id = $id);"
+                );
+
+            case "artist":
+                return runSQLQuery(
+                    "DELETE FROM nr_artist_fcm_topics(fcm_topic, client_id)
+                    WHERE fcm_topic = \"$topic\"
+                    AND client_id = $id);"
+                );
         }
     }
 
     public function getTopics($args) {
         extract($args);
 
-        // Switch request type
+        // Return topics
         switch($type) {
             case "client":
-                // Build SQL
-                $sql =
-                "SELECT *
+                return runSQLQuery(
+                    "SELECT *
                     FROM nr_client_fcm_topics
-                    WHERE client_id = $id;";
-                return runSQLQuery($sql);
-                break;
+                    WHERE client_id = $id;"
+                );
 
             case "artist":
-                // Build SQL
-                $sql =
-                "SELECT *
+                return runSQLQuery(
+                    "SELECT *
                     FROM nr_artist_fcm_topics
-                    WHERE artist_id = $id;";
-                return runSQLQuery($sql);
-                break;
+                    WHERE artist_id = $id;"
+                );
         }
     }
 }

@@ -36,7 +36,7 @@
      */
     $api = new \Slim\App;
 
-    // HMAC check for queries
+    // Precheck for queries
     $api->add(function ($request, $response, $next) {
         // DEBUG: Measure exec time
         $time_start = microtime(true);
@@ -345,6 +345,29 @@
         if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
             // Save client FCM topic
             $return = (new NRFCM)->registerTopic($form);
+
+            // Empty Redis cache for Client FCM
+            $redis = new Redis;
+            $redis->connect(REDIS_HOST);
+            $redis->delete("client-{$args["id"]}-fcm-topics");
+
+            return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        }
+        return $response->withStatus(401)
+            ->write("Unauthorized Request");
+    });
+    $api->delete('/clients/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
+        // Get Authorization
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"])) {
+            // Get PUT form
+            $form = $request->getParsedBody();
+
+            // Merge form and URL arguments
+            $form["id"] = $args["id"];
+            $form["type"] = "client";
+
+            // Save client FCM topic
+            $return = (new NRFCM)->deleteTopic($form);
 
             // Empty Redis cache for Client FCM
             $redis = new Redis;
@@ -809,6 +832,29 @@
 
             // Save artist FCM topic
             $return = (new NRFCM)->registerTopic($form);
+
+            // Empty Redis cache for Artist FCM
+            $redis = new Redis;
+            $redis->connect(REDIS_HOST);
+            $redis->delete("artist-{$args["id"]}-fcm-topics");
+
+            return $response->withJson($return, 200, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        }
+        return $response->withStatus(401)
+            ->write("Unauthorized Request");
+    });
+    $api->delete('/artists/{id: [0-9]+}/fcm/topic', function($request, $response, $args) {
+        // Get Authorization
+        if(isset($request->getHeader("NR_AUTH")[0]) && NRAuth::authorizeUser($request->getHeader("NR_AUTH")[0], $args["id"], "artist")) {
+            // Get PUT form
+            $form = $request->getParsedBody();
+
+            // Merge form and URL arguments
+            $form["id"] = $args["id"];
+            $form["type"] = "artist";
+
+            // Save artist FCM topic
+            $return = (new NRFCM)->deleteTopic($form);
 
             // Empty Redis cache for Artist FCM
             $redis = new Redis;
