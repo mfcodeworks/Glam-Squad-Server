@@ -62,37 +62,23 @@ class NRFCM {
         $lngRange = $distance->lngRange();
 
         // Get artists within location area
-        $sql =
-        "SELECT DISTINCT artist_id
+        $artistList = runSQLQuery(
+            "SELECT DISTINCT artist_id
             FROM nr_artist_locations
             WHERE loc_lat < {$latRange['max']}
             AND loc_lat > {$latRange['min']}
             AND loc_lng < {$lngRange['max']}
-            AND loc_lng > {$lngRange['min']}
-        ;";
-
-        $res = runSQLQuery($sql);
-
-        // Check query passed
-        if($res['response'] !== true) {
-            return [
-                'response' => false,
-                "error_code" => $res['error_code'],
-                'error' => $res['error']
-            ];
-        }
+            AND loc_lng > {$lngRange['min']};"
+        )["data"];
 
         // Check artists exist
-        if(!isset($res["data"])) {
+        if(!isset($artistList)) {
             return [
                 "response" => false,
                 "error_code" => 611,
                 "error" => "Unfortunately at the moment there's no artists available within your area."
             ];
         }
-
-        // Save artists to a variable
-        $artistList = $res["data"];
 
         // Loop through IDs to get artist object
         foreach($artistList as $id) {
@@ -119,40 +105,34 @@ class NRFCM {
         }
 
         // Loop through artists
-        for($i = 0; $i < count($artists); $i++) {
-            $artist = $artists[$i];
-
+        foreach($artists as $artist) {
             // Clear Artists Notification Cache
             $redis = new Redis;
             $redis->connect(REDIS_HOST);
             $redis->delete("artist-{$artist->id}-events-new");
 
-            $sql =
-            "SELECT fcm_token
-                FROM nr_artists
-                WHERE id = {$artist->id};";
-
-            $group = runSQLQuery($sql)["data"][0]["fcm_token"];
-
+            // Format datetime for client JS consumption (SQL requires Y-m-d H:i:s)
             $event->datetime = (new Datetime($event->datetime))->format(Datetime::ATOM);
 
-            $notif = [
-                "to" => $group,
-                "priority" => 'high',
-                "data" => [
-                    "title" => "New Event Available",
-                    "message" => "New event at {$event->address}",
-                    "content-available"  => "1",
-                    "image" => 'logo',
-                    "notId" => $event->id,
-                    "newEvent" => (array) $event,
-                ]
-            ];
-
-            error_log(print_r($notif, true));
-
-            $fcmResponses[] = $this->send($notif, FCM_NOTIFICATION_ENDPOINT);
+            // Send notification and save response
+            $fcmResponses[] = $this->send(
+                [
+                    "to" => $artist->fcmToken,
+                    "priority" => 'high',
+                    "data" => [
+                        "title" => "New Event Available",
+                        "message" => "New event at {$event->formatAddress()}",
+                        "content-available"  => "1",
+                        "image" => 'logo',
+                        "notId" => $event->id,
+                        "newEvent" => (array) $event,
+                    ]
+                ], FCM_NOTIFICATION_ENDPOINT
+            );
         }
+
+        // Set job proposal as sent
+        $event->setEventArtistProposalSent();
 
         return [
             "response" => true,

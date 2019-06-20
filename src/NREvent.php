@@ -487,33 +487,27 @@ class NREvent {
     }
 
     private function getPackageRequirements($id) {
-        $sql =
-        "SELECT p.id, p.package_name, p.package_description, pr.role_id, pr.role_amount_required, r.role_name
+        // Get roles with amount of people required
+        $requirements = runSQLQuery(
+            "SELECT p.id, p.package_name, p.package_description, pr.role_id, pr.role_amount_required, r.role_name
             FROM nr_packages as p
             LEFT JOIN nr_package_roles as pr ON p.id = pr.package_id
             LEFT JOIN nr_job_roles as r ON r.id = pr.role_id
-            WHERE p.id = $id;";
+            WHERE p.id = $id;"
+        )["data"];
 
-        $res = runSQLQuery($sql);
+        $package = $requirements[0];
 
-        if($res["response"] === true) {
-            $requirements = $res["data"];
-            $package = $requirements[0];
-
-            foreach($requirements as $requirement) {
-                $this->fulfillment[ $requirement['role_name'] ] = 0;
-                (isset( $this->requirements[ $requirement['role_name'] ] )) ? $this->requirements[ $requirement['role_name'] ] += $requirement['role_amount_required'] : $this->requirements[ $requirement['role_name'] ] = $requirement['role_amount_required'];
-            }
-
-            return [
-                "id" => $id,
-                "name" => $package["package_name"],
-                "description" => $package["package_description"]
-            ];
+        foreach($requirements as $requirement) {
+            $this->fulfillment[ $requirement['role_name'] ] = 0;
+            (isset( $this->requirements[ $requirement['role_name'] ] )) ? $this->requirements[ $requirement['role_name'] ] += $requirement['role_amount_required'] : $this->requirements[ $requirement['role_name'] ] = $requirement['role_amount_required'];
         }
-        else {
-            throw new Exception(json_encode($res));
-        }
+
+        return [
+            "id" => $id,
+            "name" => $package["package_name"],
+            "description" => $package["package_description"]
+        ];
     }
 
     public function getNew($args) {
@@ -910,6 +904,18 @@ class NREvent {
         return runSQLQuery($sql);
     }
 
+    public function requirementsFulfilled() {
+        // TODO: Check if event has all requirements fulfilled
+        foreach($this->requirements as $role => $required) {
+            // If the role being check is the artists role and the requirement is greater than whats fulfilled, save event
+            if($this->requirements[$role] > $this->fulfillment[$role]) {
+                return false;
+            }
+        }
+        // All requirements fulfilled, return true
+        return true;
+    }
+
     public function attendanceComplete() {
         // Set attendance requirement to 1 (Client)
         $attendanceRequirement = 1;
@@ -936,6 +942,55 @@ class NREvent {
         // Return result of client+artist attendance equalling the attendance requirement (true/false)
         return (($clientAttended + $artistAttended) === $attendanceRequirement);
     }
+
+    public function confirmationReminderSent() {
+        // Check for reminder
+        $query = runSQLQuery(
+            "SELECT id
+            FROM nr_job_confirmation_reminders
+            WHERE event_id = {$this->id};"
+        );
+
+        // Return true if reminder has been sent
+        return isset($query["data"][0]);
+    }
+
+    public function upcomingReminderSent() {
+        // Check for reminder sent already
+        $query = runSQLQuery(
+            "SELECT id
+            FROM nr_job_reminders
+            WHERE event_id = {$this->id};"
+        );
+
+        // Return true if reminder has been sent
+        return isset($query["data"][0]);
+    }
+
+    public function setConfirmationReminderSent() {
+        // Set reminder as sent
+        return runSQLQuery(
+            "INSERT INTO nr_job_confirmation_reminders(event_id)
+            VALUES({$this->id});"
+        )["response"];
+    }
+
+    public function setUpcomingReminderSent() {
+        // Set reminder as sent
+        return runSQLQuery(
+            "INSERT INTO nr_job_reminders(event_id)
+            VALUES({$this->id});"
+        )["response"];
+    }
+
+    public function setEventArtistProposalSent() {
+        // Set event propsal as sent
+        return runSQLQuery(
+            "INSERT INTO nr_job_availability_reminders(event_id)
+            VALUES({$this->id});"
+        )["response"];
+    }
+
     public function formatAddress() {
         // Format address for notifications
         $addressArray = explode(",", $this->address);

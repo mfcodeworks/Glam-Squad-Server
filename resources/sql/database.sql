@@ -188,6 +188,14 @@ CREATE TABLE IF NOT EXISTS nr_job_confirmation_reminders(
     FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
 );
 
+# Glam Squad Event Reminders (1 (Event))
+CREATE TABLE IF NOT EXISTS nr_job_availability_reminders(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    event_id BIGINT NOT NULL,
+    log_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (event_id) REFERENCES nr_jobs(id) ON DELETE CASCADE
+);
+
 # Glam Squad Client Attendance (1 (Event), 1 (Client), 1 (Attendance))
 CREATE TABLE IF NOT EXISTS nr_job_client_attendance(
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

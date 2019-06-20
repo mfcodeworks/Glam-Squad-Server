@@ -20,23 +20,29 @@
     // Log cron task
     error_log("[".date('Y-m-d H:i:s')."] Sending recent event confirmation reminders.");
 
-    // Get list of events
+    // Get recently completed events
     $events = getRecentlyCompletedEvents();
 
     // Loop event ID list, if reminder hasn't been sent, send reminder
-    foreach($events as $event) {
-        if(!confirmationReminderSent($event["id"])) constructReminder(1, $event);
+    foreach($events as $eventObject) {
+        // Get event info
+        $event = (new NREvent())->getSingle($eventObject["id"]);
+        // If no reminder sent, send one
+        if(!$event->confirmationReminderSent()) constructReminder(1, $event);
     }
 
     // Log cron task
     error_log("[".date('Y-m-d H:i:s')."] Sending upcoming event reminders");
 
-    // Get recently completed events
+    // Get upcoming events
     $events = getUpcomingEvents();
 
     // Loop upcoming event ID list
-    foreach($events as $event) {
-        if(!upcomingReminderSent($event["id"])) constructReminder(2, $event);
+    foreach($events as $eventObject) {
+        // Get event info
+        $event = (new NREvent())->getSingle($eventObject["id"]);
+        // If no reminder sent, send one
+        if(!$event->upcomingReminderSent()) constructReminder(2, $event);
     }
 
     /**
@@ -49,10 +55,7 @@
      * @param array $eventObject
      * @return void
      */
-    function constructReminder($type, $eventObject) {
-        // Get event info
-        $event = (new NREvent())->getSingle($eventObject["id"]);
-
+    function constructReminder($type, $event) {
         // Create notification payload
         $notification = [
             "condition" => "'event-{$event->id}-client' in topics || 'event-{$event->id}-artist' in topics",
@@ -77,8 +80,8 @@
 
             // Log reminder sent for specific type
             ($type === 1)
-                ? setConfirmationReminderSent($event->id)
-                : setUpcomingReminderSent($event->id);
+                ? $event->setConfirmationReminderSent()
+                : $event->setUpcomingReminderSent();
         } catch(Exception $e) {
             // Catch and log exceptions
             error_log("Error sending reminder for event {$event->id}");
@@ -125,45 +128,5 @@
 
         // If no events, exit
         return $query ? $query : [];
-    }
-
-    function confirmationReminderSent($id) {
-        // Check for reminder
-        $query = runSQLQuery(
-            "SELECT id
-            FROM nr_job_confirmation_reminders
-            WHERE event_id = $id;"
-        );
-
-        // Return true if reminder has been sent
-        return isset($query["data"][0]);
-    }
-
-    function upcomingReminderSent($id) {
-        // Check for reminder sent already
-        $query = runSQLQuery(
-            "SELECT id
-            FROM nr_job_reminders
-            WHERE event_id = $id;"
-        );
-
-        // Return true if reminder has been sent
-        return isset($query["data"][0]);
-    }
-
-    function setConfirmationReminderSent($id) {
-        // Set reminder as sent
-        return runSQLQuery(
-            "INSERT INTO nr_job_confirmation_reminders(event_id)
-            VALUES($id);"
-        )["response"];
-    }
-
-    function setUpcomingReminderSent($id) {
-        // Set reminder as sent
-        return runSQLQuery(
-            "INSERT INTO nr_job_reminders(event_id)
-            VALUES($id);"
-        )["response"];
     }
 ?>
