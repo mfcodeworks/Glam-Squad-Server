@@ -15,6 +15,7 @@
     require_once PROJECT_LIB . "autoload.php";
     require_once PROJECT_INC . "NRAuth.php";
     require_once PROJECT_INC . "DegreeDistanceFinder.php";
+    require_once PROJECT_INC . "Timer.php";
     require_once PROJECT_INC . "Mailer.php";
     require_once PROJECT_INC . "NRChat.php";
     require_once PROJECT_INC . "NRArtist.php";
@@ -39,7 +40,7 @@
     // Precheck for queries
     $api->add(function ($request, $response, $next) {
         // DEBUG: Measure exec time
-        $time_start = microtime(true);
+        $timer = (new Timer())->begin();
 
         // If HMAC enabled check
         if(HMAC_ENABLED) {
@@ -87,8 +88,8 @@
         $response = $next($request, $response);
 
         // DEBUG: Measure exec time
-        $execution_time = (microtime(true) - $time_start);
-        error_log("API Execution Time: $execution_time s");
+        error_log($timer->__toString());
+        error_log("API Execution Time: {$timer}");
 
         return $response
             ->withHeader("NR-HASH", $hash)
