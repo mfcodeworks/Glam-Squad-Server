@@ -88,6 +88,11 @@ class NRFCM {
                 "id" => $id['artist_id']
             ]);
 
+            // If artist already accepted booking, continue to next artist
+            foreach($event->artists as $bookedArtist) {
+                if($bookedArtist["id"] == $artist->id) continue 2;
+            }
+
             // If artist is needed for this job save reference and track requirement fulfillment
             if(isset($event->requirements[$artist->role["name"]])) {
                 $event->fulfillment[$artist->role["name"]]++;

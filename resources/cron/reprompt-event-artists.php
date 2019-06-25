@@ -19,6 +19,15 @@
     require_once PROJECT_LIB . "autoload.php";
 
     // TODO: Get upcoming events to check requirements fulfilled and reprompt if needed
+    error_log("[".date('Y-m-d H:i:s')."] Prompting artist for upcoming jobs with open positions");
+
+    $events = getUpcomingEvents();
+
+    foreach($events as $eventObject) {
+        $event = (new NREvent())->getSingle($eventObject["id"]);
+        if(!$event->requirementsFulfilled()) (new NRFCM())->sendEventNotification($event);
+    }
+
     function getUpcomingEvents() {
         /**
          * Select events occuring within the next 3 hours that haven't passed
@@ -32,7 +41,8 @@
          */
         $query = runSQLQuery(
             "SELECT j.id, j.event_datetime, TIMESTAMPDIFF(DAY, j.event_datetime, NOW()), a.log_datetime, TIMESTAMPDIFF(MINUTE, a.log_datetime, NOW())
-            FROM nr_jobs as j LEFT JOIN nr_job_availability_reminders as a ON j.id = a.event_id
+            FROM nr_jobs as j
+            LEFT JOIN nr_job_availability_reminders as a ON j.id = a.event_id
             WHERE a.event_id IS NOT NULL
             AND TIMESTAMPDIFF(DAY, event_datetime, NOW()) <= 0
             AND TIMESTAMPDIFF(DAY, event_datetime, NOW()) >= -35
