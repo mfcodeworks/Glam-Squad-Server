@@ -8,6 +8,7 @@
     // Require classes
     require_once PROJECT_CONFIG . "config.php";
     require_once PROJECT_INC . "DegreeDistanceFinder.php";
+    require_once PROJECT_INC . "Timer.php";
     require_once PROJECT_INC . "Mailer.php";
     require_once PROJECT_INC . "NRArtist.php";
     require_once PROJECT_INC . "NRClient.php";
@@ -16,6 +17,9 @@
     require_once PROJECT_INC . "NRImage.php";
     require_once PROJECT_INC . "NRPackage.php";
     require_once PROJECT_LIB . "autoload.php";
+
+    // DEBUG: Measure exec time
+    $timer = (new Timer())->begin();
 
     // Log cron task
     error_log("[".date('Y-m-d H:i:s')."] Sending recent event confirmation reminders.");
@@ -44,6 +48,8 @@
         // If no reminder sent, send one
         if(!$event->upcomingReminderSent()) constructReminder(2, $event);
     }
+
+    error_log("Reminder Notification Push Execution Time: {$timer}");
 
     /**
      * Construct reminder notification for users.

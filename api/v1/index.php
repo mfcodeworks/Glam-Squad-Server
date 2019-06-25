@@ -88,7 +88,6 @@
         $response = $next($request, $response);
 
         // DEBUG: Measure exec time
-        error_log($timer->__toString());
         error_log("API Execution Time: {$timer}");
 
         return $response

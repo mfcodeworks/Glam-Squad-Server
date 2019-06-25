@@ -8,6 +8,7 @@
     // Require classes
     require_once PROJECT_CONFIG . "config.php";
     require_once PROJECT_INC . "DegreeDistanceFinder.php";
+    require_once PROJECT_INC . "Timer.php";
     require_once PROJECT_INC . "Mailer.php";
     require_once PROJECT_INC . "NRArtist.php";
     require_once PROJECT_INC . "NRClient.php";
@@ -18,6 +19,9 @@
     require_once PROJECT_INC . "NRPackage.php";
     require_once PROJECT_LIB . "autoload.php";
 
+    // DEBUG: Measure exec time
+    $timer = (new Timer())->begin();
+
     // Set Stripe Payment Key
     \Stripe\Stripe::setApiKey(STRIPE_SECRET);
 
@@ -27,6 +31,7 @@
     error_log("[".date('Y-m-d H:i:s')."] Processing event payment for events T+3days");
 
     $events = getExpiredEvents();
+
     foreach($events as $eventObject) {
         // Get event
         $event = (new NREvent())->getSingle($eventObject["id"]);
@@ -46,6 +51,8 @@
         // If attendance complete, process event for payment
         if($event->attendanceComplete()) processEvent($event);
     }
+
+    error_log("Event Payment Processing Execution Time: {$timer}");
 
     function processEvent($event) {
         // Calculate price owed for event and get Artist transfer array

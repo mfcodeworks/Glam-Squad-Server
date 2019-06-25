@@ -8,6 +8,7 @@
     // Require classes
     require_once PROJECT_CONFIG . "config.php";
     require_once PROJECT_INC . "DegreeDistanceFinder.php";
+    require_once PROJECT_INC . "Timer.php";
     require_once PROJECT_INC . "Mailer.php";
     require_once PROJECT_INC . "NRArtist.php";
     require_once PROJECT_INC . "NRClient.php";
@@ -18,34 +19,43 @@
     require_once PROJECT_INC . "NRPackage.php";
     require_once PROJECT_LIB . "autoload.php";
 
+    // DEBUG: Measure exec time
+    $timer = (new Timer())->begin();
+
     error_log("[".date('Y-m-d H:i:s')."] Checking for low rated artists");
 
-    // Find artists with below average scores
-    $query = runSQLQuery(
-        "SELECT *
-        FROM (
-            SELECT AVG(r.rating) as rating, a.id as id, a.username as name, a.email as email
-            FROM nr_artists as a
-            LEFT OUTER JOIN nr_artist_ratings as r
-            ON r.artist_id = a.id
-            WHERE r.artist_id IS NOT NULL
-            AND a.locked = 0
-            GROUP BY a.id
-        ) as ra
-        WHERE ra.rating <= 3.5;"
-    );
+    // Get low rated artists
+    $artists = getLowRatedArtists();
 
-    // If artiss found, construct email
-    $query["data"] ? $artists = $query["data"] : exit(0);
-    $text = "";
-    error_log(print_r($artists, true));
-
+    // Set email text and loop artists
+    $email = "";
     foreach($artists as $artist) {
         $rating = number_format($artist["rating"], 2);
-        $text .= "<br>ID {$artist["id"]} {$artist["name"]} <<a href='mailto:{$artist["email"]}'>{$artist["email"]}</a>> Rating $rating<br><br>";
+        $text .= "<br>#ID {$artist["id"]} {$artist["name"]} <<a href='mailto:{$artist["email"]}'>{$artist["email"]}</a>> Rating $rating<br><br>";
     }
+    if($email !== "") send_email($email);
 
-    send_email($text);
+    error_log("Artist Checking Execution Time: {$timer}");
+
+    function getLowRatedArtists() {
+        // Find artists with below average scores
+        $query = runSQLQuery(
+            "SELECT *
+            FROM (
+                SELECT AVG(r.rating) as rating, a.id as id, a.username as name, a.email as email
+                FROM nr_artists as a
+                LEFT OUTER JOIN nr_artist_ratings as r
+                ON r.artist_id = a.id
+                WHERE r.artist_id IS NOT NULL
+                AND a.locked = 0
+                GROUP BY a.id
+            ) as ra
+            WHERE ra.rating <= 3.5;"
+        )["data"];
+
+        // If artists found, construct email
+        return $query ? $query : [];
+    }
 
     function send_email($artists) {
         // Email artists

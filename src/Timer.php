@@ -7,6 +7,7 @@ class Timer {
     public function begin() {
         // Set start time
         $this->start = microtime(true);
+        return $this;
     }
 
     public function end() {
